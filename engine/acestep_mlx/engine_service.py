@@ -11,6 +11,7 @@ imported, so upstream prints, tqdm and C-level output never corrupt it.
 import argparse
 import json
 import os
+import random
 import sys
 import time
 from datetime import datetime, timezone
@@ -23,6 +24,7 @@ DIT_MODEL = "acestep-v15-turbo"
 # generate_music reports LM work below this fraction and DiT/VAE work from it on.
 RENDER_FROM = 0.51
 INSTRUMENTAL_LYRICS = "[Instrumental]"
+SEED_MAX = 2**32 - 1
 
 
 def song_dir_name(request_id: str, now: datetime) -> str:
@@ -121,7 +123,11 @@ class LeanEngine:
             vocal_language=text["language"] or "unknown", thinking=True,
             use_cot_caption=not (plan.literal or plan.like), enable_normalization=False,
         )
-        config = GenerationConfig(batch_size=1, use_random_seed=True,
+        # The seed is drawn here and passed fixed: with use_random_seed=True upstream records
+        # the LM's seed but lets the DiT draw another one, so song.json would name a seed
+        # that does not reproduce the song.
+        seed = random.randint(0, SEED_MAX)
+        config = GenerationConfig(batch_size=1, use_random_seed=False, seeds=[seed],
                                   audio_format=UPSTREAM_FORMAT)
         result = generate_music(self.dit, self.llm, params, config, save_dir=song_dir,
                                 progress=progress)
@@ -135,7 +141,7 @@ class LeanEngine:
             "prompt": prompt, **text, "literal": plan.literal, "sources": sources,
             "parent": plan.like, "format": opts.format, "preset": self.preset.name,
             "lm_model": self.preset.lm_model, "dit_model": DIT_MODEL,
-            "seed": audio.get("params", {}).get("seed"), "audio": os.path.basename(path),
+            "seed": seed, "audio": os.path.basename(path),
             "created": now.isoformat(), "render_s": round(time.time() - started, 1),
         }
         with open(os.path.join(song_dir, "song.json"), "w") as fh:
