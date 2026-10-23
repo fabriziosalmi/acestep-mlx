@@ -1,0 +1,40 @@
+N5 PREDICTION, written 2026-10-23 23:30 BEFORE any clip is made. Blind A/B listening test, Mac mini M4 16 GB,
+engine at 44c7a1f. All clips 30 s. Listener: Fab, one overall preference per pair (A, B or equal) plus a
+"broken" flag per clip. Pair order and A/B side are shuffled with a recorded seed; the key stays off the Desktop.
+
+Prompts (2 vocal, 2 instrumental, 3 with an explicit BPM, 1 with an explicit key):
+  folk   "ballata folk italiana, chitarra acustica, voce femminile"
+  rock   "energetic pop rock song with male vocals, 128 bpm, D major"
+  house  "minimal house, 124 bpm, deep rolling groove"
+  tekno  "freetekno, 180 bpm, acid 303 line, distorted kick"
+Baseline = the current recipe: LM 0.6B rewrites, prompt BPM/key bind the LM, DiT turbo 8 steps, shift 1.0.
+Every clip is generated on its own (no clip appears in two pairs), except the identical null pair.
+
+Knobs (one pair per prompt unless noted):
+  K1 shift 1.0 vs 3.0 (upstream docs recommend 3.0 for turbo; the engine uses the API default 1.0).
+     Same LM codes, caption, metadata and DiT seed: only the timestep schedule differs.
+  K2 LM 0.6B vs 1.7B (whole pipeline).
+  K3 rewrite vs literal (prompt passed to the DiT as written).
+  K4 BPM/key forced vs free (the LM may read the number but is not constrained); rock, house, tekno only.
+  N1 the same file twice (house); N2 two baseline runs with different seeds (rock).
+17 pairs, 34 clips, ~17 min of audio.
+
+Technical predictions:
+T1 Every clip is 30.0 s +-0.1; forced runs report the prompt BPM/key in song.json; no generation fails.
+T2 K1: re-rendering the baseline from its own codes with shift 1.0 and the same seed reproduces the original
+   audio bit for bit (md5) in 4/4 (medium confidence: the caption/language reconstruction may differ).
+T3 K1 shift 3.0 render time within 10% of shift 1.0 (same 8 steps).
+T4 K4 free: the LM's BPM differs from the prompt's in at least 1 of 3 (it gave 168 for "180 bpm" before).
+
+Listening predictions (low confidence, they are the reason for the test):
+L1 K1 shift 3.0 preferred in >= 3/4.
+L2 K2 no clear winner (neither side 4/4).
+L3 K3 literal preferred in >= 2/4 for the instrumental genre prompts (the rewrite drifted from freetekno before).
+L4 K4 no "broken" flag on a forced clip.
+L5 N1 judged equal; N2 any answer (it measures how much seed noise looks like a preference).
+
+Decision rule, fixed now: with 4 pairs and no real difference, 4/4 for one side happens 1 time in 8 and at least 3/4 for one side
+5 times in 8. A knob changes the default only on 4/4 (3/3 for K4) with no broken flag on the winner; 3/4 changes it
+only for K1 shift 3.0, the documented upstream setting; anything else keeps the current default. If N1 is not
+judged equal or N2 gets a strong preference, all results are read as weaker. Any broken flag on a forced K4
+clip is reported as a declared limit of forcing.
