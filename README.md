@@ -41,6 +41,23 @@ Findings:
 
 Generation times vary with swap state and are indicative only.
 
+## Lean engine (branch `feat/n1-lean-init`, same host and inputs)
+
+`engine/acestep_mlx/lean_handler.py` subclasses upstream's handler. Every replay below gives
+the same md5 as the upstream fp32 path (`4e731ce4...`).
+
+| Change | Process peak (`time -l`) |
+|---|---|
+| Upstream path, torch decoder emptied after conversion (`a`) | 20.54 GB |
+| MLX decoder read from safetensors, torch decoder never on MPS | 20.28-20.49 GB (init 11-15 s instead of 48-74 s) |
+| + VAE tiles 64 frames, overlap 16 | 17.84 GB |
+| + torch VAE weights dropped after MLX VAE init | 17.80 GB |
+| + MLX buffer cache limited to 64 MB | 14.09-14.14 GB (3 runs) |
+
+Full describe-to-song flow (LM 0.6B on MLX, `create_sample`, thinking on, 30 s): peak 15.87 GB,
+75 s from process start (init 37 s, lyrics and metadata 8.1 s, generation 27.4 s).
+Loading the torch model in bf16 is not lossless: FSQ codebook buffers are built in the load dtype.
+
 ## Reproduce
 
 On the measurement host, `bench/f0/setup.sh` clones upstream into `~/acestep-f0`, syncs

@@ -78,3 +78,7 @@ I1 both md5 identical; peak 15.0-15.5 GB; generate_music within +30% of 16.26 s.
 N1i RESULT: c64 peak 14.09 GB gen 15.69 s; c0 peak 14.58 GB gen 18.08 s; repeats c64r2 14.14 GB / 15.26 s, c64r3 14.09 GB / 15.35 s.
 All md5 identical. I1 peak FAILED in the good direction (lower than 15.0-15.5). Default set to 64 MB.
 Refactor check: memlog off/on md5 4e731ce4..., peaks 14.09/14.08 GB.
+
+APP-FLOW PREDICTION, written 2026-10-23 16:36 BEFORE the run. lean defaults, full flow (LM 0.6B MLX, create_sample, thinking=True), 30 s:
+A1 peak 15.3-16.2 GB; end-to-end wall time 60-90 s; output is music (no silence, RMS -25..-12 dBFS).
+APP-FLOW RESULT: A1 OK. peak 15.87 GB, wall 75.05 s (imports 2.2, init_dit 15.2, init_lm 20.2, create_sample 8.1, generate_music 27.4 s), swap 1.02 -> 2.87 GB, 30.0 s audio, RMS -18.6 dBFS, peak 0.891.
