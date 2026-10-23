@@ -4,14 +4,14 @@ Working name. A native macOS app that turns a sentence into a song, built on
 [ACE-Step 1.5](https://github.com/ace-step/ACE-Step-1.5), with MLX used wherever
 possible and zero user-facing options.
 
-Status: research. No app yet. This repository currently holds the measurement
-harness and the raw results it produced.
+Status: research. No app yet. This repository holds the measurement harness, the raw
+results it produced, and a lean engine that runs upstream's pipeline on MLX.
 
 ## Layout
 
 - `bench/f0/`: measurement harness (setup, one-shot run, frozen-input replay, audio comparison).
 - `bench/results/<date>-<host>/`: raw logs, written predictions, frozen inputs and audio checksums.
-- `engine/`: MLX engine (not started).
+- `engine/acestep_mlx/`: lean engine, a subclass of upstream's handler (tests in `engine/tests/`).
 - `app/`: SwiftUI app (not started).
 
 ## Results so far (2026-10-23, Mac mini M4 16 GB, macOS 26.4.1)
@@ -41,22 +41,37 @@ Findings:
 
 Generation times vary with swap state and are indicative only.
 
-## Lean engine (branch `feat/n1-lean-init`, same host and inputs)
+## Lean engine (same host and inputs)
 
-`engine/acestep_mlx/lean_handler.py` subclasses upstream's handler. Every replay below gives
-the same md5 as the upstream fp32 path (`4e731ce4...`).
+`engine/acestep_mlx/lean_handler.py` subclasses upstream's handler. Replays with frozen
+inputs; "audio" compares against the upstream fp32 path (`ref1`, md5 `4e731ce4...`).
 
-| Change | Process peak (`time -l`) |
-|---|---|
-| Upstream path, torch decoder emptied after conversion (`a`) | 20.54 GB |
-| MLX decoder read from safetensors, torch decoder never on MPS | 20.28-20.49 GB (init 11-15 s instead of 48-74 s) |
-| + VAE tiles 64 frames, overlap 16 | 17.84 GB |
-| + torch VAE weights dropped after MLX VAE init | 17.80 GB |
-| + MLX buffer cache limited to 64 MB | 14.09-14.14 GB (3 runs) |
+| Change | Process peak (`time -l`) | Audio vs `ref1` |
+|---|---|---|
+| Upstream path, torch decoder emptied after conversion (`a`) | 20.54 GB | bit-identical |
+| MLX decoder read from safetensors, torch decoder never on MPS | 20.28-20.49 GB (init 11-15 s instead of 48-74 s) | bit-identical |
+| + VAE tiles 64 frames, overlap 16 | 17.84 GB | bit-identical |
+| + torch VAE weights dropped after MLX VAE init | 17.80 GB | bit-identical |
+| + MLX buffer cache limited to 64 MB | 14.09-14.14 GB (3 runs) | bit-identical |
+| + text encoder on MLX (N2) | 13.22 GB | SNR 79.8 dB |
+| + condition encoder, audio tokenizer, detokenizer on MLX (N3) | 10.48 GB (2 runs) | SNR 77.7 dB |
 
-Full describe-to-song flow (LM 0.6B on MLX, `create_sample`, thinking on, 30 s): peak 15.87 GB,
-75 s from process start (init 37 s, lyrics and metadata 8.1 s, generation 27.4 s).
+From N2 on, the MLX modules keep the stored bf16 weights and compute in fp32. Their outputs
+differ from torch MPS by less than torch CPU differs from torch MPS on the same inputs
+(N3 encoder: max abs 5.0e-6 vs 7.1e-6; `bench/n3/noise_floor.py`). After N3, torch holds
+4 MB on MPS and no torch weights are used for compute except the 2048-value null condition.
+
+Full describe-to-song flow (LM 0.6B on MLX, `create_sample`, thinking on, 30 s), peak and
+time from process start:
+
+| Engine state | Peak | Time | Swap growth |
+|---|---|---|---|
+| N1 | 15.87 GB | 75 s | |
+| N2 | 14.20 GB | 63.9 s | +0.9 GB |
+| N3 | 11.78 GB | 59.6 s (init 8.2, LM init 20.1, lyrics and metadata 9.4, generation 19.4) | +21 MB |
+
 Loading the torch model in bf16 is not lossless: FSQ codebook buffers are built in the load dtype.
+Each step's written prediction and result are in `bench/n*/prediction_n*.txt`.
 
 ## Reproduce
 
