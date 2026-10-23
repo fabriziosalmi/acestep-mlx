@@ -86,6 +86,79 @@ class LeanAceStepHandler(AceStepHandler):
         )
         return attn
 
+    def _init_mlx_vae(self) -> bool:
+        """Upstream MLX VAE init; ``ACESTEP_MLX_VAE_NOCOMPILE=1`` keeps decode uncompiled."""
+        ok = super()._init_mlx_vae()
+        if ok and os.environ.get("ACESTEP_MLX_VAE_NOCOMPILE") == "1":
+            self._mlx_compiled_decode = self.mlx_vae.decode
+            logger.info("[lean] MLX VAE decode left uncompiled")
+        return ok
+
+    def _resolve_mlx_decode_fn(self):
+        """With ``ACESTEP_LEAN_MEMLOG=1``, wrap the decode callable to log MLX peak memory per tile."""
+        import mlx.core as mx
+
+        inner = super()._resolve_mlx_decode_fn()
+        if os.environ.get("ACESTEP_LEAN_MEMLOG") != "1":
+            return inner
+
+        def _logged(z):
+            mx.reset_peak_memory()
+            out = inner(z)
+            mx.eval(out)
+            logger.info(
+                f"[lean] VAE tile {tuple(z.shape)} -> {tuple(out.shape)}: "
+                f"MLX peak {round(mx.get_peak_memory() / 2**20)} MB"
+            )
+            return out
+
+        return _logged
+
+    def _mlx_run_diffusion(self, *args, **kwargs):
+        """Run upstream MLX diffusion; with ``ACESTEP_LEAN_MEMLOG=1`` log MLX memory around it."""
+        import mlx.core as mx
+
+        if os.environ.get("ACESTEP_LEAN_MEMLOG") != "1":
+            return super()._mlx_run_diffusion(*args, **kwargs)
+        mx.reset_peak_memory()
+        result = super()._mlx_run_diffusion(*args, **kwargs)
+        logger.info(
+            f"[lean] after diffusion: MLX active {round(mx.get_active_memory() / 2**20)} MB, "
+            f"cache {round(mx.get_cache_memory() / 2**20)} MB, "
+            f"peak during diffusion {round(mx.get_peak_memory() / 2**20)} MB"
+        )
+        return result
+
+    def _mlx_vae_decode(self, latents_torch):
+        """Run upstream MLX VAE decode; with ``ACESTEP_LEAN_MEMLOG=1`` log MLX memory around it.
+
+        With ``ACESTEP_MLX_CLEAR_BEFORE_VAE=1`` the MLX buffer cache left by the
+        diffusion loop is released first (measured: no effect on the peak).
+        """
+        import mlx.core as mx
+
+        if os.environ.get("ACESTEP_LEAN_MEMLOG") != "1":
+            if os.environ.get("ACESTEP_MLX_CLEAR_BEFORE_VAE") == "1":
+                mx.clear_cache()
+            return super()._mlx_vae_decode(latents_torch)
+
+        def _mb(x):
+            return round(x / 2**20)
+
+        if os.environ.get("ACESTEP_MLX_CLEAR_BEFORE_VAE") == "1":
+            mx.clear_cache()
+        logger.info(
+            f"[lean] before VAE decode: MLX active {_mb(mx.get_active_memory())} MB, "
+            f"cache {_mb(mx.get_cache_memory())} MB, peak so far {_mb(mx.get_peak_memory())} MB"
+        )
+        mx.reset_peak_memory()
+        audio = super()._mlx_vae_decode(latents_torch)
+        logger.info(
+            f"[lean] after VAE decode: MLX active {_mb(mx.get_active_memory())} MB, "
+            f"cache {_mb(mx.get_cache_memory())} MB, peak during decode {_mb(mx.get_peak_memory())} MB"
+        )
+        return audio
+
     def _init_mlx_dit(self, compile_model: bool = False) -> bool:
         """Keep the decoder built at load time instead of converting it from torch."""
         if getattr(self, "mlx_decoder", None) is not None and self.use_mlx_dit:

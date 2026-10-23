@@ -1,0 +1,24 @@
+tile EXIT 0 peak 20487852496 md5 4e731ce4be09621d98420f3be6e4d814 maxfp 18GB
+point:83 - [lean] MLX decoder loaded from checkpoint; dropped 1.575B torch decoder params; rest of the DiT on mps as torch.float32
+ean] after diffusion: MLX active 3681 MB, cache 1448 MB, peak during diffusion 4813 MB
+] before VAE decode: MLX active 3681 MB, cache 1448 MB, peak so far 4813 MB
+le (1, 192, 64) -> (1, 368640, 2): MLX peak 7613 MB
+le (1, 256, 64) -> (1, 491520, 2): MLX peak 8334 MB
+le (1, 256, 64) -> (1, 491520, 2): MLX peak 8338 MB
+le (1, 256, 64) -> (1, 491520, 2): MLX peak 8342 MB
+le (1, 256, 64) -> (1, 491520, 2): MLX peak 8345 MB
+le (1, 174, 64) -> (1, 334080, 2): MLX peak 7425 MB
+] after VAE decode: MLX active 3681 MB, cache 11 MB, peak during decode 7425 MB
+nocomp EXIT 0 peak 20092015104 md5 4e731ce4be09621d98420f3be6e4d814 maxfp 19GB
+point:83 - [lean] MLX decoder loaded from checkpoint; dropped 1.575B torch decoder params; rest of the DiT on mps as torch.float32
+LX VAE decode left uncompiled
+ean] after diffusion: MLX active 3681 MB, cache 1448 MB, peak during diffusion 4813 MB
+] before VAE decode: MLX active 3681 MB, cache 1448 MB, peak so far 4813 MB
+le (1, 192, 64) -> (1, 368640, 2): MLX peak 7484 MB
+le (1, 256, 64) -> (1, 491520, 2): MLX peak 6748 MB
+le (1, 256, 64) -> (1, 491520, 2): MLX peak 7588 MB
+le (1, 256, 64) -> (1, 491520, 2): MLX peak 7592 MB
+le (1, 256, 64) -> (1, 491520, 2): MLX peak 7595 MB
+le (1, 174, 64) -> (1, 334080, 2): MLX peak 7145 MB
+] after VAE decode: MLX active 3681 MB, cache 11 MB, peak during decode 7145 MB
+SERIES_DONE

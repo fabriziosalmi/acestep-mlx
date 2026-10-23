@@ -28,3 +28,24 @@ N1c PREDICTION, written 2026-10-23 15:57 BEFORE the runs. lean engine, replay fi
 V1 vc256 (ACESTEP_MLX_VAE_CHUNK=256, fp32): peak 14-16.5 GB; not bit-identical, SNR > 40 dB (tile boundaries move).
 V2 vc192 (chunk 192, fp32): peak 13.5-16 GB; SNR > 40 dB.
 V3 vf16 (ACESTEP_MLX_VAE_FP16=1, chunk 512): peak 14.5-16.5 GB; SNR ~58 dB as in bv.
+
+N1c RESULT: vc256 and vc192 md5 identical to ref1 (tiling is exact), peaks 20.49 / 20.25 GB; vf16 SNR 58.06 dB, peak 19.93 GB.
+CORRECTION: get_gpu_memory_gb() on mini1 returns 11.84 GB, so the default chunk was already 256, not 512 as written above;
+vc256 equals the default. V1-V3 peak predictions all FAILED: the VAE chunk size is not what drives the peak.
+
+N1d PREDICTION, written 2026-10-23 16:00 BEFORE the runs. lean + MLX memory logs around diffusion and VAE decode:
+W1 inst: MLX cache after diffusion 3500-5000 MB; MLX peak during VAE decode (above active) < 3000 MB.
+W2 clr (ACESTEP_MLX_CLEAR_BEFORE_VAE=1): md5 unchanged (4e731ce4...); peak footprint drops by roughly the cache size, to 15-17 GB.
+
+N1d RESULT: W1 FAILED (cache after diffusion 1448 MB; MLX peak during VAE decode 8345 MB = active + 4664 MB).
+W2 FAILED (clearing the cache changed nothing: peak 20.49 GB, md5 unchanged).
+
+N1e PREDICTION, written 2026-10-23 16:03 BEFORE the runs. Per-tile MLX peak logging, chunk 256 (default here):
+X1 tile (compiled): per-tile MLX peak ~8300 MB for full-size tiles, i.e. ~4.6 GB of transients per 256-frame tile.
+X2 nocomp (ACESTEP_MLX_VAE_NOCOMPILE=1): per-tile peak lower than compiled by > 1 GB; md5 identical or SNR > 80 dB.
+
+N1e RESULT: X1 OK: 256-frame tile peaks at 8334-8345 MB MLX (active 3681 + ~4.65 GB). Tile transient fits
+~1.76 GB + 11.3 MB/frame (174: 7425, 192: 7613, 256: ~8340 MB). X2 PARTIAL: uncompiled decode is bit-identical but
+only 0.75 GB lower and slower (9.83 s vs 8.76 s, both under swap). Kept compiled.
+Final default lean path (instrumentation off): md5 4e731ce4be09621d98420f3be6e4d814, init_dit 14.2 s, peak 20.49 GB.
+Peak is set by generation, not init: torch on MPS 5.9 GB + MLX up to 8.3 GB during VAE tiles + process.

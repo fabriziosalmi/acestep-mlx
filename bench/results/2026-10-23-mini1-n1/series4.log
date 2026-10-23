@@ -1,0 +1,11 @@
+inst EXIT 0 peak 20488917456 md5 4e731ce4be09621d98420f3be6e4d814 maxfp 19GB
+point:83 - [lean] MLX decoder loaded from checkpoint; dropped 1.575B torch decoder params; rest of the DiT on mps as torch.float32
+an] after diffusion: MLX active 3681 MB, cache 1448 MB, peak during diffusion 4813 MB
+] before VAE decode: MLX active 3681 MB, cache 1448 MB, peak so far 4813 MB
+] after VAE decode: MLX active 3681 MB, cache 11 MB, peak during decode 8345 MB
+clr EXIT 0 peak 20491129272 md5 4e731ce4be09621d98420f3be6e4d814 maxfp 19GB
+point:83 - [lean] MLX decoder loaded from checkpoint; dropped 1.575B torch decoder params; rest of the DiT on mps as torch.float32
+an] after diffusion: MLX active 3681 MB, cache 1448 MB, peak during diffusion 4813 MB
+] before VAE decode: MLX active 3681 MB, cache 0 MB, peak so far 4813 MB
+] after VAE decode: MLX active 3681 MB, cache 11 MB, peak during decode 8345 MB
+SERIES_DONE
