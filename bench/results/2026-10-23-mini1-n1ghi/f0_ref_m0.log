@@ -1,0 +1,122 @@
+F0 {"phase": "start", "phase_s": 0.0, "elapsed_s": 0.0, "footprint_mb": 9, "swap_used_mb": 900, "mlx_active_mb": 0, "mlx_peak_mb": 0, "mlx_cache_mb": 0, "mps_driver_mb": 1, "mps_current_mb": 0}
+W1023 16:35:05.805000 50731 .venv/lib/python3.12/site-packages/torch/distributed/elastic/multiprocessing/redirects.py:29] NOTE: Redirects are currently not supported in Windows or MacOs.
+2026-10-23 16:35:06.582 | WARNING  | acestep.training.trainer:<module>:40 - bitsandbytes not installed. Using standard AdamW.
+F0 {"phase": "imports", "phase_s": 2.42, "elapsed_s": 3.02, "footprint_mb": 353, "swap_used_mb": 900, "mlx_active_mb": 0, "mlx_peak_mb": 0, "mlx_cache_mb": 0, "mps_driver_mb": 1, "mps_current_mb": 0, "engine": "lean"}
+2026-10-23 16:35:06.622 | INFO     | acestep.gpu_config:get_gpu_config:846 - macOS MPS detected (11.8 GB unified memory, tier=tier4). Applying Apple Silicon optimizations: no compile, no quantization, mlx backend, no CPU offload.
+2026-10-23 16:35:06.622 | INFO     | acestep_mlx.lean_handler:initialize_service:64 - [lean] MLX buffer cache limited to 64 MB
+2026-10-23 16:35:06.625 | INFO     | acestep.core.generation.handler.init_service_loader:_load_main_model_from_checkpoint:174 - [initialize_service] Attempting to load model with attention implementation: sdpa
+2026-10-23 16:35:16.465 | INFO     | acestep_mlx.lean_handler:_load_main_model_from_checkpoint:98 - [lean] MLX decoder loaded from checkpoint; dropped 1.575B torch decoder params; rest of the DiT on mps as torch.float32
+2026-10-23 16:35:23.374 | INFO     | acestep.core.generation.handler.mlx_vae_init:_init_mlx_vae:75 - [MLX-VAE] Decode/encode compiled with mx.compile().
+2026-10-23 16:35:23.374 | INFO     | acestep.core.generation.handler.mlx_vae_init:_init_mlx_vae:85 - [MLX-VAE] Native MLX VAE initialized (dtype=mlx.core.float32, compiled=True).
+2026-10-23 16:35:23.474 | INFO     | acestep_mlx.lean_handler:_init_mlx_vae:114 - [lean] dropped 168.7M torch VAE params after MLX VAE init
+F0 {"phase": "init_dit", "phase_s": 16.85, "elapsed_s": 19.9, "footprint_mb": 12288, "swap_used_mb": 2539, "mlx_active_mb": 3681, "mlx_peak_mb": 3681, "mlx_cache_mb": 24, "mps_driver_mb": 10572, "mps_current_mb": 5423, "ok": true, "device": "mps", "dtype": "torch.float32", "use_mlx_dit": true, "use_mlx_vae": true, "status": "step-f0/ACE-Step-1.5/checkpoints/vae\nText encoder: /Users/fab/acestep-f0/ACE-Step-1.5/checkpoints/Qwen3-Embedding-0.6B\nDtype: torch.float32\nAttention: sdpa\nCompiled: False\nQuantization: Disabled\nOffload to CPU: False\nOffload DiT to CPU: False\nMLX DiT: Active (native MLX)\nMLX VAE: Active (native MLX)"}
+2026-10-23 16:35:23.546 | INFO     | acestep.inference:generate_music:662 - [generate_music] LLM usage decision: thinking=False, use_cot_caption=False, use_cot_language=False, use_cot_metas=False, need_lm_for_cot=False, llm_initialized=False, use_lm=False
+2026-10-23 16:35:23.546 | INFO     | acestep.core.generation.handler.generate_music:generate_music:313 - [generate_music] Turbo model detected: overriding guidance_scale 7.0 -> 1.0 (turbo does not use CFG).
+2026-10-23 16:35:23.546 | INFO     | acestep.core.generation.handler.generate_music:generate_music:329 - [generate_music] Starting generation...
+2026-10-23 16:35:23.546 | INFO     | acestep.core.generation.handler.generate_music:generate_music:332 - [generate_music] Preparing inputs...
+2026-10-23 16:35:23.547 | INFO     | acestep.core.generation.handler.generate_music_request:_prepare_reference_and_source_audio:204 - [generate_music] cover task: no src_audio but audio codes provided, proceeding with codes
+2026-10-23 16:35:23.563 | INFO     | acestep.core.generation.handler.conditioning_target:_prepare_target_latents_and_wavs:78 - [generate_music] Decoding audio codes for item 0...
+2026-10-23 16:35:23.852 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_precomputed_lm_hints:31 - [generate_music] Decoding audio codes for LM hints for item 0...
+2026-10-23 16:35:23.855 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:119 - 
+======================================================================
+2026-10-23 16:35:23.856 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:120 - 🔍 [DEBUG] DiT TEXT ENCODER INPUT (Inference)
+2026-10-23 16:35:23.856 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:121 - ======================================================================
+2026-10-23 16:35:23.856 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:122 - text_prompt:
+# Instruction
+Generate audio semantic tokens based on the given conditions:
+
+# Caption
+A heartfelt Italian folk-pop ballad led by a warm, clear male vocal and an intricately fingerpicked acoustic guitar. The arrangement begins simply, establishing a nostalgic mood. It gradually builds, introducing a steady bassline and a gentle drum kit that provides a soft, driving rhythm in the choruses. The song's dynamics swell for the choruses, creating an anthemic feel, before receding in the verses for more intimate moments. The track concludes with a brief, melodic acoustic guitar solo that fades to silence.
+
+# Metas
+- bpm: 100
+- timesignature: N/A
+- keyscale: A major
+- duration: 30 seconds
+<|endoftext|>
+
+2026-10-23 16:35:23.856 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:123 - ======================================================================
+2026-10-23 16:35:23.856 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:124 - lyrics_text:
+# Languages
+it
+
+# Lyric
+[Intro - Acoustic Guitar]
+
+[Verse 1]
+La luna danza sopra il mare
+Il vento canta un vecchio canto
+Le stelle ridono senza parlare
+
+[Chorus]
+Sogni di marmo tra i capelli
+Cori nel vento nei cieli sereni
+Sogni di marmo che non si spegneranno mai
+
+[Instrumental Break - Acoustic Guitar]
+
+[Verse 2]
+La roccia resta, ma non per noi
+Il cuore batte, ma non si spegne
+Cammino scalzo tra i tuoi e i tuoi
+
+[Chorus]
+Sogni di marmo tra i capelli
+Cori nel vento nei cieli sereni
+Sogni di marmo che non si spegneranno mai
+
+[Instrumental Break - Acoustic Guitar]
+
+[Bridge]
+Le montagne guardano, restano
+Il firmamento sapre d'amaro
+E il tempo si ferma, ma chi lo aspetta?
+
+[Chorus]
+Sogni di marmo tra i capelli
+Cori nel vento nei cieli sereni
+Sogni di marmo che non si spegneranno mai
+
+[Outro - Acoustic Guitar]<|endoftext|>
+2026-10-23 16:35:23.856 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:125 - ======================================================================
+
+2026-10-23 16:35:23.942 | INFO     | acestep.core.generation.handler.conditioning_embed:preprocess_batch:110 - [preprocess_batch] Inferring prompt embeddings...
+2026-10-23 16:35:23.994 | INFO     | acestep.core.generation.handler.conditioning_embed:preprocess_batch:113 - [preprocess_batch] Inferring lyric embeddings...
+2026-10-23 16:35:23.998 | INFO     | acestep.core.generation.handler.service_generate_execute:_execute_service_generate_diffusion:173 - [service_generate] Generating audio... (DiT backend: MLX (native))
+2026-10-23 16:35:24.622 | INFO     | acestep.models.mlx.dit_generate:mlx_generate_diffusion:410 - [MLX-DiT] DCW enabled (mode=double, scaler=0.050, high_scaler=0.020, wavelet=haar, backend=MLX-native Haar).
+Using precomputed LM hints
+MLX DiT diffusion:   0%|          | 0/8 [00:00<?, ?it/s]MLX DiT diffusion:  12%|█▎        | 1/8 [00:06<00:42,  6.09s/it]MLX DiT diffusion:  25%|██▌       | 2/8 [00:06<00:17,  2.88s/it]MLX DiT diffusion:  38%|███▊      | 3/8 [00:07<00:09,  1.82s/it]MLX DiT diffusion:  50%|█████     | 4/8 [00:07<00:05,  1.33s/it]MLX DiT diffusion:  62%|██████▎   | 5/8 [00:08<00:03,  1.06s/it]MLX DiT diffusion:  75%|███████▌  | 6/8 [00:09<00:01,  1.11it/s]MLX DiT diffusion:  88%|████████▊ | 7/8 [00:09<00:00,  1.26it/s]MLX DiT diffusion: 100%|██████████| 8/8 [00:10<00:00,  1.38it/s]MLX DiT diffusion: 100%|██████████| 8/8 [00:10<00:00,  1.27s/it]
+2026-10-23 16:35:34.831 | INFO     | acestep.core.generation.handler.service_generate_execute:_execute_service_generate_diffusion:267 - [service_generate] DiT diffusion complete via MLX (10.20s total, 1.276s/step).
+2026-10-23 16:35:34.832 | INFO     | acestep.core.generation.handler.generate_music_decode:_prepare_generate_music_decode_state:42 - [generate_music] Model generation completed. Decoding latents...
+2026-10-23 16:35:34.834 | DEBUG    | acestep.core.generation.handler.generate_music_decode:_prepare_generate_music_decode_state:64 - [generate_music] pred_latents: torch.Size([1, 750, 64]), dtype=torch.float32
+2026-10-23 16:35:34.834 | DEBUG    | acestep.core.generation.handler.generate_music_decode:_prepare_generate_music_decode_state:65 - [generate_music] time_costs: {'diffusion_time_cost': 10.204407930374146, 'diffusion_per_step_time_cost': 1.2755509912967682, 'total_time_cost': 10.204955101013184, 'sampler_mode': 'euler', 'offload_time_cost': 0.0}
+2026-10-23 16:35:34.871 | INFO     | acestep.core.generation.handler.generate_music_decode:_decode_generate_music_pred_latents:127 - [generate_music] Decoding latents with VAE...
+2026-10-23 16:35:34.875 | DEBUG    | acestep.core.generation.handler.generate_music_decode:_decode_generate_music_pred_latents:136 - [generate_music] Before VAE decode: allocated=0.00GB, max=0.00GB
+2026-10-23 16:35:34.875 | INFO     | acestep.core.generation.handler.generate_music_decode:_decode_generate_music_pred_latents:172 - [generate_music] Using tiled VAE decode to reduce VRAM usage...
+2026-10-23 16:35:41.115 | INFO     | acestep.core.generation.handler.mlx_vae_decode_native:_mlx_vae_decode:66 - [MLX-VAE] Decoded 1 sample(s), 750 latent frames -> audio in 6.24s (convert=0.001s, decode=6.24s, dtype=mlx.core.float32)
+2026-10-23 16:35:41.115 | DEBUG    | acestep.core.generation.handler.generate_music_decode:_decode_generate_music_pred_latents:193 - [generate_music] After VAE decode: allocated=0.00GB, max=0.00GB
+2026-10-23 16:35:41.184 | INFO     | acestep.core.generation.handler.generate_music_payload:_build_generate_music_success_payload:38 - [generate_music] VAE decode completed. Preparing audio tensors...
+2026-10-23 16:35:41.184 | INFO     | acestep.core.generation.handler.generate_music_payload:_build_generate_music_success_payload:50 - [generate_music] Done! Generated 1 audio tensors.
+2026-10-23 16:35:41.882 | INFO     | acestep.inference:generate_music:1002 - [Normalization] Audio 0 BEFORE: Peak=1.0000, Target=-1.0dB
+2026-10-23 16:35:41.893 | INFO     | acestep.inference:generate_music:1007 - [Normalization] Audio 0 AFTER: Peak=0.8913
+2026-10-23 16:35:41.941 | DEBUG    | acestep.audio_utils:save_audio:339 - [AudioSaver] Fallback soundfile Saved audio to /Users/fab/acestep-f0/out/ref_m0/e8147bcd-4be2-3aa7-3e9f-375782ce3193.flac (flac, 48000Hz)
+F0 {"phase": "generate_music", "phase_s": 18.4, "elapsed_s": 38.37, "footprint_mb": 11264, "swap_used_mb": 1851, "mlx_active_mb": 3681, "mlx_peak_mb": 5931, "mlx_cache_mb": 11, "mps_driver_mb": 10561, "mps_current_mb": 5423, "ok": true, "error": null, "paths": ["/Users/fab/acestep-f0/out/ref_m0/e8147bcd-4be2-3aa7-3e9f-375782ce3193.flac"], "replay": true, "torch_dtype": "torch.float32", "use_mlx_dit": true, "use_mlx_vae": true}
+       39,17 real         4,63 user        11,15 sys
+         11731468288  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+             1284484  page reclaims
+              388252  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+               85819  voluntary context switches
+              247006  involuntary context switches
+        140729566755  instructions retired
+         60616935189  cycles elapsed
+         14094586296  peak memory footprint
+EXIT 0

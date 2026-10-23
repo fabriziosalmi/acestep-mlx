@@ -61,3 +61,20 @@ T3 t48_12: 50% confidence md5 differs (if receptive field > 12); if it differs, 
 N1f RESULT: T0 OK (md5 identical, tile 8345 MB). T1 md5 identical, tile 6670 MB OK, process peak 19.93 GB (above 18.5-19.5).
 T2 OK: md5 identical, tile 5931 MB, process peak 17.84 GB, decode 6.82 s (faster than predicted 9-15 s).
 T3: md5 differs, SNR 130.78 dB (receptive field between 12 and 16 latent frames). Default set to 64/16.
+
+N1g PREDICTION, written 2026-10-23 16:28 BEFORE the run. lean defaults (64/16 tiles) + torch VAE params dropped after MLX VAE init:
+G1 md5 4e731ce4... ; torch MPS current drops by 600-700 MB (VAE ~168.7M params fp32); process peak 17.0-17.4 GB.
+
+N1g RESULT: md5 identical. torch MPS current 5876 -> 5423 MB (-453, predicted -600..-700, FAILED). Process peak 17.80 GB
+(predicted 17.0-17.4, FAILED). Timeline: init up to ~9.9 GB, diffusion 12-13 GB, VAE decode spikes 16 GB at the start
+and 15 GB at the end (1 s sampler), time -l peak 17.80 GB between samples.
+
+N1h PREDICTION, written 2026-10-23 16:29 BEFORE the runs. N1g + ACESTEP_LEAN_MLX_CACHE_LIMIT_MB=256:
+H1 md5 identical (cache policy does not change math); process peak 15.8-17.3 GB; generate_music time within +20% of N1g (19.95 s).
+N1h RESULT: md5 identical, peak 15.51 GB (better than predicted), generate_music 16.26 s (faster than N1g 19.95 s).
+
+N1i PREDICTION, written 2026-10-23 16:30 BEFORE the runs. Cache limit 64 MB and 0 MB:
+I1 both md5 identical; peak 15.0-15.5 GB; generate_music within +30% of 16.26 s.
+N1i RESULT: c64 peak 14.09 GB gen 15.69 s; c0 peak 14.58 GB gen 18.08 s; repeats c64r2 14.14 GB / 15.26 s, c64r3 14.09 GB / 15.35 s.
+All md5 identical. I1 peak FAILED in the good direction (lower than 15.0-15.5). Default set to 64 MB.
+Refactor check: memlog off/on md5 4e731ce4..., peaks 14.09/14.08 GB.
