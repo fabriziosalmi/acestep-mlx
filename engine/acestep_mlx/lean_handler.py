@@ -17,6 +17,10 @@ from loguru import logger
 from acestep.handler import AceStepHandler
 
 from acestep_mlx.dit_weights import load_mlx_decoder
+from acestep_mlx.vae_tiling import decode_tiled
+
+DEFAULT_VAE_CHUNK = 64
+DEFAULT_VAE_OVERLAP = 16
 
 
 def drop_module_parameters(module: torch.nn.Module) -> int:
@@ -93,6 +97,21 @@ class LeanAceStepHandler(AceStepHandler):
             self._mlx_compiled_decode = self.mlx_vae.decode
             logger.info("[lean] MLX VAE decode left uncompiled")
         return ok
+
+    def _mlx_decode_single(self, z_nlc, decode_fn=None):
+        """Tile the VAE decode in 64-frame tiles with 16 frames of overlap.
+
+        Measured on the Mac mini: output bit-identical to upstream's 256/64 tiling,
+        process peak 17.8 GB instead of 20.5 GB. Overlap 12 already changes the
+        output (SNR 130.8 dB), so 16 is the smallest exact value found.
+        ``ACESTEP_LEAN_VAE_CHUNK``/``_OVERLAP`` override; ``ACESTEP_LEAN_VAE_CHUNK=upstream``
+        restores upstream's tiling.
+        """
+        chunk = os.environ.get("ACESTEP_LEAN_VAE_CHUNK", str(DEFAULT_VAE_CHUNK))
+        if chunk == "upstream":
+            return super()._mlx_decode_single(z_nlc, decode_fn=decode_fn)
+        overlap = int(os.environ.get("ACESTEP_LEAN_VAE_OVERLAP", str(DEFAULT_VAE_OVERLAP)))
+        return decode_tiled(z_nlc, decode_fn or self._resolve_mlx_decode_fn(), int(chunk), overlap)
 
     def _resolve_mlx_decode_fn(self):
         """With ``ACESTEP_LEAN_MEMLOG=1``, wrap the decode callable to log MLX peak memory per tile."""

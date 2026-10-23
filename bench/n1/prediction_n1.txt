@@ -49,3 +49,15 @@ N1e RESULT: X1 OK: 256-frame tile peaks at 8334-8345 MB MLX (active 3681 + ~4.65
 only 0.75 GB lower and slower (9.83 s vs 8.76 s, both under swap). Kept compiled.
 Final default lean path (instrumentation off): md5 4e731ce4be09621d98420f3be6e4d814, init_dit 14.2 s, peak 20.49 GB.
 Peak is set by generation, not init: torch on MPS 5.9 GB + MLX up to 8.3 GB during VAE tiles + process.
+
+N1f PREDICTION, written 2026-10-23 16:22 BEFORE the runs. Own tiler (engine/acestep_mlx/vae_tiling.py), lean engine,
+replay fixed.json, ACESTEP_LEAN_MEMLOG=1, MLX VAE fp32 compiled. Fit from N1e: tile peak = 3681 + 1760 + 11.3 * frames (MB).
+Weight norm hypothesis was wrong: vae_convert.py already fuses weight_g/weight_v.
+T0 t256_64 (upstream sizes via our tiler): md5 4e731ce4... ; tile peak ~8340 MB. Validates the tiler.
+T1 t128_32: md5 identical (receptive field estimated ~ +-10 latent frames < 32); tile peak 6500-7300 MB; process peak 18.5-19.5 GB.
+T2 t64_16: md5 identical (moderate confidence); tile peak 5800-6600 MB; process peak 17.5-19 GB; decode 9-15 s.
+T3 t48_12: 50% confidence md5 differs (if receptive field > 12); if it differs, SNR > 60 dB. Tile peak ~5600-6400 MB.
+
+N1f RESULT: T0 OK (md5 identical, tile 8345 MB). T1 md5 identical, tile 6670 MB OK, process peak 19.93 GB (above 18.5-19.5).
+T2 OK: md5 identical, tile 5931 MB, process peak 17.84 GB, decode 6.82 s (faster than predicted 9-15 s).
+T3: md5 differs, SNR 130.78 dB (receptive field between 12 and 16 latent frames). Default set to 64/16.
