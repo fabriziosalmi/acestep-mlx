@@ -12,8 +12,12 @@ public struct EngineConfig: Sendable, Equatable {
     public var project: URL
     public var songsDir: URL
     public var logFile: URL
+    /// Engine preset: "mini" or "laptop" (engine/acestep_mlx/recipe.py).
+    public var preset: String
 
-    public init(python: URL, engineDir: URL, project: URL, songsDir: URL, logFile: URL) {
+    public init(python: URL, engineDir: URL, project: URL, songsDir: URL, logFile: URL,
+                preset: String = "mini") {
+        self.preset = preset
         self.python = python
         self.engineDir = engineDir
         self.project = project
@@ -21,10 +25,12 @@ public struct EngineConfig: Sendable, Equatable {
         self.logFile = logFile
     }
 
-    /// Defaults under `home`, overridden by the environment.
+    /// Defaults under `home`, overridden by the environment. The preset is "laptop" on a
+    /// machine with an internal battery and "mini" otherwise, unless ACESTEP_PRESET is set.
     public static func resolve(
         environment: [String: String] = ProcessInfo.processInfo.environment,
-        home: URL = FileManager.default.homeDirectoryForCurrentUser
+        home: URL = FileManager.default.homeDirectoryForCurrentUser,
+        hasBattery: Bool = PowerSource.hasInternalBattery()
     ) -> EngineConfig {
         func path(_ key: String, _ fallback: String) -> URL {
             URL(fileURLWithPath: environment[key] ?? home.appendingPathComponent(fallback).path)
@@ -35,7 +41,8 @@ public struct EngineConfig: Sendable, Equatable {
             engineDir: path("ACESTEP_ENGINE", "acestep-mlx/engine"),
             project: project,
             songsDir: home.appendingPathComponent("Music/ACE-Step"),
-            logFile: home.appendingPathComponent("Library/Logs/ACE-Step/engine.log")
+            logFile: home.appendingPathComponent("Library/Logs/ACE-Step/engine.log"),
+            preset: environment["ACESTEP_PRESET"] ?? (hasBattery ? "laptop" : "mini")
         )
     }
 
@@ -51,7 +58,8 @@ public struct EngineConfig: Sendable, Equatable {
 
     /// Command line of the engine process.
     public var arguments: [String] {
-        ["-m", "acestep_mlx.engine_service", "--project", project.path, "--out", songsDir.path]
+        ["-m", "acestep_mlx.engine_service", "--project", project.path, "--out", songsDir.path,
+         "--preset", preset]
     }
 
     /// Environment of the engine process: the inherited one plus the engine on PYTHONPATH.

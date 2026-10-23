@@ -20,15 +20,25 @@ public struct Song: Codable, Sendable, Equatable, Identifiable {
     /// ISO 8601 creation time.
     public var created: String
     public var renderSeconds: Double?
+    public var instrumental: Bool?
+    /// Folder name of the song this one is another version of.
+    public var parent: String?
+    public var preset: String?
     /// Absolute folder of the song; sent by the engine, filled in by `SongStore` from disk.
     public var dir: String?
 
     enum CodingKeys: String, CodingKey {
         case prompt, caption, lyrics, bpm, keyscale, language, duration, seed, audio, created, dir
+        case instrumental, parent, preset
         case renderSeconds = "render_s"
     }
 
     public var id: String { dir ?? created + audio }
+
+    /// The song's folder name, which the engine accepts as `like`.
+    public var name: String? {
+        dir.map { URL(fileURLWithPath: $0).lastPathComponent }
+    }
 
     public var audioURL: URL? {
         dir.map { URL(fileURLWithPath: $0).appendingPathComponent(audio) }
@@ -79,15 +89,37 @@ public enum EngineEvent: Sendable, Equatable {
     }
 }
 
+/// Per-request options (engine/acestep_mlx/recipe.py); nil fields are not sent,
+/// so the engine's defaults apply.
+public struct GenerateOptions: Encodable, Sendable, Equatable {
+    public var literal: Bool?
+    public var vocals: Bool?
+    public var duration: Double?
+    public var format: String?
+    /// Folder name of a song to make another version of.
+    public var like: String?
+
+    public init(literal: Bool? = nil, vocals: Bool? = nil, duration: Double? = nil,
+                format: String? = nil, like: String? = nil) {
+        self.literal = literal
+        self.vocals = vocals
+        self.duration = duration
+        self.format = format
+        self.like = like
+    }
+}
+
 /// The request that asks the engine for one song.
 public struct GenerateRequest: Encodable, Sendable, Equatable {
     public let id: String
     public let cmd = "generate"
     public let prompt: String
+    public let options: GenerateOptions
 
-    public init(id: String, prompt: String) {
+    public init(id: String, prompt: String, options: GenerateOptions = GenerateOptions()) {
         self.id = id
         self.prompt = prompt
+        self.options = options
     }
 
     /// The request as one protocol line, newline included.

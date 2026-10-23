@@ -15,10 +15,23 @@ final class FakeTransport: EngineTransport, @unchecked Sendable {
         (stream, continuation) = AsyncStream.makeStream(of: EngineOutput.self)
     }
 
+    /// Sent requests flattened to strings: top-level fields plus "options.<key>".
     var sent: [[String: String]] {
         lock.lock()
         defer { lock.unlock() }
-        return _sent.compactMap { try? JSONSerialization.jsonObject(with: $0.dropLast()) as? [String: String] }
+        return _sent.compactMap { line in
+            guard let object = try? JSONSerialization.jsonObject(with: line.dropLast()) as? [String: Any]
+            else { return nil }
+            var flat: [String: String] = [:]
+            for (key, value) in object {
+                if let options = value as? [String: Any] {
+                    for (name, option) in options { flat["options.\(name)"] = "\(option)" }
+                } else {
+                    flat[key] = "\(value)"
+                }
+            }
+            return flat
+        }
     }
 
     func start() throws -> AsyncStream<EngineOutput> { stream }
@@ -73,6 +86,19 @@ func readyModel(_ transport: FakeTransport) -> AppModel {
         #expect(transport.sent == [["id": "req-1", "cmd": "generate", "prompt": "folk ballad"]])
         #expect(model.state == .working(.lyrics, since: t0))
         #expect(!model.canMake)
+    }
+
+    @Test func anotherLikeThisSendsTheSongFolder() {
+        let transport = FakeTransport()
+        let model = readyModel(transport)
+        let base = Song(prompt: "dark techno", caption: "", lyrics: "", audio: "a.flac", created: "c",
+                        dir: "/Users/x/Music/ACE-Step/20261023-194021-11111111")
+        model.makeAnother(like: base)
+        #expect(transport.sent == [["id": "req-1", "cmd": "generate", "prompt": "dark techno",
+                                    "options.like": "20261023-194021-11111111"]])
+        #expect(model.state == .working(.lyrics, since: t0))
+        model.makeAnother(like: base)
+        #expect(transport.sent.count == 1)
     }
 
     @Test func blankPromptCannotBeMade() {

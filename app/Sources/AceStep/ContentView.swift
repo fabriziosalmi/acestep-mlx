@@ -58,9 +58,10 @@ struct ContentView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else {
             List(model.songs) { song in
-                SongRow(song: song, playing: player.playingID == song.id) {
-                    player.toggle(song)
-                }
+                SongRow(song: song, playing: player.playingID == song.id,
+                        canMakeAnother: model.state == .ready,
+                        toggle: { player.toggle(song) },
+                        makeAnother: { model.makeAnother(like: song) })
             }
             .listStyle(.inset)
         }
@@ -118,11 +119,13 @@ struct StatusLine: View {
     }
 }
 
-/// A made song: play button, prompt, musical facts; lyrics on demand.
+/// A made song: play button, prompt, musical facts, another version; lyrics on demand.
 struct SongRow: View {
     let song: Song
     let playing: Bool
+    let canMakeAnother: Bool
     let toggle: () -> Void
+    let makeAnother: () -> Void
     @State private var expanded = false
 
     var body: some View {
@@ -139,6 +142,12 @@ struct SongRow: View {
                     Text(facts).font(.caption).foregroundStyle(.secondary)
                 }
                 Spacer()
+                Button(action: makeAnother) {
+                    Image(systemName: "arrow.triangle.2.circlepath")
+                }
+                .buttonStyle(.plain)
+                .disabled(!canMakeAnother)
+                .help("Another like this")
                 Button { expanded.toggle() } label: {
                     Image(systemName: expanded ? "chevron.up" : "text.quote")
                 }
@@ -166,7 +175,11 @@ struct SongRow: View {
         var parts: [String] = []
         if let bpm = song.bpm { parts.append("\(bpm) BPM") }
         if let key = song.keyscale, !key.isEmpty { parts.append(key) }
-        if let lang = song.language, !lang.isEmpty { parts.append(lang) }
+        if song.instrumental == true {
+            parts.append("instrumental")
+        } else if let lang = song.language, !lang.isEmpty, lang != "unknown" {
+            parts.append(lang)
+        }
         if let seconds = song.duration { parts.append(String(format: "%d:%02d", Int(seconds) / 60, Int(seconds) % 60)) }
         return parts.joined(separator: " · ")
     }

@@ -65,10 +65,18 @@ public final class AppModel {
 
     /// Asks the engine for a song from the current prompt.
     public func make() {
-        guard canMake, let transport else { return }
-        let request = GenerateRequest(
-            id: makeID(), prompt: prompt.trimmingCharacters(in: .whitespacesAndNewlines)
-        )
+        guard canMake else { return }
+        send(GenerateRequest(id: makeID(), prompt: prompt.trimmingCharacters(in: .whitespacesAndNewlines)))
+    }
+
+    /// Asks for another version of `song`: same text and metadata, new seed.
+    public func makeAnother(like song: Song) {
+        guard state == .ready, let name = song.name else { return }
+        send(GenerateRequest(id: makeID(), prompt: song.prompt, options: GenerateOptions(like: name)))
+    }
+
+    private func send(_ request: GenerateRequest) {
+        guard let transport else { return }
         do {
             try transport.send(try request.line())
         } catch {

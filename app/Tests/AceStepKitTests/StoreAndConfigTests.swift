@@ -41,19 +41,24 @@ func temporaryDirectory() throws -> URL {
 @Suite struct EngineConfigTests {
     @Test func defaultsFollowHomeAndEnvironmentOverrides() {
         let home = URL(fileURLWithPath: "/Users/someone")
-        let plain = EngineConfig.resolve(environment: [:], home: home)
+        let plain = EngineConfig.resolve(environment: [:], home: home, hasBattery: false)
+        #expect(plain.preset == "mini")
+        #expect(EngineConfig.resolve(environment: [:], home: home, hasBattery: true).preset == "laptop")
+        #expect(EngineConfig.resolve(environment: ["ACESTEP_PRESET": "mini"], home: home,
+                                     hasBattery: true).preset == "mini")
         #expect(plain.python.path == "/Users/someone/acestep-f0/ACE-Step-1.5/.venv/bin/python")
         #expect(plain.songsDir.path == "/Users/someone/Music/ACE-Step")
-        let custom = EngineConfig.resolve(environment: ["ACESTEP_PROJECT": "/opt/ace"], home: home)
+        let custom = EngineConfig.resolve(environment: ["ACESTEP_PROJECT": "/opt/ace"], home: home,
+                                          hasBattery: false)
         #expect(custom.project.path == "/opt/ace")
         #expect(custom.arguments == ["-m", "acestep_mlx.engine_service", "--project", "/opt/ace",
-                                     "--out", "/Users/someone/Music/ACE-Step"])
+                                     "--out", "/Users/someone/Music/ACE-Step", "--preset", "mini"])
         #expect(custom.environment(base: ["HOME": "/h"])["PYTHONPATH"] == "/Users/someone/acestep-mlx/engine")
     }
 
     @Test func reportsMissingPaths() throws {
         let root = try temporaryDirectory()
-        let config = EngineConfig.resolve(environment: [:], home: root)
+        let config = EngineConfig.resolve(environment: [:], home: root, hasBattery: false)
         #expect(config.missingPaths().count == 3)
         let ckpt = root.appendingPathComponent("acestep-f0/ACE-Step-1.5/checkpoints")
         try FileManager.default.createDirectory(at: ckpt, withIntermediateDirectories: true)

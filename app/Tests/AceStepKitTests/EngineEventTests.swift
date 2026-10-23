@@ -46,8 +46,20 @@ let doneLine = """
     @Test func requestIsOneJSONLine() throws {
         let line = try GenerateRequest(id: "r1", prompt: "ballata però").line()
         #expect(line.last == 0x0A)
-        let object = try JSONSerialization.jsonObject(with: line.dropLast()) as? [String: String]
-        #expect(object == ["id": "r1", "cmd": "generate", "prompt": "ballata però"])
+        let object = try #require(try JSONSerialization.jsonObject(with: line.dropLast()) as? [String: Any])
+        #expect(object["id"] as? String == "r1")
+        #expect(object["cmd"] as? String == "generate")
+        #expect(object["prompt"] as? String == "ballata però")
+        #expect((object["options"] as? [String: Any])?.isEmpty == true)
+    }
+
+    @Test func onlySetOptionsAreSent() throws {
+        let line = try GenerateRequest(id: "r1", prompt: "x",
+                                       options: GenerateOptions(duration: 60, like: "20261023-194021-11111111")).line()
+        let object = try #require(try JSONSerialization.jsonObject(with: line.dropLast()) as? [String: Any])
+        let options = try #require(object["options"] as? [String: Any])
+        #expect(Set(options.keys) == ["duration", "like"])
+        #expect(options["duration"] as? Double == 60)
     }
 }
 
