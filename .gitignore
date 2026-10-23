@@ -7,3 +7,7 @@ __pycache__/
 *.mp3
 checkpoints/
 .env
+.build/
+.swiftpm/
+build/
+*.app/
