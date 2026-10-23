@@ -1,0 +1,30 @@
+N1 PREDICTION, written 2026-10-23 15:50 BEFORE the runs. mini1, upstream ca1e85f, engine branch feat/n1-lean-init.
+P1 check_weights_equal.py: all decoder params bit-identical to upstream conversion, no extra keys, candidate dtype bfloat16 only. Exit 0.
+P2 replay with F0_ENGINE=lean (no F0_SLIM, no LM, frozen fixed.json, seed 42): output FLAC md5 = 4e731ce4be09621d98420f3be6e4d814 (same as ref1 and a).
+P3 /usr/bin/time peak memory footprint: 9-12 GB (was 20.54 GB for the same replay in a). Transient: bf16 DiT on CPU 4.8 GB + MLX decoder 3.15 GB, before VAE and text encoder load.
+P4 swap growth during the whole run < 500 MB; init_dit phase < 40 s (was 48-74 s with swap).
+P5 after init_dit: MPS current ~5900 MB (rest of DiT fp32 3270 + text encoder fp32 2380 + VAE), MLX active ~3700 MB.
+
+N1 RESULT run 1 (bf16 CPU load): P1 ok (476 params bit-identical). P2 FAILED: md5 d89902794e02f085308c5da3514a2f9a.
+Cause measured (buffers_diff.py): FSQ buffers tokenizer.quantizer.soft_clamp_input_value and
+layers.0.implicit_codebook are built at construction in the load dtype (bf16), max abs diff 0.0067; 201 params equal.
+P3 FAILED: peak 19.80 GB, reached during generate_music (MPS driver 9922 MB vs current 6136 MB, plus MLX peak 8345 MB).
+P4 init_dit 8.5 s ok; swap grew 3.4 -> 9.4 GB during generation, failed.
+
+N1 PREDICTION run 2, written 2026-10-23 15:54 BEFORE the run: load in fp32 on CPU, drop torch decoder on CPU,
+MLX decoder from safetensors, move rest to MPS once (no dtype hop on MPS).
+Q1 md5 = 4e731ce4be09621d98420f3be6e4d814.
+Q2 after init_dit: MPS current 5800-6200 MB and MPS driver within 1000 MB of current.
+Q3 peak memory footprint 14-16.5 GB (driver ~ current, plus MLX generation peak ~8.3 GB); init_dit 10-30 s.
+
+N1 RESULT run 2 (fp32 CPU load): Q1 OK md5 4e731ce4be09621d98420f3be6e4d814 (bit-identical to ref1). init_dit 11.0 s.
+Q2 misread: torch.mps.driver_allocated_memory counts all Metal memory of the process, MLX included
+(5876 torch + 3681 MLX = 9557 vs driver 10612). Real torch cache ~1 GB.
+Q3 FAILED: peak 20.28 GB. Timeline run n1b (1 s footprint sampler): init ~9.5 GB during fp32 CPU load, 12 GB after init,
+13 GB during MLX diffusion (7.5 s), 15-18 GB during MLX VAE decode fp32 (7.2 s, chunk 512 because
+get_gpu_memory_gb reports > 16 GB). Swap 1.1 -> 7.6 GB during decode.
+
+N1c PREDICTION, written 2026-10-23 15:57 BEFORE the runs. lean engine, replay fixed.json, vs ref1:
+V1 vc256 (ACESTEP_MLX_VAE_CHUNK=256, fp32): peak 14-16.5 GB; not bit-identical, SNR > 40 dB (tile boundaries move).
+V2 vc192 (chunk 192, fp32): peak 13.5-16 GB; SNR > 40 dB.
+V3 vf16 (ACESTEP_MLX_VAE_FP16=1, chunk 512): peak 14.5-16.5 GB; SNR ~58 dB as in bv.
