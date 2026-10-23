@@ -19,9 +19,9 @@ class FakeEngine:
         """Start with no recorded calls."""
         self.calls = []
 
-    def generate(self, request_id, prompt, report_phase):
+    def generate(self, request_id, prompt, options, report_phase):
         """Return a minimal song record, or raise for "boom"."""
-        self.calls.append((request_id, prompt))
+        self.calls.append((request_id, prompt, options))
         if prompt == "boom":
             raise RuntimeError("synthetic failure")
         for phase in ("lyrics", "composing", "composing", "rendering", "composing"):
@@ -52,7 +52,8 @@ class ParseRequestTests(unittest.TestCase):
     def test_invalid_requests_raise(self):
         """Bad JSON, non-objects, unknown commands, missing id or blank prompt."""
         for line in ("{", "[]", '{"cmd": "dance"}', '{"cmd": "generate", "prompt": "x"}',
-                     '{"cmd": "generate", "id": "a", "prompt": "   "}'):
+                     '{"cmd": "generate", "id": "a", "prompt": "   "}',
+                     '{"cmd": "generate", "id": "a", "prompt": "x", "options": [1]}'):
             with self.assertRaises(ProtocolError, msg=line):
                 parse_request(line)
 
@@ -79,6 +80,14 @@ class ServeTests(unittest.TestCase):
         self.assertIsNone(errors[1]["id"])
         self.assertEqual(events[-1]["event"], "done")
         self.assertEqual([c[0] for c in engine.calls], ["r1", "r2"])
+
+    def test_options_reach_the_engine(self):
+        """Options pass through untouched; a missing object arrives as {}."""
+        line = json.dumps(
+            {"id": "r1", "cmd": "generate", "prompt": "a", "options": {"duration": 60}}
+        )
+        _, engine = run([line + "\n", gen("r2", "b")])
+        self.assertEqual([c[2] for c in engine.calls], [{"duration": 60}, {}])
 
     def test_shutdown_stops_before_later_requests(self):
         """Requests after shutdown are not served."""

@@ -1,13 +1,14 @@
 """JSON-lines protocol between the macOS app and the engine process.
 
 One JSON object per line in each direction. Requests (stdin):
-    {"id": "<uuid>", "cmd": "generate", "prompt": "<description>"}
+    {"id": "<uuid>", "cmd": "generate", "prompt": "<description>", "options": {...}}
     {"cmd": "shutdown"}
 Events (stdout):
     {"event": "ready", "protocol": 1, "load_s": 31.2}
     {"event": "phase", "id": ..., "phase": "lyrics" | "composing" | "rendering"}
     {"event": "done", "id": ..., "song": {...}}            # see engine_service.Song
     {"event": "error", "id": ... | null, "message": "..."}
+``options`` is optional; its keys are validated by ``recipe.parse_options``.
 The engine handles one request at a time; the app does not send a new one before
 ``done`` or ``error``.
 """
@@ -46,6 +47,8 @@ def parse_request(line: str) -> Dict[str, Any]:
     prompt = req.get("prompt")
     if not isinstance(prompt, str) or not prompt.strip():
         raise ProtocolError("generate needs a non-empty prompt")
+    if not isinstance(req.get("options", {}), dict):
+        raise ProtocolError("options must be an object")
     return req
 
 
@@ -81,8 +84,8 @@ class Emitter:
 def serve(engine, lines, emitter: Emitter, load_s: Optional[float] = None) -> None:
     """Announce readiness, then answer requests from ``lines`` until shutdown or EOF.
 
-    ``engine.generate(request_id, prompt, report_phase)`` returns a JSON-serializable
-    song dict.
+    ``engine.generate(request_id, prompt, options, report_phase)`` returns a
+    JSON-serializable song dict.
     A failing request produces an ``error`` event and the loop keeps serving.
     """
     emitter.emit("ready", protocol=PROTOCOL_VERSION, load_s=load_s)
@@ -98,7 +101,8 @@ def serve(engine, lines, emitter: Emitter, load_s: Optional[float] = None) -> No
             return
         try:
             song = engine.generate(
-                req["id"], req["prompt"].strip(), emitter.phase_reporter(req["id"])
+                req["id"], req["prompt"].strip(), req.get("options") or {},
+                emitter.phase_reporter(req["id"]),
             )
         except Exception as exc:  # noqa: BLE001 - reported to the app, loop continues
             emitter.emit("error", id=req["id"], message=f"{type(exc).__name__}: {exc}")
