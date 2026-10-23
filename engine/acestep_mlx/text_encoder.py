@@ -14,6 +14,8 @@ import numpy as np
 import torch
 from loguru import logger
 
+from acestep_mlx.diffs import diff_report
+
 
 class MLXTextEncoder:
     """Qwen3 hidden states and token embeddings computed with mlx-lm's Qwen3Model."""
@@ -54,15 +56,6 @@ class MLXTextEncoder:
         tokens = mx.array(ids)
         h = self.model(tokens, input_embeddings=self.model.embed_tokens(tokens).astype(mx.float32))
         return np.array(h)
-
-
-def _diff_report(name: str, ours: torch.Tensor, ref: torch.Tensor) -> None:
-    """Log max/mean absolute difference and the worst per-token cosine similarity."""
-    a, b = ours.float().flatten(0, -2), ref.float().flatten(0, -2)
-    cos = torch.nn.functional.cosine_similarity(a, b, dim=-1).min().item()
-    logger.info(f"[lean] TE compare {name}: max abs {(a - b).abs().max().item():.3e}, "
-                f"mean abs {(a - b).abs().mean().item():.3e}, min token cosine {cos:.8f}, "
-                f"bit-identical {torch.equal(a, b)}")
 
 
 class MLXTextEncoderMixin:
@@ -107,7 +100,7 @@ class MLXTextEncoderMixin:
         if self._te_mode == "compare":
             with torch.inference_mode():
                 ref = self._torch_text_encoder(input_ids=text_token_idss).last_hidden_state
-            _diff_report("hidden_states", out, ref)
+            diff_report("TE", "hidden_states", out, ref)
         return out
 
     def infer_lyric_embeddings(self, lyric_token_ids):
@@ -118,5 +111,5 @@ class MLXTextEncoderMixin:
         if self._te_mode == "compare":
             with torch.inference_mode():
                 ref = self._torch_text_encoder.embed_tokens(lyric_token_ids)
-            _diff_report("lyric_embeddings", out, ref)
+            diff_report("TE", "lyric_embeddings", out, ref)
         return out
