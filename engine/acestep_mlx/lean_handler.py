@@ -18,6 +18,7 @@ from acestep.handler import AceStepHandler
 
 from acestep_mlx.dit_weights import load_mlx_decoder
 from acestep_mlx.memlog import MemLogMixin
+from acestep_mlx.text_encoder import MLXTextEncoderMixin
 from acestep_mlx.vae_tiling import decode_tiled
 
 DEFAULT_VAE_CHUNK = 64
@@ -42,7 +43,7 @@ def drop_module_parameters(module: torch.nn.Module) -> int:
     return released
 
 
-class LeanAceStepHandler(MemLogMixin, AceStepHandler):
+class LeanAceStepHandler(MLXTextEncoderMixin, MemLogMixin, AceStepHandler):
     """``AceStepHandler`` whose MPS init keeps a single, MLX-only DiT decoder."""
 
     def initialize_service(self, *args, use_mlx_dit: bool = True, **kwargs):
