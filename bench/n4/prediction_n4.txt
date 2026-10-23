@@ -1,0 +1,35 @@
+N4 PREDICTION, written 2026-10-23 20:27 BEFORE any run. Mac mini M4 16 GB, engine at 596d88b (recipe defaults:
+instrumental unless a voice is named, prompt BPM/key bind the LM, raw float WAV). One process per run, models loaded
+once, one song. Prompt "dark techno, 140 bpm in A minor, rolling bassline" (instrumental) unless noted.
+Baseline from N3: 30 s, LM 0.6B, full flow peak 11.78 GB; inside generate: LM codes ~7 s, DiT 4.7 s, VAE ~6 s.
+
+D1 LM 0.6B, peak footprint (time -l): 30 s 11.5-12.3 GB; 60 s within +0.5 GB of 30 s; 120 s +0.3..+1.0 GB;
+   240 s +0.8..+2.0 GB over 30 s (DiT activations grow with 12.5 tokens/s; VAE tiles keep decode memory flat).
+D2 LM 0.6B, wall time of the song (lyrics -> done): 30 s 18-30 s; 240 s 90-180 s. LM audio-code time grows
+   linearly (5 codes/s of music); DiT grows faster than linearly (full-attention layers); VAE linearly.
+D3 LM 0.6B, vocal prompt at 240 s: create_sample (lyrics) 2-4x the instrumental one; peak within 0.3 GB of D1 240 s.
+L1 LM 1.7B, 30 s: peak +1.8..+2.6 GB over LM 0.6B 30 s (bf16 weights 3.4 vs 1.2 GB); LM phases 1.5-3x slower.
+L2 LM 1.7B, 240 s: peak 13.5-15.5 GB; swap grows by more than 0.5 GB during the run (low confidence).
+Every run: audio file present, duration equal to the request within 0.1 s, bpm 140 and A minor in song.json.
+
+N4 RESULT, 2026-10-23 20:41 (raw logs in bench/results/2026-10-23-mini1-n4/). A leftover app engine (8.6 GB) was
+found running at the first launch; the series was stopped, the app closed, and the series rerun from scratch.
+tag      peak     song   = lyrics + compose + render   swap during run
+s06_030  11.78 GB  21.8 s =  3.5 +  6.5 + 11.9         1161 -> 1123 MB
+s06_060  11.79 GB  34.7 s =  1.9 + 10.7 + 22.1         1107 -> 1127 MB
+s06_120  11.87 GB  66.7 s =  2.8 + 20.5 + 43.5         1119 -> 1044 MB
+s06_240  12.21 GB 130.1 s =  2.5 + 39.1 + 88.4         1044 -> 1057 MB
+v06_240  13.40 GB 141.6 s = 10.1 + 41.9 + 89.6         1049 -> 1114 MB  (vocal prompt, 58 lyric lines)
+s17_030  13.97 GB  41.6 s =  9.9 + 19.4 + 12.3         1098 -> 1848 MB
+s17_240  14.15 GB 202.7 s =  6.5 + 105.5 + 90.8        1254 -> 1075 MB
+D1 30 s OK (11.78); 60 s OK (+0.02); 120 s MISS (+0.09, below +0.3..+1.0); 240 s MISS (+0.43, below +0.8..+2.0).
+   Memory is almost flat in duration: the peak is the render phase (sampler: 11-12 GB there, ~9 GB during the LM,
+   ~7.1 GB idle with the DiT loaded), and MLX's own render peak only grows 9892 -> 10082 MB from 30 to 240 s.
+D2 OK: 21.8 s and 130.1 s. LM codes are linear (0.16 s per second of music). MISS on the shape: render is linear
+   too (0.37 s per second of music), not faster than linear; DiT and VAE are not separated in this measure.
+D3 lyrics 4.0x the instrumental one: OK at the edge. Peak +1.19 GB over s06_240: MISS (predicted within 0.3 GB).
+   MLX render peak is identical (10082 MB), so the extra is outside MLX and not attributed.
+L1 OK: +2.19 GB; lyrics 2.8x, codes 3.0x slower (edge of 1.5-3x). Swap grew 0.75 GB at 30 s.
+L2 peak 14.15 GB OK; swap did not grow (1254 -> 1075 MB): MISS on the swap prediction.
+All 7 runs: audio length equal to the request, FLOAT WAV, bpm 140 and A minor as forced by the prompt.
+Model load is 25-34 s per process (1.7B loaded faster than 0.6B here, 25.4 vs 29.7-33.8 s; not investigated).
