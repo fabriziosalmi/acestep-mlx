@@ -5,7 +5,8 @@ so the decoder exists twice and init peaks above 20 GB on a 16 GB Mac. Here the
 torch model is loaded on CPU in the dtype upstream would use, its decoder parameters
 are dropped, the MLX decoder is read from the checkpoint, and only the rest of the
 torch model goes to MPS. LoRA is not supported on this path: upstream applies
-adapters to the torch decoder.
+adapters to the torch decoder. The condition encoder, audio tokenizer and detokenizer
+are replaced by MLX bridges before the move (``condition.py``).
 """
 
 import gc
@@ -16,6 +17,7 @@ from loguru import logger
 
 from acestep.handler import AceStepHandler
 
+from acestep_mlx.condition import MLXConditionMixin
 from acestep_mlx.dit_weights import load_mlx_decoder
 from acestep_mlx.memlog import MemLogMixin
 from acestep_mlx.text_encoder import MLXTextEncoderMixin
@@ -43,7 +45,7 @@ def drop_module_parameters(module: torch.nn.Module) -> int:
     return released
 
 
-class LeanAceStepHandler(MLXTextEncoderMixin, MemLogMixin, AceStepHandler):
+class LeanAceStepHandler(MLXConditionMixin, MLXTextEncoderMixin, MemLogMixin, AceStepHandler):
     """``AceStepHandler`` whose MPS init keeps a single, MLX-only DiT decoder."""
 
     def initialize_service(self, *args, use_mlx_dit: bool = True, **kwargs):
@@ -90,9 +92,9 @@ class LeanAceStepHandler(MLXTextEncoderMixin, MemLogMixin, AceStepHandler):
 
         released = drop_module_parameters(self.model.decoder)
         gc.collect()
-        self.mlx_decoder = load_mlx_decoder(
-            os.path.join(model_checkpoint_path, "model.safetensors"), self.config
-        )
+        checkpoint_file = os.path.join(model_checkpoint_path, "model.safetensors")
+        self.mlx_decoder = load_mlx_decoder(checkpoint_file, self.config)
+        self._install_mlx_condition(checkpoint_file)
         self.use_mlx_dit = True
         # Already in self.dtype on CPU: a single copy lands on MPS, no intermediate.
         self.model = self.model.to(device)

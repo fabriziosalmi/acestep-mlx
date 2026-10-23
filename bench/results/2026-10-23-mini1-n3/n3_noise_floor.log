@@ -1,0 +1,8 @@
+encoder shape (1, 444, 2048)
+  mlx vs mps: max abs 5.037e-06  mean abs 5.240e-08  min cos 1.00000000  identical False
+  cpu vs mps: max abs 7.063e-06  mean abs 4.351e-08  min cos 1.00000000  identical False
+  mlx vs cpu: max abs 5.335e-06  mean abs 5.127e-08  min cos 1.00000000  identical False
+detokenizer shape (1, 750, 64)
+  mlx vs mps: max abs 1.287e-05  mean abs 5.979e-07  min cos 1.00000000  identical False
+  cpu vs mps: max abs 2.861e-06  mean abs 2.604e-07  min cos 1.00000000  identical False
+  mlx vs cpu: max abs 1.240e-05  mean abs 6.029e-07  min cos 1.00000000  identical False

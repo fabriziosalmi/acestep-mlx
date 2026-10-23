@@ -1,0 +1,41 @@
+N3 PREDICTION, written 2026-10-23 19:05 BEFORE any code or run. mini1, lean defaults (N2 state: MLX text encoder,
+tiles 64/16, cache 64 MB, torch VAE dropped), replay fixed.json (LM codes included), seed 42.
+Scope: condition encoder (text projector, lyric encoder 8 layers, timbre encoder 4 layers), audio tokenizer (attention pooler
+2 layers + residual FSQ), detokenizer (2 layers) move to MLX: bf16 weights read from the checkpoint, fp32 activations.
+The torch modules are replaced by weightless facades, so upstream orchestration (prepare_condition, code decoding) is unchanged.
+
+U1 unit tests (tiny random config, torch upstream modules as oracle, both fp32 weights): every MLX module matches torch
+   within max abs 1e-5; FSQ codebook codes (before project_out) bit-identical; tokenizer indices identical.
+C1 compare mode on the real replay, MLX vs torch MPS fp32:
+   FSQ codes before project_out bit-identical; quantized after project_out max abs < 1e-5.
+   detokenizer, encoder_hidden_states: min per-token cosine > 0.99999; not bit-identical.
+   encoder_attention_mask and pack order identical (integer logic).
+C2 noise floor: torch CPU fp32 vs torch MPS fp32 on the same inputs differs by the same order as MLX vs MPS
+   (within 10x). Low confidence.
+M1 mlx default: audio md5 differs from N2 (834d8f80...); SNR vs N2 > 60 dB and vs ref1 > 60 dB.
+   torch MPS current 3127 -> < 100 MB; MLX active 4817 -> 6400-6600 MB (+1.64 GB bf16 weights);
+   replay process peak 13.22 -> 11.6-12.3 GB; generate time within +-15% of 12.1 s.
+M2 compare and mlx runs produce the same md5 (both return MLX outputs).
+F1 full app flow: peak 14.20 -> 12.6-13.4 GB; wall time 55-70 s.
+
+N3 RESULT, 2026-10-23 19:35 (raw logs in bench/results/2026-10-23-mini1-n3/):
+U1 OK: 7 oracle tests pass; max abs 7.2e-06 (detokenizer), relative <= 1.1e-06; all 64000 codebook codes
+   bit-identical; tokenizer indices identical. 15 break-test mutations each fail at least one test.
+C1 OK, better than predicted on FSQ: codes bit-identical AND quantized after project_out bit-identical (max abs 0).
+   detokenizer max abs 1.287e-05, mean 5.979e-07, min cosine 0.99999982 (fp32 cosine); encoder_hidden_states
+   max abs 5.037e-06, mean 5.240e-08, min cosine 0.99999982; mask equal 444/444. Tokenizer never called on this
+   path (LM hints precomputed), so its real-data check is the unit oracle only.
+C2 OK: encoder MLX-vs-MPS max abs 5.0e-06 vs CPU-vs-MPS 7.1e-06 (MLX closer to MPS than torch CPU is);
+   detokenizer 1.29e-05 vs 2.86e-06 (4.5x, inside the 10x bound).
+M1 audio md5 540bd467f8b9f43de58aefc4aacadae5, SNR 77.69 dB vs ref1, 81.95 dB vs N2: OK.
+   torch MPS current 3127 -> 4 MB: OK. MLX active 6378 MB: MISS by 22 MB below 6400 (I added 1.64 GB as if
+   GB were 1000 MB; 0.82B bf16 = 1561 MiB, so 4817 + 1561 = 6378 exactly).
+   replay peak 10.48 GB (two runs: 10476215160, 10476755568 bytes): MISS, below 11.6-12.3. Metal driver memory
+   fell by 1545 MB (7976 -> 6431), as the weight accounting says; the process footprint after generation fell by
+   2547 MB (10240 -> 7693): the extra ~1 GB is outside Metal and not attributed.
+   generate 11.56 / 11.50 s vs 12.1 s: OK.
+M2 OK: compare, mlx, mlx2 and the capture run share md5 540bd467...
+F1 full flow peak 11.78 GB: MISS, below 12.6-13.4. Wall 59.58 s (init_dit 8.2, init_lm 20.1, create_sample 9.4,
+   generate 19.4): OK. Swap 1083 -> 1104 MB during the run (N2: +0.9 GB).
+Where the replay peak is now: init (CPU fp32 load of the whole torch DiT, ~9.5 GB sampled) and VAE decode
+   (9.9 GB sampled). Torch weights are no longer used for compute except null_condition_emb (2048 values).
