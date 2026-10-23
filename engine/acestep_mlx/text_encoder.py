@@ -74,9 +74,13 @@ class MLXTextEncoderMixin:
 
         self._te_mode = os.environ.get("ACESTEP_LEAN_TEXT_ENCODER", "mlx")
         if self._te_mode not in ("torch", "mlx", "compare"):
-            raise ValueError(f"ACESTEP_LEAN_TEXT_ENCODER must be torch, mlx or compare, not {self._te_mode}")
+            raise ValueError(
+                f"ACESTEP_LEAN_TEXT_ENCODER must be torch, mlx or compare, not {self._te_mode}"
+            )
         if self._te_mode == "torch":
-            return super()._load_text_encoder_and_tokenizer(checkpoint_dir=checkpoint_dir, device=device)
+            return super()._load_text_encoder_and_tokenizer(
+                checkpoint_dir=checkpoint_dir, device=device
+            )
         path = os.path.join(checkpoint_dir, "Qwen3-Embedding-0.6B")
         if not os.path.exists(path):
             raise FileNotFoundError(f"Text encoder not found at {path}")

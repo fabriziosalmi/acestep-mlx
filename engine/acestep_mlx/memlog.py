@@ -60,9 +60,11 @@ class MemLogMixin:
         if not _enabled():
             return super()._mlx_vae_decode(latents_torch)
         logger.info(f"[lean] before VAE decode: MLX active {_mb(mx.get_active_memory())} MB, "
-                    f"cache {_mb(mx.get_cache_memory())} MB, peak so far {_mb(mx.get_peak_memory())} MB")
+                    f"cache {_mb(mx.get_cache_memory())} MB, "
+                    f"peak so far {_mb(mx.get_peak_memory())} MB")
         mx.reset_peak_memory()
         audio = super()._mlx_vae_decode(latents_torch)
         logger.info(f"[lean] after VAE decode: MLX active {_mb(mx.get_active_memory())} MB, "
-                    f"cache {_mb(mx.get_cache_memory())} MB, peak during decode {_mb(mx.get_peak_memory())} MB")
+                    f"cache {_mb(mx.get_cache_memory())} MB, "
+                    f"peak during decode {_mb(mx.get_peak_memory())} MB")
         return audio

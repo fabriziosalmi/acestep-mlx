@@ -57,7 +57,9 @@ class LeanAceStepHandler(MLXTextEncoderMixin, MemLogMixin, AceStepHandler):
         # MLX keeps freed buffers for reuse and the process footprint counts them.
         # Measured on the Mac mini: 64 MB gives the lowest peak (14.09-14.14 GB over
         # three runs vs 17.80 GB unlimited) and the fastest generation; 0 MB is slower.
-        limit_mb = os.environ.get("ACESTEP_LEAN_MLX_CACHE_LIMIT_MB", str(DEFAULT_MLX_CACHE_LIMIT_MB))
+        limit_mb = os.environ.get(
+            "ACESTEP_LEAN_MLX_CACHE_LIMIT_MB", str(DEFAULT_MLX_CACHE_LIMIT_MB)
+        )
         if limit_mb != "unlimited":
             import mlx.core as mx
 
