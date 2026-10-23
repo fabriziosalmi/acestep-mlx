@@ -1,0 +1,11 @@
+F1b PREDICTION, written 2026-10-23 15:18 BEFORE the runs. mini1. Inputs frozen in fixed.json (LM skipped in replays), seed 42, 30 s.
+Runs: gen (F1 config, saves fixed.json, includes LM), ref1/ref2 (replay, torch decoder emptied, MLX decoder fp32, rest fp32),
+a (replay, + MLX decoder bf16 = F1), b (replay, + torch model/text encoder bf16 + CPU round-trip compaction + ACESTEP_MLX_VAE_FP16=1),
+c (replay, a + compaction only, fp32 torch) to isolate the allocator effect.
+R1 ref1 vs ref2: bit-identical or SNR > 60 dB (noise floor of the pipeline).
+R2 a vs ref1: SNR 10-35 dB, LSD < 3 dB (low confidence on SNR: diffusion can amplify tiny weight differences).
+R3 b vs ref1: within 5 dB SNR of a, LSD < 3 dB.
+R4 b after slim: MPS current 2600-3200 MB (0.818B torch params + 0.596B text encoder in bf16), MPS driver < current + 1500 MB.
+R5 b after slim: MLX active 3200-3600 MB; process footprint 6-8.5 GB (replay has no LM; app adds ~1.3 GB).
+R6 b swap growth during generate_music < 500 MB.
+R7 c after slim: MPS driver drops to within 1500 MB of MPS current (vs ~4700 MB gap in F1).

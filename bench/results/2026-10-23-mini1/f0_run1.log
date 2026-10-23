@@ -1,0 +1,459 @@
+F0 {"phase": "start", "phase_s": 0.0, "elapsed_s": 0.0, "footprint_mb": 9, "swap_used_mb": 716, "mlx_active_mb": 0, "mlx_peak_mb": 0, "mlx_cache_mb": 0, "mps_driver_mb": 1, "mps_current_mb": 0}
+W1023 14:50:04.369000 25609 .venv/lib/python3.12/site-packages/torch/distributed/elastic/multiprocessing/redirects.py:29] NOTE: Redirects are currently not supported in Windows or MacOs.
+/Users/fab/acestep-f0/ACE-Step-1.5/.venv/lib/python3.12/site-packages/torchao/quantization/quant_api.py:1825: SyntaxWarning: invalid escape sequence '\.'
+  * regex for parameter names, must start with `re:`, e.g. `re:language\.layers\..+\.q_proj.weight`.
+Matplotlib is building the font cache; this may take a moment.
+2026-10-23 14:50:22.397 | WARNING  | acestep.training.trainer:<module>:40 - bitsandbytes not installed. Using standard AdamW.
+F0 {"phase": "imports", "phase_s": 35.97, "elapsed_s": 41.91, "footprint_mb": 464, "swap_used_mb": 708, "mlx_active_mb": 0, "mlx_peak_mb": 0, "mlx_cache_mb": 0, "mps_driver_mb": 1, "mps_current_mb": 0}
+2026-10-23 14:50:22.471 | INFO     | acestep.gpu_config:get_gpu_config:846 - macOS MPS detected (11.8 GB unified memory, tier=tier4). Applying Apple Silicon optimizations: no compile, no quantization, mlx backend, no CPU offload.
+2026-10-23 14:50:22.472 | INFO     | acestep.core.generation.handler.init_service_downloads:_ensure_models_present:32 - [initialize_service] Main model not found, starting auto-download...
+2026-10-23 14:50:22.552 | INFO     | acestep.model_downloader:_smart_download:249 - [Model Download] Auto-detected: HuggingFace Hub
+2026-10-23 14:50:22.552 | INFO     | acestep.model_downloader:_smart_download:252 - [Model Download] Using HuggingFace Hub...
+2026-10-23 14:50:22.552 | INFO     | acestep.model_downloader:_download_from_huggingface_internal:180 - [Model Download] Downloading from HuggingFace: ACE-Step/Ace-Step1.5 -> /Users/fab/acestep-f0/ACE-Step-1.5/checkpoints
+
+============================================================
+Main model not found. Starting automatic download...
+============================================================
+
+Downloading main model from ACE-Step/Ace-Step1.5...
+Destination: /Users/fab/acestep-f0/ACE-Step-1.5/checkpoints
+This may take a while depending on your internet connection...
+Fetching 28 files:   0%|          | 0/28 [00:00<?, ?it/s]Fetching 28 files:   4%|▎         | 1/28 [00:00<00:05,  4.60it/s]Fetching 28 files:  43%|████▎     | 12/28 [00:00<00:00, 44.50it/s]Fetching 28 files:  43%|████▎     | 12/28 [00:20<00:00, 44.50it/s]Fetching 28 files:  57%|█████▋    | 16/28 [08:08<08:00, 40.06s/it]Fetching 28 files: 100%|██████████| 28/28 [08:08<00:00, 17.45s/it]
+2026-10-23 14:58:31.286 | DEBUG    | acestep.model_downloader:_sync_model_code_files:131 - [Model Sync] Synced modeling_acestep_v15_turbo.py -> /Users/fab/acestep-f0/ACE-Step-1.5/checkpoints/acestep-v15-turbo/modeling_acestep_v15_turbo.py
+2026-10-23 14:58:31.287 | DEBUG    | acestep.model_downloader:_sync_model_code_files:131 - [Model Sync] Synced configuration_acestep_v15.py -> /Users/fab/acestep-f0/ACE-Step-1.5/checkpoints/acestep-v15-turbo/configuration_acestep_v15.py
+2026-10-23 14:58:31.287 | INFO     | acestep.model_downloader:download_main_model:489 - [Model Download] Synced code files for acestep-v15-turbo: ['modeling_acestep_v15_turbo.py', 'configuration_acestep_v15.py']
+2026-10-23 14:58:31.287 | INFO     | acestep.core.generation.handler.init_service_downloads:_ensure_models_present:36 - [initialize_service] Successfully downloaded from HuggingFace: ACE-Step/Ace-Step1.5
+2026-10-23 14:58:31.288 | INFO     | acestep.core.generation.handler.init_service_loader:_load_main_model_from_checkpoint:174 - [initialize_service] Attempting to load model with attention implementation: sdpa
+2026-10-23 14:59:24.479 | INFO     | acestep.core.generation.handler.mlx_dit_init:_init_mlx_dit:34 - [MLX-DiT] Native MLX DiT decoder initialized successfully (mx.compile=False).
+2026-10-23 14:59:42.769 | INFO     | acestep.core.generation.handler.mlx_vae_init:_init_mlx_vae:75 - [MLX-VAE] Decode/encode compiled with mx.compile().
+2026-10-23 14:59:42.774 | INFO     | acestep.core.generation.handler.mlx_vae_init:_init_mlx_vae:85 - [MLX-VAE] Native MLX VAE initialized (dtype=mlx.core.float32, compiled=True).
+F0 {"phase": "init_dit", "phase_s": 560.33, "elapsed_s": 602.28, "footprint_mb": 19456, "swap_used_mb": 11842, "mlx_active_mb": 6685, "mlx_peak_mb": 6685, "mlx_cache_mb": 24, "mps_driver_mb": 18737, "mps_current_mb": 11886, "ok": true, "device": "mps", "dtype": "torch.float32", "use_mlx_dit": true, "use_mlx_vae": true, "status": "step-f0/ACE-Step-1.5/checkpoints/vae\nText encoder: /Users/fab/acestep-f0/ACE-Step-1.5/checkpoints/Qwen3-Embedding-0.6B\nDtype: torch.float32\nAttention: sdpa\nCompiled: False\nQuantization: Disabled\nOffload to CPU: False\nOffload DiT to CPU: False\nMLX DiT: Active (native MLX)\nMLX VAE: Active (native MLX)"}
+2026-10-23 14:59:43.710 | INFO     | acestep.llm_inference:initialize:609 - loading 5Hz LM tokenizer... it may take 80~90s
+2026-10-23 14:59:52.774 | INFO     | acestep.llm_inference:initialize:613 - 5Hz LM tokenizer loaded successfully in 9.06 seconds
+2026-10-23 14:59:52.774 | INFO     | acestep.llm_inference:initialize:618 - Initializing constrained decoding processor...
+2026-10-23 14:59:52.774 | INFO     | acestep.llm_inference:initialize:624 - Setting constrained decoding max_duration to 480s based on GPU config (tier: tier4)
+2026-10-23 14:59:53.183 | DEBUG    | acestep.constrained_logits_processor:_precompute_audio_code_tokens:577 - Found 1535 audio code tokens with values outside valid range [0, 63999]
+2026-10-23 14:59:54.863 | INFO     | acestep.llm_inference:initialize:632 - Constrained processor initialized in 2.09 seconds
+2026-10-23 14:59:54.864 | INFO     | acestep.llm_inference:initialize:659 - flash_attn not installed: disabling CUDA graph capture for nano-vllm (SDPA fallback uses .item() calls in paged-cache decode that are incompatible with CUDA graph capture)
+2026-10-23 14:59:54.864 | INFO     | acestep.llm_inference:initialize:671 - Triton not available: disabling CUDA graph capture for nano-vllm (CUDA graphs require torch.compile which depends on Triton)
+2026-10-23 14:59:54.886 | INFO     | acestep.llm_inference:initialize:681 - Attempting MLX backend for Apple Silicon acceleration...
+2026-10-23 14:59:54.886 | INFO     | acestep.llm_inference:_load_mlx_model:2947 - Loading MLX model from /Users/fab/acestep-f0/ACE-Step-1.5/checkpoints/acestep-5Hz-lm-0.6B
+2026-10-23 15:00:05.024 | INFO     | acestep.llm_inference:_load_mlx_model:3003 - MLX model loaded successfully in 10.14s
+F0 {"phase": "init_lm", "phase_s": 21.36, "elapsed_s": 624.51, "footprint_mb": 20480, "swap_used_mb": 14157, "mlx_active_mb": 7950, "mlx_peak_mb": 7950, "mlx_cache_mb": 24, "mps_driver_mb": 20001, "mps_current_mb": 11886, "ok": true, "backend": "mlx", "status": "\u2705 5Hz LM initialized successfully\nModel: /Users/fab/acestep-f0/ACE-Step-1.5/checkpoints/acestep-5Hz-lm-0.6B\nBackend: MLX (Apple Silicon native)\nDevice: Apple Silicon GPU"}
+2026-10-23 15:00:05.101 | INFO     | acestep.llm_inference:create_sample_from_query:2097 - Creating sample from query: a melancholic italian folk ballad with acoustic guitar and a warm male voice... (instrumental=False, vocal_language=None)
+2026-10-23 15:00:05.113 | DEBUG    | acestep.llm_inference:create_sample_from_query:2104 - Formatted prompt for inspiration: <|im_start|>system
+# Instruction
+Expand the user's input into a more detailed and specific musical description:
+
+<|im_end|>
+<|im_start|>user
+a melancholic italian folk ballad with acoustic guitar and a warm male voice
+
+instrumental: false<|im_end|>
+<|im_start|>assistant
+
+2026-10-23 15:00:05.660 | INFO     | acestep.llm_inference:_run_mlx_single_native:3595 - MLX native prefill: 50 tokens in 0.53s (95.0 tok/s)
+MLX Gen (native):   0%|          | 0/3500 [00:00<?, ?tok/s]MLX Gen (native):   0%|          | 1/3500 [00:00<09:29,  6.14tok/s]MLX Gen (native):   0%|          | 8/3500 [00:00<01:44, 33.55tok/s]MLX Gen (native):   0%|          | 15/3500 [00:00<01:17, 44.95tok/s]MLX Gen (native):   1%|          | 22/3500 [00:00<01:07, 51.50tok/s]MLX Gen (native):   1%|          | 29/3500 [00:00<01:04, 54.23tok/s]MLX Gen (native):   1%|          | 36/3500 [00:00<01:00, 57.11tok/s]MLX Gen (native):   1%|          | 43/3500 [00:00<00:58, 58.98tok/s]MLX Gen (native):   1%|▏         | 50/3500 [00:00<00:57, 60.30tok/s]MLX Gen (native):   2%|▏         | 57/3500 [00:01<00:56, 61.11tok/s]MLX Gen (native):   2%|▏         | 64/3500 [00:01<00:55, 61.61tok/s]MLX Gen (native):   2%|▏         | 71/3500 [00:01<00:55, 62.02tok/s]MLX Gen (native):   2%|▏         | 78/3500 [00:01<00:54, 62.22tok/s]MLX Gen (native):   2%|▏         | 85/3500 [00:01<00:54, 62.36tok/s]MLX Gen (native):   3%|▎         | 92/3500 [00:01<00:54, 62.48tok/s]MLX Gen (native):   3%|▎         | 99/3500 [00:01<00:54, 62.31tok/s]MLX Gen (native):   3%|▎         | 106/3500 [00:01<00:54, 62.28tok/s]MLX Gen (native):   3%|▎         | 113/3500 [00:01<00:54, 62.06tok/s]MLX Gen (native):   3%|▎         | 120/3500 [00:02<00:54, 62.09tok/s]MLX Gen (native):   4%|▎         | 127/3500 [00:02<00:54, 62.09tok/s]MLX Gen (native):   4%|▍         | 134/3500 [00:02<00:54, 62.20tok/s]MLX Gen (native):   4%|▍         | 141/3500 [00:02<00:53, 62.32tok/s]MLX Gen (native):   4%|▍         | 148/3500 [00:02<00:53, 62.34tok/s]MLX Gen (native):   4%|▍         | 155/3500 [00:02<01:05, 51.13tok/s]MLX Gen (native):   5%|▍         | 161/3500 [00:02<01:02, 53.07tok/s]MLX Gen (native):   5%|▍         | 167/3500 [00:02<01:01, 54.17tok/s]MLX Gen (native):   5%|▍         | 173/3500 [00:03<01:10, 47.36tok/s]MLX Gen (native):   5%|▌         | 180/3500 [00:03<01:04, 51.52tok/s]MLX Gen (native):   5%|▌         | 187/3500 [00:03<01:00, 54.83tok/s]MLX Gen (native):   6%|▌         | 194/3500 [00:03<00:57, 57.33tok/s]MLX Gen (native):   6%|▌         | 201/3500 [00:03<00:56, 58.86tok/s]MLX Gen (native):   6%|▌         | 208/3500 [00:03<00:55, 59.84tok/s]MLX Gen (native):   6%|▌         | 215/3500 [00:03<00:54, 60.72tok/s]MLX Gen (native):   6%|▋         | 222/3500 [00:03<00:53, 61.21tok/s]MLX Gen (native):   7%|▋         | 229/3500 [00:03<00:52, 61.98tok/s]MLX Gen (native):   7%|▋         | 236/3500 [00:04<00:52, 62.55tok/s]MLX Gen (native):   7%|▋         | 243/3500 [00:04<00:52, 62.15tok/s]MLX Gen (native):   7%|▋         | 250/3500 [00:04<00:51, 62.60tok/s]MLX Gen (native):   7%|▋         | 257/3500 [00:04<00:51, 62.94tok/s]MLX Gen (native):   8%|▊         | 264/3500 [00:04<00:51, 62.96tok/s]MLX Gen (native):   8%|▊         | 271/3500 [00:04<00:51, 63.12tok/s]MLX Gen (native):   8%|▊         | 278/3500 [00:04<00:50, 63.27tok/s]MLX Gen (native):   8%|▊         | 285/3500 [00:04<00:50, 63.41tok/s]MLX Gen (native):   8%|▊         | 292/3500 [00:04<00:50, 63.40tok/s]MLX Gen (native):   9%|▊         | 299/3500 [00:05<00:50, 63.37tok/s]MLX Gen (native):   9%|▊         | 306/3500 [00:05<00:50, 63.26tok/s]MLX Gen (native):   9%|▉         | 313/3500 [00:05<00:50, 63.25tok/s]MLX Gen (native):   9%|▉         | 320/3500 [00:05<00:50, 63.23tok/s]MLX Gen (native):   9%|▉         | 327/3500 [00:05<00:50, 63.22tok/s]MLX Gen (native):  10%|▉         | 334/3500 [00:05<00:49, 63.33tok/s]MLX Gen (native):  10%|▉         | 341/3500 [00:05<00:49, 63.28tok/s]MLX Gen (native):  10%|▉         | 348/3500 [00:05<00:49, 63.22tok/s]MLX Gen (native):  10%|█         | 355/3500 [00:05<00:49, 63.08tok/s]MLX Gen (native):  10%|█         | 362/3500 [00:06<00:49, 63.08tok/s]MLX Gen (native):  11%|█         | 369/3500 [00:06<00:49, 63.00tok/s]MLX Gen (native):  11%|█         | 376/3500 [00:06<00:49, 62.94tok/s]MLX Gen (native):  11%|█         | 383/3500 [00:06<00:49, 62.68tok/s]MLX Gen (native):  11%|█         | 390/3500 [00:06<00:49, 62.71tok/s]MLX Gen (native):  11%|█▏        | 397/3500 [00:06<00:49, 62.74tok/s]MLX Gen (native):  12%|█▏        | 404/3500 [00:06<00:49, 62.77tok/s]MLX Gen (native):  12%|█▏        | 411/3500 [00:06<00:49, 62.81tok/s]MLX Gen (native):  12%|█▏        | 418/3500 [00:06<00:49, 62.87tok/s]MLX Gen (native):  12%|█▏        | 425/3500 [00:07<00:49, 62.55tok/s]MLX Gen (native):  12%|█▏        | 432/3500 [00:07<00:49, 62.51tok/s]MLX Gen (native):  13%|█▎        | 439/3500 [00:07<00:48, 62.64tok/s]MLX Gen (native):  13%|█▎        | 446/3500 [00:07<00:48, 62.64tok/s]MLX Gen (native):  13%|█▎        | 453/3500 [00:07<00:48, 62.58tok/s]MLX Gen (native):  13%|█▎        | 460/3500 [00:07<00:48, 62.61tok/s]MLX Gen (native):  13%|█▎        | 467/3500 [00:07<00:48, 62.05tok/s]MLX Gen (native):  14%|█▎        | 474/3500 [00:07<00:48, 62.19tok/s]MLX Gen (native):  14%|█▎        | 481/3500 [00:07<00:48, 62.14tok/s]MLX Gen (native):  14%|█▍        | 488/3500 [00:08<00:48, 62.40tok/s]MLX Gen (native):  14%|█▍        | 495/3500 [00:08<00:48, 62.43tok/s]MLX Gen (native):  14%|█▍        | 502/3500 [00:08<00:48, 62.39tok/s]MLX Gen (native):  15%|█▍        | 509/3500 [00:08<00:47, 62.37tok/s]MLX Gen (native):  15%|█▍        | 516/3500 [00:08<00:47, 62.34tok/s]MLX Gen (native):  15%|█▍        | 523/3500 [00:08<00:47, 62.26tok/s]MLX Gen (native):  15%|█▌        | 530/3500 [00:08<00:47, 62.30tok/s]MLX Gen (native):  15%|█▌        | 537/3500 [00:08<00:47, 62.28tok/s]MLX Gen (native):  16%|█▌        | 544/3500 [00:08<00:47, 62.42tok/s]MLX Gen (native):  16%|█▌        | 551/3500 [00:09<00:47, 62.41tok/s]MLX Gen (native):  16%|█▌        | 558/3500 [00:09<00:47, 62.30tok/s]MLX Gen (native):  16%|█▌        | 565/3500 [00:09<00:47, 62.26tok/s]MLX Gen (native):  16%|█▌        | 565/3500 [00:09<00:48, 60.52tok/s]
+2026-10-23 15:00:15.005 | INFO     | acestep.llm_inference:_run_mlx_single_native:3711 - MLX native generation complete: 565 tokens in 9.34s (60.5 tok/s) | prefill 0.53s + decode 9.34s = 9.87s total
+2026-10-23 15:00:15.010 | DEBUG    | acestep.llm_inference:parse_lm_output:2813 - Debug output text: <think>
+bpm: 100
+caption: A heartfelt Italian folk-pop ballad driven by a warm, fingerpicked acoustic
+  guitar and a sincere male lead vocal. The arrangement begins simply, with melodic
+  slide guitar fills adding a touch of wistful color. The song builds into an anthemic
+  chorus where a full band enters, featuring steady drums, a solid bassline, and layered
+  vocal harmonies that create a powerful, soaring feel. The track includes a melodic
+  slide guitar interlude and a dynamic breakdown towards the end, stripping back to
+  a quieter, more intimate acoustic and vocal section before a final, reflective chorus.
+duration: 188
+genres:Italian folk-pop
+keyscale: G major
+language: it
+timesignature: 4
+
+2026-10-23 15:00:15.010 | INFO     | acestep.llm_inference:create_sample_from_query:2156 - Sample created successfully. Generated {'bpm': 100, 'caption': 'A heartfelt Italian folk-pop ballad driven by a warm, fingerpicked acoustic guitar and a sincere male lead vocal. The arrangement begins simply, with melodic slide guitar fills adding a touch of wistful color. The song builds into an anthemic chorus where a full band enters, featuring steady drums, a solid bassline, and layered vocal harmonies that create a powerful, soaring feel. The track includes a melodic slide guitar interlude and a dynamic breakdown towards the end, stripping back to a quieter, more intimate acoustic and vocal section before a final, reflective chorus.', 'duration': 188, 'genres': 'Italian folk-pop', 'keyscale': 'G major', 'language': 'it', 'timesignature': '4', 'lyrics': "[Intro - Acoustic Guitar]\n\n[Verse 1]\nMille e tre stelle lassù nel ciel\nIl mondo gira solo per noi\nTra i vicoli antichi il vento che va\nLa vita si muove senza età\n\n[Verse 2]\nTra fiumi che danzano in luce fioca\nE avanti sento la mia voce che scocca\nIl cuore del tempo non smette mai\nQuesta melodia mi porta lassù\n\n[Chorus]\nOh terra mia, sei il tuo cammino\nOgni respiro porta il tuo destino\nCon il sole e l'ombra ci hai sempre portati\nNel cuore del mio cuore tu vivi, amato\n\n[Instrumental Break - Acoustic Guitar]\n\n[Verse 3]\nVento che lento scioglie i ricordi\nCome un segreto che porto distorto\nLa luna che chiama tra i monti e le strade\nLa forza del viaggio non lo nasconde\n\n[Bridge]\nAnche se il sole tramonti lontano\nCi alzeremo sempre su questo piano\nLa forza che libera i nostri cuori\nCi rende forte, uniti dal dolore\n\n[Chorus]\nOh terra mia, sei il tuo cammino\nOgni respiro porta il tuo destino\nCon il sole e l'ombra ci hai sempre portati\nNel cuore del mio cuore tu vivi, amato\n\n[Guitar Solo]\n\n[Outro]\nOh terra mia, sei il tuo cammino\nOgni respiro porta il tuo destino\nCon il sole e l'ombra ci hai sempre portati\nNel cuore del mio cuore tu vivi, amato\n[Final guitar strum and fade out]", 'instrumental': False} fields
+F0 {"phase": "create_sample", "phase_s": 9.91, "elapsed_s": 634.49, "footprint_mb": 21504, "swap_used_mb": 14029, "mlx_active_mb": 7950, "mlx_peak_mb": 8087, "mlx_cache_mb": 88, "mps_driver_mb": 20065, "mps_current_mb": 11886, "ok": true, "bpm": 100, "keyscale": "G major", "language": "it", "lm_duration": 188.0, "caption": "A heartfelt Italian folk-pop ballad driven by a warm, fingerpicked acoustic guitar and a sincere male lead vocal. The arrangement begins simply, with melodic sl", "lyrics_lines": 48}
+2026-10-23 15:00:15.059 | INFO     | acestep.inference:generate_music:662 - [generate_music] LLM usage decision: thinking=True, use_cot_caption=True, use_cot_language=True, use_cot_metas=True, need_lm_for_cot=True, llm_initialized=True, use_lm=True
+2026-10-23 15:00:15.059 | INFO     | acestep.inference:generate_music:720 - LM chunk 1/1 (infer_type=llm_dit) (size: 1, seeds: [42])
+2026-10-23 15:00:15.059 | INFO     | acestep.llm_inference:generate_with_stop_condition:1371 - Phase 1: Generating CoT metadata...
+2026-10-23 15:00:15.060 | INFO     | acestep.llm_inference:generate_with_stop_condition:1377 - generate_with_stop_condition: formatted_prompt=<|im_start|>system
+# Instruction
+Generate audio semantic tokens based on the given conditions:
+
+<|im_end|>
+<|im_start|>user
+# Caption
+A heartfelt Italian folk-pop ballad driven by a warm, fingerpicked acoustic guitar and a sincere male lead vocal. The arrangement begins simply, with melodic slide guitar fills adding a touch of wistful color. The song builds into an anthemic chorus where a full band enters, featuring steady drums, a solid bassline, and layered vocal harmonies that create a powerful, soaring feel. The track includes a melodic slide guitar interlude and a dynamic breakdown towards the end, stripping back to a quieter, more intimate acoustic and vocal section before a final, reflective chorus.
+
+# Lyric
+[Intro - Acoustic Guitar]
+
+[Verse 1]
+Mille e tre stelle lassù nel ciel
+Il mondo gira solo per noi
+Tra i vicoli antichi il vento che va
+La vita si muove senza età
+
+[Verse 2]
+Tra fiumi che danzano in luce fioca
+E avanti sento la mia voce che scocca
+Il cuore del tempo non smette mai
+Questa melodia mi porta lassù
+
+[Chorus]
+Oh terra mia, sei il tuo cammino
+Ogni respiro porta il tuo destino
+Con il sole e l'ombra ci hai sempre portati
+Nel cuore del mio cuore tu vivi, amato
+
+[Instrumental Break - Acoustic Guitar]
+
+[Verse 3]
+Vento che lento scioglie i ricordi
+Come un segreto che porto distorto
+La luna che chiama tra i monti e le strade
+La forza del viaggio non lo nasconde
+
+[Bridge]
+Anche se il sole tramonti lontano
+Ci alzeremo sempre su questo piano
+La forza che libera i nostri cuori
+Ci rende forte, uniti dal dolore
+
+[Chorus]
+Oh terra mia, sei il tuo cammino
+Ogni respiro porta il tuo destino
+Con il sole e l'ombra ci hai sempre portati
+Nel cuore del mio cuore tu vivi, amato
+
+[Guitar Solo]
+
+[Outro]
+Oh terra mia, sei il tuo cammino
+Ogni respiro porta il tuo destino
+Con il sole e l'ombra ci hai sempre portati
+Nel cuore del mio cuore tu vivi, amato
+[Final guitar strum and fade out]
+<|im_end|>
+<|im_start|>assistant
+
+2026-10-23 15:00:15.245 | INFO     | acestep.llm_inference:_run_mlx_single_native:3595 - MLX native prefill: 537 tokens in 0.18s (2971.1 tok/s)
+MLX Gen (native):   0%|          | 0/3500 [00:00<?, ?tok/s]MLX Gen (native):   0%|          | 1/3500 [00:00<09:13,  6.32tok/s]MLX Gen (native):   0%|          | 7/3500 [00:00<01:51, 31.36tok/s]MLX Gen (native):   0%|          | 13/3500 [00:00<01:22, 42.39tok/s]MLX Gen (native):   1%|          | 19/3500 [00:00<01:12, 48.19tok/s]MLX Gen (native):   1%|          | 25/3500 [00:00<01:07, 51.65tok/s]MLX Gen (native):   1%|          | 31/3500 [00:00<01:04, 53.79tok/s]MLX Gen (native):   1%|          | 37/3500 [00:00<01:02, 55.38tok/s]MLX Gen (native):   1%|          | 43/3500 [00:00<01:01, 56.33tok/s]MLX Gen (native):   1%|▏         | 49/3500 [00:00<01:00, 56.90tok/s]MLX Gen (native):   2%|▏         | 55/3500 [00:01<01:00, 57.29tok/s]MLX Gen (native):   2%|▏         | 61/3500 [00:01<00:59, 57.70tok/s]MLX Gen (native):   2%|▏         | 67/3500 [00:01<00:59, 57.98tok/s]MLX Gen (native):   2%|▏         | 73/3500 [00:01<00:58, 58.10tok/s]MLX Gen (native):   2%|▏         | 79/3500 [00:01<00:58, 58.10tok/s]MLX Gen (native):   2%|▏         | 85/3500 [00:01<00:58, 58.08tok/s]MLX Gen (native):   3%|▎         | 91/3500 [00:01<00:58, 58.04tok/s]MLX Gen (native):   3%|▎         | 97/3500 [00:01<00:58, 58.09tok/s]MLX Gen (native):   3%|▎         | 103/3500 [00:01<00:58, 58.08tok/s]MLX Gen (native):   3%|▎         | 109/3500 [00:02<00:58, 58.12tok/s]MLX Gen (native):   3%|▎         | 115/3500 [00:02<00:59, 57.14tok/s]MLX Gen (native):   3%|▎         | 121/3500 [00:02<00:59, 56.39tok/s]MLX Gen (native):   4%|▎         | 127/3500 [00:02<00:59, 56.68tok/s]MLX Gen (native):   4%|▍         | 133/3500 [00:02<00:59, 56.77tok/s]MLX Gen (native):   4%|▍         | 139/3500 [00:02<00:58, 57.12tok/s]MLX Gen (native):   4%|▍         | 145/3500 [00:02<00:58, 57.21tok/s]MLX Gen (native):   4%|▍         | 151/3500 [00:02<00:58, 57.41tok/s]MLX Gen (native):   4%|▍         | 157/3500 [00:02<00:57, 57.66tok/s]MLX Gen (native):   5%|▍         | 163/3500 [00:02<00:57, 57.67tok/s]MLX Gen (native):   5%|▍         | 164/3500 [00:02<01:00, 55.11tok/s]
+2026-10-23 15:00:18.221 | INFO     | acestep.llm_inference:_run_mlx_single_native:3711 - MLX native generation complete: 164 tokens in 2.98s (55.1 tok/s) | prefill 0.18s + decode 2.98s = 3.16s total
+2026-10-23 15:00:18.221 | DEBUG    | acestep.llm_inference:parse_lm_output:2813 - Debug output text: <think>
+bpm: 100
+caption: A heartfelt Italian folk-pop ballad driven by a warm, fingerpicked acoustic
+  guitar and a sincere male lead vocal. The arrangement begins simply, with melodic
+  slide guitar fills adding a touch of wistful color. The song builds into an anthemic
+  chorus where a full band enters, featuring steady drums, a solid bassline, and layered
+  vocal harmonies that create a powerful, soaring feel. The track includes a melodic
+  slide guitar interlude and a dynamic breakdown towards the end, stripping back to
+  a quieter, more intimate acoustic and vocal section before a final, reflective chorus.
+duration: 30
+keyscale: G major
+language: it
+timesignature: 4
+<|im_end|>
+2026-10-23 15:00:18.221 | INFO     | acestep.llm_inference:generate_with_stop_condition:1422 - Phase 1 completed in 3.16s. Generated metadata: ['bpm', 'caption', 'duration', 'keyscale', 'language', 'timesignature']
+2026-10-23 15:00:18.221 | INFO     | acestep.llm_inference:generate_with_stop_condition:1482 - Phase 2: Generating audio codes...
+2026-10-23 15:00:18.222 | INFO     | acestep.llm_inference:generate_with_stop_condition:1490 - generate_with_stop_condition: formatted_prompt_with_cot=<|im_start|>system
+# Instruction
+Generate audio semantic tokens based on the given conditions:
+
+<|im_end|>
+<|im_start|>user
+# Caption
+A heartfelt Italian folk-pop ballad driven by a warm, fingerpicked acoustic guitar and a sincere male lead vocal. The arrangement begins simply, with melodic slide guitar fills adding a touch of wistful color. The song builds into an anthemic chorus where a full band enters, featuring steady drums, a solid bassline, and layered vocal harmonies that create a powerful, soaring feel. The track includes a melodic slide guitar interlude and a dynamic breakdown towards the end, stripping back to a quieter, more intimate acoustic and vocal section before a final, reflective chorus.
+
+# Lyric
+[Intro - Acoustic Guitar]
+
+[Verse 1]
+Mille e tre stelle lassù nel ciel
+Il mondo gira solo per noi
+Tra i vicoli antichi il vento che va
+La vita si muove senza età
+
+[Verse 2]
+Tra fiumi che danzano in luce fioca
+E avanti sento la mia voce che scocca
+Il cuore del tempo non smette mai
+Questa melodia mi porta lassù
+
+[Chorus]
+Oh terra mia, sei il tuo cammino
+Ogni respiro porta il tuo destino
+Con il sole e l'ombra ci hai sempre portati
+Nel cuore del mio cuore tu vivi, amato
+
+[Instrumental Break - Acoustic Guitar]
+
+[Verse 3]
+Vento che lento scioglie i ricordi
+Come un segreto che porto distorto
+La luna che chiama tra i monti e le strade
+La forza del viaggio non lo nasconde
+
+[Bridge]
+Anche se il sole tramonti lontano
+Ci alzeremo sempre su questo piano
+La forza che libera i nostri cuori
+Ci rende forte, uniti dal dolore
+
+[Chorus]
+Oh terra mia, sei il tuo cammino
+Ogni respiro porta il tuo destino
+Con il sole e l'ombra ci hai sempre portati
+Nel cuore del mio cuore tu vivi, amato
+
+[Guitar Solo]
+
+[Outro]
+Oh terra mia, sei il tuo cammino
+Ogni respiro porta il tuo destino
+Con il sole e l'ombra ci hai sempre portati
+Nel cuore del mio cuore tu vivi, amato
+[Final guitar strum and fade out]
+<|im_end|>
+<|im_start|>assistant
+<think>
+bpm: 100
+caption: A heartfelt Italian folk-pop ballad driven by a warm, fingerpicked acoustic
+  guitar and a sincere male lead vocal. The arrangement begins simply, with melodic
+  slide guitar fills adding a touch of wistful color. The song builds into an anthemic
+  chorus where a full band enters, featuring steady drums, a solid bassline, and layered
+  vocal harmonies that create a powerful, soaring feel. The track includes a melodic
+  slide guitar interlude and a dynamic breakdown towards the end, stripping back to
+  a quieter, more intimate acoustic and vocal section before a final, reflective chorus.
+duration: 30
+keyscale: G major
+language: it
+timesignature: 4
+</think>
+
+
+2026-10-23 15:00:18.225 | INFO     | acestep.llm_inference:_run_mlx_single_native:3514 - MLX native: pre-transitioned FSM to CODES_GENERATION (native fast path)
+2026-10-23 15:00:18.225 | INFO     | acestep.llm_inference:_build_unconditional_prompt:395 - CFG unconditional prompt (phase=codes, is_batch=False, negative_prompt='NO USER INPUT'):
+<|im_start|>system
+# Instruction
+Generate audio semantic tokens based on the given conditions:
+
+<|im_end|>
+<|im_start|>user
+NO USER INPUT<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+
+2026-10-23 15:00:18.539 | INFO     | acestep.llm_inference:_run_mlx_single_native:3571 - MLX native prefill: 735 tokens (cond=702, uncond=33) in 0.31s (2342.0 tok/s)
+MLX CFG Gen (native):   0%|          | 0/160 [00:00<?, ?tok/s]MLX CFG Gen (native):   2%|▎         | 4/160 [00:00<00:03, 39.97tok/s]MLX CFG Gen (native):   5%|▌         | 8/160 [00:00<00:04, 37.56tok/s]MLX CFG Gen (native):   8%|▊         | 12/160 [00:00<00:04, 36.89tok/s]MLX CFG Gen (native):  10%|█         | 16/160 [00:00<00:03, 36.61tok/s]MLX CFG Gen (native):  12%|█▎        | 20/160 [00:00<00:03, 36.39tok/s]MLX CFG Gen (native):  15%|█▌        | 24/160 [00:00<00:03, 36.27tok/s]MLX CFG Gen (native):  18%|█▊        | 28/160 [00:00<00:03, 36.23tok/s]MLX CFG Gen (native):  20%|██        | 32/160 [00:00<00:03, 36.18tok/s]MLX CFG Gen (native):  22%|██▎       | 36/160 [00:00<00:03, 36.12tok/s]MLX CFG Gen (native):  25%|██▌       | 40/160 [00:01<00:03, 36.18tok/s]MLX CFG Gen (native):  28%|██▊       | 44/160 [00:01<00:03, 35.95tok/s]MLX CFG Gen (native):  30%|███       | 48/160 [00:01<00:03, 35.93tok/s]MLX CFG Gen (native):  32%|███▎      | 52/160 [00:01<00:03, 35.94tok/s]MLX CFG Gen (native):  35%|███▌      | 56/160 [00:01<00:02, 35.89tok/s]MLX CFG Gen (native):  38%|███▊      | 60/160 [00:01<00:02, 35.90tok/s]MLX CFG Gen (native):  40%|████      | 64/160 [00:01<00:02, 35.91tok/s]MLX CFG Gen (native):  42%|████▎     | 68/160 [00:01<00:02, 35.29tok/s]MLX CFG Gen (native):  45%|████▌     | 72/160 [00:01<00:02, 35.53tok/s]MLX CFG Gen (native):  48%|████▊     | 76/160 [00:02<00:02, 35.68tok/s]MLX CFG Gen (native):  50%|█████     | 80/160 [00:02<00:02, 35.73tok/s]MLX CFG Gen (native):  52%|█████▎    | 84/160 [00:02<00:02, 35.75tok/s]MLX CFG Gen (native):  55%|█████▌    | 88/160 [00:02<00:02, 35.78tok/s]MLX CFG Gen (native):  57%|█████▊    | 92/160 [00:02<00:01, 35.80tok/s]MLX CFG Gen (native):  60%|██████    | 96/160 [00:02<00:01, 35.63tok/s]MLX CFG Gen (native):  62%|██████▎   | 100/160 [00:02<00:01, 35.67tok/s]MLX CFG Gen (native):  65%|██████▌   | 104/160 [00:02<00:01, 35.77tok/s]MLX CFG Gen (native):  68%|██████▊   | 108/160 [00:03<00:01, 35.84tok/s]MLX CFG Gen (native):  70%|███████   | 112/160 [00:03<00:01, 35.87tok/s]MLX CFG Gen (native):  72%|███████▎  | 116/160 [00:03<00:01, 35.78tok/s]MLX CFG Gen (native):  75%|███████▌  | 120/160 [00:03<00:01, 35.67tok/s]MLX CFG Gen (native):  78%|███████▊  | 124/160 [00:03<00:01, 35.65tok/s]MLX CFG Gen (native):  80%|████████  | 128/160 [00:03<00:00, 35.60tok/s]MLX CFG Gen (native):  82%|████████▎ | 132/160 [00:03<00:00, 35.65tok/s]MLX CFG Gen (native):  85%|████████▌ | 136/160 [00:03<00:00, 35.59tok/s]MLX CFG Gen (native):  88%|████████▊ | 140/160 [00:03<00:00, 35.54tok/s]MLX CFG Gen (native):  90%|█████████ | 144/160 [00:04<00:00, 35.59tok/s]MLX CFG Gen (native):  92%|█████████▎| 148/160 [00:04<00:00, 35.62tok/s]MLX CFG Gen (native):  94%|█████████▍| 151/160 [00:04<00:00, 35.88tok/s]
+2026-10-23 15:00:22.748 | INFO     | acestep.llm_inference:_run_mlx_single_native:3711 - MLX native generation complete: 151 tokens in 4.21s (35.9 tok/s) | prefill 0.31s + decode 4.21s = 4.52s total
+2026-10-23 15:00:22.748 | DEBUG    | acestep.llm_inference:parse_lm_output:2813 - Debug output text: <|audio_code_63462|><|audio_code_52242|><|audio_code_5350|><|audio_code_41518|><|audio_code_63494|><|audio_code_25088|><|audio_code_47744|><|audio_code_40064|><|audio_code_52864|><|audio_code_2168|><|audio_code_13464|><|audio_code_53488|><|audio_code_43384|><|audio_code_58952|><|audio_code_14881|><|audio_code_49988|><|audio_code_256|><|audio_code_12602|><|audio_code_61408|><|audio_code_58753|><|audio_code_59385|><|audio_code_2882|><|audio_code_12610|><|audio_code_58306|><|audio_code_25976|><|audio_code_18768|><|audio_code_11488|><|audio_code_40456|><|audio_code_57393|><|audio_code_13361|><|audio_code_48192|><|audio_code_48656|><|audio_code_1129|><|audio_code_39457|><|audio_code_14368|><|audio_code_13961|><|audio_code_63800|><|audio_code_5120|><|audio_code_33021|><|audio_code_61063|><|audio_code_13088|><|audio_code_30008|><|audio_code_35128|><|audio_code_51928|><|audio_code_53753|><|audio_code_57168|><|audio_code_8528|><|audio_code_58873|><|audio_code_41888|><|audio_code_56835|><|audio_code_56074|><|audio_code_51813|><|audio_code_54382|><|audio_code_14913|><|audio_code_22264|><|audio_code_42689|><|audio_code_43264|><|audio_code_55536|><|audio_code_61640|><|audio_code_721|><|audio_code_53160|><|audio_code_17656|><|audio_code_45803|><|audio_code_51238|><|audio_code_13760|><|audio_code_2876|><|audio_code_9548|><|audio_code_53738|><|audio_code_52219|><|audio_code_53755|><|audio_code_51650|><|audio_code_53122|><|audio_code_16361|><|audio_code_13768|><|audio_code_22232|><|audio_code_61474|><|audio_code_32378|><|audio_code_59491|><|audio_code_13361|><|audio_code_56002|><|audio_code_52354|><|audio_code_51713|><|audio_code_26320|><|audio_code_1242|><|audio_code_61240|><|audio_code_3137|><|audio_code_32510|><|audio_code_48262|><|audio_code_51632|><|audio_code_27889|><|audio_code_14200|><|audio_code_4409|><|audio_code_52136|><|audio_code_52072|><|audio_code_61840|><|audio_code_20881|><|audio_code_7097|><|audio_code_14306|><|audio_code_15865|><|audio_code_41442|><|audio_code_51393|><|audio_code_17880|><|audio_code_23473|><|audio_code_40344|><|audio_code_23223|><|audio_code_5215|><|audio_code_10711|><|audio_code_7217|><|audio_code_39449|><|audio_code_25864|><|audio_code_39380|><|audio_code_60336|><|audio_code_43928|><|audio_code_39409|><|audio_code_29588|><|audio_code_2041|><|audio_code_63972|><|audio_code_46795|><|audio_code_346|><|audio_code_50627|><|audio_code_29035|><|audio_code_11180|><|audio_code_61419|><|audio_code_53202|><|audio_code_39114|><|audio_code_328|><|audio_code_13136|><|audio_code_37864|><|audio_code_35983|><|audio_code_38863|><|audio_code_5645|><|audio_code_2619|><|audio_code_25338|><|audio_code_7303|><|audio_code_33102|><|audio_code_26695|><|audio_code_11063|><|audio_code_25515|><|audio_code_27100|><|audio_code_12771|><|audio_code_37332|><|audio_code_14085|><|audio_code_25402|><|audio_code_61388|><|audio_code_20331|><|audio_code_62346|><|audio_code_12116|><|audio_code_46390|><|audio_code_23949|><|audio_code_63488|><|im_end|>
+2026-10-23 15:00:22.748 | INFO     | acestep.llm_inference:generate_with_stop_condition:1650 - Phase 2 completed in 4.53s. Generated 150 audio codes
+2026-10-23 15:00:22.748 | INFO     | acestep.core.generation.handler.generate_music:generate_music:313 - [generate_music] Turbo model detected: overriding guidance_scale 7.0 -> 1.0 (turbo does not use CFG).
+2026-10-23 15:00:22.748 | INFO     | acestep.core.generation.handler.generate_music:generate_music:329 - [generate_music] Starting generation...
+2026-10-23 15:00:22.748 | INFO     | acestep.core.generation.handler.generate_music:generate_music:332 - [generate_music] Preparing inputs...
+2026-10-23 15:00:22.757 | INFO     | acestep.core.generation.handler.generate_music_request:_prepare_reference_and_source_audio:204 - [generate_music] cover task: no src_audio but audio codes provided, proceeding with codes
+2026-10-23 15:00:22.768 | INFO     | acestep.core.generation.handler.progress:_start_diffusion_progress_estimator:179 - [progress] No timing history — using fallback estimate (2.5s/step for batch_size=1).  This will self-calibrate after the first generation.
+2026-10-23 15:00:24.840 | INFO     | acestep.core.generation.handler.conditioning_target:_prepare_target_latents_and_wavs:78 - [generate_music] Decoding audio codes for item 0...
+2026-10-23 15:00:27.481 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_precomputed_lm_hints:31 - [generate_music] Decoding audio codes for LM hints for item 0...
+2026-10-23 15:00:27.485 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:119 - 
+======================================================================
+2026-10-23 15:00:27.485 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:120 - 🔍 [DEBUG] DiT TEXT ENCODER INPUT (Inference)
+2026-10-23 15:00:27.485 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:121 - ======================================================================
+2026-10-23 15:00:27.485 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:122 - text_prompt:
+# Instruction
+Generate audio semantic tokens based on the given conditions:
+
+# Caption
+A heartfelt Italian folk-pop ballad driven by a warm, fingerpicked acoustic guitar and a sincere male lead vocal. The arrangement begins simply, with melodic slide guitar fills adding a touch of wistful color. The song builds into an anthemic chorus where a full band enters, featuring steady drums, a solid bassline, and layered vocal harmonies that create a powerful, soaring feel. The track includes a melodic slide guitar interlude and a dynamic breakdown towards the end, stripping back to a quieter, more intimate acoustic and vocal section before a final, reflective chorus.
+
+# Metas
+- bpm: 100
+- timesignature: 4
+- keyscale: G major
+- duration: 30 seconds
+<|endoftext|>
+
+2026-10-23 15:00:27.485 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:123 - ======================================================================
+2026-10-23 15:00:27.485 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:124 - lyrics_text:
+# Languages
+it
+
+# Lyric
+[Intro - Acoustic Guitar]
+
+[Verse 1]
+Mille e tre stelle lassù nel ciel
+Il mondo gira solo per noi
+Tra i vicoli antichi il vento che va
+La vita si muove senza età
+
+[Verse 2]
+Tra fiumi che danzano in luce fioca
+E avanti sento la mia voce che scocca
+Il cuore del tempo non smette mai
+Questa melodia mi porta lassù
+
+[Chorus]
+Oh terra mia, sei il tuo cammino
+Ogni respiro porta il tuo destino
+Con il sole e l'ombra ci hai sempre portati
+Nel cuore del mio cuore tu vivi, amato
+
+[Instrumental Break - Acoustic Guitar]
+
+[Verse 3]
+Vento che lento scioglie i ricordi
+Come un segreto che porto distorto
+La luna che chiama tra i monti e le strade
+La forza del viaggio non lo nasconde
+
+[Bridge]
+Anche se il sole tramonti lontano
+Ci alzeremo sempre su questo piano
+La forza che libera i nostri cuori
+Ci rende forte, uniti dal dolore
+
+[Chorus]
+Oh terra mia, sei il tuo cammino
+Ogni respiro porta il tuo destino
+Con il sole e l'ombra ci hai sempre portati
+Nel cuore del mio cuore tu vivi, amato
+
+[Guitar Solo]
+
+[Outro]
+Oh terra mia, sei il tuo cammino
+Ogni respiro porta il tuo destino
+Con il sole e l'ombra ci hai sempre portati
+Nel cuore del mio cuore tu vivi, amato
+[Final guitar strum and fade out]<|endoftext|>
+2026-10-23 15:00:27.485 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:125 - ======================================================================
+
+2026-10-23 15:00:27.904 | INFO     | acestep.core.generation.handler.conditioning_embed:preprocess_batch:110 - [preprocess_batch] Inferring prompt embeddings...
+2026-10-23 15:00:28.948 | INFO     | acestep.core.generation.handler.conditioning_embed:preprocess_batch:113 - [preprocess_batch] Inferring lyric embeddings...
+2026-10-23 15:00:28.953 | INFO     | acestep.core.generation.handler.service_generate_execute:_execute_service_generate_diffusion:173 - [service_generate] Generating audio... (DiT backend: MLX (native))
+2026-10-23 15:00:38.713 | INFO     | acestep.models.mlx.dit_generate:mlx_generate_diffusion:410 - [MLX-DiT] DCW enabled (mode=double, scaler=0.050, high_scaler=0.020, wavelet=haar, backend=MLX-native Haar).
+Using precomputed LM hints
+MLX DiT diffusion:   0%|          | 0/8 [00:00<?, ?it/s]MLX DiT diffusion:  12%|█▎        | 1/8 [00:35<04:10, 35.84s/it]MLX DiT diffusion:  25%|██▌       | 2/8 [00:37<01:33, 15.61s/it]MLX DiT diffusion:  38%|███▊      | 3/8 [00:37<00:43,  8.69s/it]MLX DiT diffusion:  50%|█████     | 4/8 [00:38<00:21,  5.44s/it]MLX DiT diffusion:  62%|██████▎   | 5/8 [00:38<00:10,  3.64s/it]MLX DiT diffusion:  75%|███████▌  | 6/8 [00:39<00:05,  2.56s/it]MLX DiT diffusion:  88%|████████▊ | 7/8 [00:39<00:01,  1.87s/it]MLX DiT diffusion: 100%|██████████| 8/8 [00:40<00:00,  1.42s/it]MLX DiT diffusion: 100%|██████████| 8/8 [00:40<00:00,  5.00s/it]
+2026-10-23 15:01:18.767 | WARNING  | acestep.core.generation.handler.service_generate_execute:_execute_service_generate_diffusion:273 - [service_generate] MLX diffusion failed (MPS backend out of memory (MPS allocated: 11.74 GiB, other allocations: 8.59 GiB, max allowed: 20.13 GiB). Tried to allocate 187.50 KiB on private pool. Use PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0 to disable upper limit for memory allocations (may cause system failure).); falling back to PyTorch.
+2026-10-23 15:01:18.808 | ERROR    | acestep.core.generation.handler.generate_music:generate_music:522 - [generate_music] Generation failed
+Traceback (most recent call last):
+
+  File "/Users/fab/acestep-f0/ACE-Step-1.5/acestep/core/generation/handler/service_generate_execute.py", line 233, in _execute_service_generate_diffusion
+    outputs = self._mlx_run_diffusion(
+              │    └ <function DiffusionMixin._mlx_run_diffusion at 0x111f6c5e0>
+              └ <acestep.handler.AceStepHandler object at 0x11ce190a0>
+
+  File "/Users/fab/acestep-f0/ACE-Step-1.5/acestep/core/generation/handler/diffusion.py", line 191, in _mlx_run_diffusion
+    target_tensor = torch.from_numpy(target_np).to(device=self.device, dtype=self.dtype)
+                    │     │          │                    │    │             │    └ torch.float32
+                    │     │          │                    │    │             └ <acestep.handler.AceStepHandler object at 0x11ce190a0>
+                    │     │          │                    │    └ 'mps'
+                    │     │          │                    └ <acestep.handler.AceStepHandler object at 0x11ce190a0>
+                    │     │          └ array([[[ 0.8891801 , -0.2610827 ,  1.7985673 , ..., -0.18040003,
+                    │     │                      0.6863039 , -0.4796605 ],
+                    │     │                    [ 0.44550896, -...
+                    │     └ <built-in method from_numpy of type object at 0x1104276d0>
+                    └ <module 'torch' from '/Users/fab/acestep-f0/ACE-Step-1.5/.venv/lib/python3.12/site-packages/torch/__init__.py'>
+
+RuntimeError: MPS backend out of memory (MPS allocated: 11.74 GiB, other allocations: 8.59 GiB, max allowed: 20.13 GiB). Tried to allocate 187.50 KiB on private pool. Use PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0 to disable upper limit for memory allocations (may cause system failure).
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "/Users/fab/acestep-f0/f0_measure.py", line 133, in <module>
+    sys.exit(main())
+    │   │    └ <function main at 0x101d63880>
+    │   └ <built-in function exit>
+    └ <module 'sys' (built-in)>
+
+  File "/Users/fab/acestep-f0/f0_measure.py", line 125, in main
+    result = generate_music(dit, llm, params, config, save_dir=OUT)
+             │              │    │    │       │                └ '/Users/fab/acestep-f0/out'
+             │              │    │    │       └ GenerationConfig(batch_size=1, allow_lm_batch=False, use_random_seed=False, seeds=[42], lm_batch_chunk_size=8, constrained_de...
+             │              │    │    └ GenerationParams(task_type='text2music', instruction='Fill the audio semantic mask based on the given conditions:', reference...
+             │              │    └ <acestep.llm_inference.LLMHandler object at 0x11d899f40>
+             │              └ <acestep.handler.AceStepHandler object at 0x11ce190a0>
+             └ <function generate_music at 0x12aa60040>
+
+  File "/Users/fab/acestep-f0/ACE-Step-1.5/acestep/inference.py", line 916, in generate_music
+    result = dit_handler.generate_music(**filtered_generate_kwargs)
+             │           │                └ {'captions': 'A heartfelt Italian folk-pop ballad driven by a warm, fingerpicked acoustic guitar and a sincere male lead voca...
+             │           └ <function GenerateMusicMixin.generate_music at 0x111f6d1c0>
+             └ <acestep.handler.AceStepHandler object at 0x11ce190a0>
+
+> File "/Users/fab/acestep-f0/ACE-Step-1.5/acestep/core/generation/handler/generate_music.py", line 424, in generate_music
+    service_run = self._run_generate_music_service_with_progress(
+                  │    └ <function GenerateMusicExecuteMixin._run_generate_music_service_with_progress at 0x111f6d6c0>
+                  └ <acestep.handler.AceStepHandler object at 0x11ce190a0>
+
+  File "/Users/fab/acestep-f0/ACE-Step-1.5/acestep/core/generation/handler/generate_music_execute.py", line 160, in _run_generate_music_service_with_progress
+    raise _error["exc"]
+          └ {'exc': RuntimeError('MPS backend out of memory (MPS allocated: 11.74 GiB, other allocations: 8.59 GiB, max allowed: 20.13 Gi...
+
+  File "/Users/fab/acestep-f0/ACE-Step-1.5/acestep/core/generation/handler/generate_music_execute.py", line 79, in _service_target
+    _result["outputs"] = self.service_generate(
+    │                    │    └ <function ServiceGenerateMixin.service_generate at 0x12a9cf9c0>
+    │                    └ <acestep.handler.AceStepHandler object at 0x11ce190a0>
+    └ {}
+
+  File "/Users/fab/acestep-f0/ACE-Step-1.5/.venv/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           │     │       └ <unprintable dict object>
+           │     └ (<acestep.handler.AceStepHandler object at 0x11ce190a0>,)
+           └ <function ServiceGenerateMixin.service_generate at 0x12a9cf920>
+
+  File "/Users/fab/acestep-f0/ACE-Step-1.5/acestep/core/generation/handler/service_generate.py", line 170, in service_generate
+    self._execute_service_generate_diffusion(
+    │    └ <function ServiceGenerateExecuteMixin._execute_service_generate_diffusion at 0x12a9cf380>
+    └ <acestep.handler.AceStepHandler object at 0x11ce190a0>
+
+  File "/Users/fab/acestep-f0/ACE-Step-1.5/acestep/core/generation/handler/service_generate_execute.py", line 274, in _execute_service_generate_diffusion
+    outputs = self.model.generate_audio(**generate_kwargs)
+              │    │     │                └ <unprintable dict object>
+              │    │     └ <function AceStepConditionGenerationModel.generate_audio at 0x12ac822a0>
+              │    └ AceStepConditionGenerationModel(
+              │        (decoder): AceStepDiTModel(
+              │          (rotary_emb): Qwen3RotaryEmbedding()
+              │          (layers): ModuleL...
+              └ <acestep.handler.AceStepHandler object at 0x11ce190a0>
+
+  File "/Users/fab/.cache/huggingface/modules/transformers_modules/acestep_hyphen_v15_hyphen_turbo/modeling_acestep_v15_turbo.py", line 1991, in generate_audio
+    attention_mask = torch.ones(src_latents.shape[0], latent_length, device=src_latents.device, dtype=src_latents.dtype)
+                     │     │    │           │         │                     │           │             │           └ <attribute 'dtype' of 'torch._C.TensorBase' objects>
+                     │     │    │           │         │                     │           │             └ <unprintable Tensor object>
+                     │     │    │           │         │                     │           └ <attribute 'device' of 'torch._C.TensorBase' objects>
+                     │     │    │           │         │                     └ <unprintable Tensor object>
+                     │     │    │           │         └ 750
+                     │     │    │           └ <attribute 'shape' of 'torch._C.TensorBase' objects>
+                     │     │    └ <unprintable Tensor object>
+                     │     └ <built-in method ones of type object at 0x1104276d0>
+                     └ <module 'torch' from '/Users/fab/acestep-f0/ACE-Step-1.5/.venv/lib/python3.12/site-packages/torch/__init__.py'>
+
+RuntimeError: MPS backend out of memory (MPS allocated: 11.74 GiB, other allocations: 8.59 GiB, max allowed: 20.13 GiB). Tried to allocate 3.00 KiB on private pool. Use PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0 to disable upper limit for memory allocations (may cause system failure).
+F0 {"phase": "generate_music", "phase_s": 63.89, "elapsed_s": 698.43, "footprint_mb": 21504, "swap_used_mb": 12760, "mlx_active_mb": 7950, "mlx_peak_mb": 8503, "mlx_cache_mb": 842, "mps_driver_mb": 20821, "mps_current_mb": 11913, "ok": false, "error": "MPS backend out of memory (MPS allocated: 11.74 GiB, other allocations: 8.59 GiB, max allowed: 20.13 GiB). Tried to allocate 3.00 KiB on private pool. Use PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0 to disable upper limit for memory allocations (may cause system failure).", "paths": [], "use_mlx_dit": true, "use_mlx_vae": true}
+      702,15 real        61,38 user        47,30 sys
+          4987568128  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+             2520776  page reclaims
+              396203  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                 756  messages sent
+             1242417  messages received
+                   0  signals received
+              642482  voluntary context switches
+             1753345  involuntary context switches
+        982182604933  instructions retired
+        262075854092  cycles elapsed
+         23047348120  peak memory footprint
+EXIT 4

@@ -1,0 +1,7 @@
+F1 PREDICTION, written 2026-10-23 15:02 BEFORE the F1 run. Same setup as F0 (mini1), plus F0_SLIM=1 F0_MLX_BF16=1:
+torch decoder params emptied after MLX conversion, MLX decoder cast to bf16. Load order unchanged.
+F0 measured for reference: after init_dit MPS current 11886 MB, MLX active 6685 MB, footprint 19456 MB; generate_music OOM.
+Q1 after slim: MPS current 5300-5900 MB (11886 - 6300 for decoder fp32); MLX active 3300-3700 MB (6685 - 3150).
+Q2 after init_lm: MLX active ~4600-5000 MB; process footprint 9.5-12 GB.
+Q3 init_dit still swaps (peak unchanged, ~19 GB) -> init_dit phase 3-10 min; /usr/bin/time peak footprint still 19-23 GB.
+Q4 generate_music succeeds for 30 s with use_mlx_dit=True; time 20-120 s (low confidence); output is audible music, not silence or noise.

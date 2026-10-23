@@ -1,0 +1,321 @@
+F0 {"phase": "start", "phase_s": 0.0, "elapsed_s": 0.0, "footprint_mb": 9, "swap_used_mb": 3221, "mlx_active_mb": 0, "mlx_peak_mb": 0, "mlx_cache_mb": 0, "mps_driver_mb": 1, "mps_current_mb": 0}
+W1023 15:18:46.102000 31532 .venv/lib/python3.12/site-packages/torch/distributed/elastic/multiprocessing/redirects.py:29] NOTE: Redirects are currently not supported in Windows or MacOs.
+2026-10-23 15:18:46.876 | WARNING  | acestep.training.trainer:<module>:40 - bitsandbytes not installed. Using standard AdamW.
+F0 {"phase": "imports", "phase_s": 2.4, "elapsed_s": 3.02, "footprint_mb": 352, "swap_used_mb": 3221, "mlx_active_mb": 0, "mlx_peak_mb": 0, "mlx_cache_mb": 0, "mps_driver_mb": 1, "mps_current_mb": 0}
+2026-10-23 15:18:46.916 | INFO     | acestep.gpu_config:get_gpu_config:846 - macOS MPS detected (11.8 GB unified memory, tier=tier4). Applying Apple Silicon optimizations: no compile, no quantization, mlx backend, no CPU offload.
+2026-10-23 15:18:46.918 | INFO     | acestep.core.generation.handler.init_service_loader:_load_main_model_from_checkpoint:174 - [initialize_service] Attempting to load model with attention implementation: sdpa
+2026-10-23 15:19:43.342 | INFO     | acestep.core.generation.handler.mlx_dit_init:_init_mlx_dit:34 - [MLX-DiT] Native MLX DiT decoder initialized successfully (mx.compile=False).
+2026-10-23 15:19:59.685 | INFO     | acestep.core.generation.handler.mlx_vae_init:_init_mlx_vae:75 - [MLX-VAE] Decode/encode compiled with mx.compile().
+2026-10-23 15:19:59.687 | INFO     | acestep.core.generation.handler.mlx_vae_init:_init_mlx_vae:85 - [MLX-VAE] Native MLX VAE initialized (dtype=mlx.core.float32, compiled=True).
+F0 {"phase": "init_dit", "phase_s": 72.79, "elapsed_s": 75.84, "footprint_mb": 19456, "swap_used_mb": 10998, "mlx_active_mb": 6685, "mlx_peak_mb": 6685, "mlx_cache_mb": 24, "mps_driver_mb": 18737, "mps_current_mb": 11886, "ok": true, "device": "mps", "dtype": "torch.float32", "use_mlx_dit": true, "use_mlx_vae": true, "status": "step-f0/ACE-Step-1.5/checkpoints/vae\nText encoder: /Users/fab/acestep-f0/ACE-Step-1.5/checkpoints/Qwen3-Embedding-0.6B\nDtype: torch.float32\nAttention: sdpa\nCompiled: False\nQuantization: Disabled\nOffload to CPU: False\nOffload DiT to CPU: False\nMLX DiT: Active (native MLX)\nMLX VAE: Active (native MLX)"}
+F0 {"phase": "slim", "phase_s": 16.93, "elapsed_s": 93.07, "footprint_mb": 11264, "swap_used_mb": 7116, "mlx_active_mb": 3681, "mlx_peak_mb": 7214, "mlx_cache_mb": 0, "mps_driver_mb": 10556, "mps_current_mb": 5876, "use_mlx_dit": true}
+2026-10-23 15:20:16.970 | INFO     | acestep.llm_inference:initialize:609 - loading 5Hz LM tokenizer... it may take 80~90s
+2026-10-23 15:20:25.746 | INFO     | acestep.llm_inference:initialize:613 - 5Hz LM tokenizer loaded successfully in 8.78 seconds
+2026-10-23 15:20:25.746 | INFO     | acestep.llm_inference:initialize:618 - Initializing constrained decoding processor...
+2026-10-23 15:20:25.746 | INFO     | acestep.llm_inference:initialize:624 - Setting constrained decoding max_duration to 480s based on GPU config (tier: tier4)
+2026-10-23 15:20:26.138 | DEBUG    | acestep.constrained_logits_processor:_precompute_audio_code_tokens:577 - Found 1535 audio code tokens with values outside valid range [0, 63999]
+2026-10-23 15:20:27.171 | INFO     | acestep.llm_inference:initialize:632 - Constrained processor initialized in 1.43 seconds
+2026-10-23 15:20:27.171 | INFO     | acestep.llm_inference:initialize:659 - flash_attn not installed: disabling CUDA graph capture for nano-vllm (SDPA fallback uses .item() calls in paged-cache decode that are incompatible with CUDA graph capture)
+2026-10-23 15:20:27.171 | INFO     | acestep.llm_inference:initialize:671 - Triton not available: disabling CUDA graph capture for nano-vllm (CUDA graphs require torch.compile which depends on Triton)
+2026-10-23 15:20:27.182 | INFO     | acestep.llm_inference:initialize:681 - Attempting MLX backend for Apple Silicon acceleration...
+2026-10-23 15:20:27.182 | INFO     | acestep.llm_inference:_load_mlx_model:2947 - Loading MLX model from /Users/fab/acestep-f0/ACE-Step-1.5/checkpoints/acestep-5Hz-lm-0.6B
+2026-10-23 15:20:36.746 | INFO     | acestep.llm_inference:_load_mlx_model:3003 - MLX model loaded successfully in 9.56s
+F0 {"phase": "init_lm", "phase_s": 19.79, "elapsed_s": 112.89, "footprint_mb": 13312, "swap_used_mb": 7092, "mlx_active_mb": 4945, "mlx_peak_mb": 7214, "mlx_cache_mb": 0, "mps_driver_mb": 11821, "mps_current_mb": 5876, "ok": true, "backend": "mlx", "status": "\u2705 5Hz LM initialized successfully\nModel: /Users/fab/acestep-f0/ACE-Step-1.5/checkpoints/acestep-5Hz-lm-0.6B\nBackend: MLX (Apple Silicon native)\nDevice: Apple Silicon GPU"}
+2026-10-23 15:20:36.801 | INFO     | acestep.llm_inference:create_sample_from_query:2097 - Creating sample from query: a melancholic italian folk ballad with acoustic guitar and a warm male voice... (instrumental=False, vocal_language=None)
+2026-10-23 15:20:36.812 | DEBUG    | acestep.llm_inference:create_sample_from_query:2104 - Formatted prompt for inspiration: <|im_start|>system
+# Instruction
+Expand the user's input into a more detailed and specific musical description:
+
+<|im_end|>
+<|im_start|>user
+a melancholic italian folk ballad with acoustic guitar and a warm male voice
+
+instrumental: false<|im_end|>
+<|im_start|>assistant
+
+2026-10-23 15:20:36.888 | INFO     | acestep.llm_inference:_run_mlx_single_native:3595 - MLX native prefill: 50 tokens in 0.08s (661.0 tok/s)
+MLX Gen (native):   0%|          | 0/3500 [00:00<?, ?tok/s]MLX Gen (native):   0%|          | 7/3500 [00:00<00:57, 60.94tok/s]MLX Gen (native):   0%|          | 14/3500 [00:00<00:56, 61.23tok/s]MLX Gen (native):   1%|          | 21/3500 [00:00<00:55, 62.43tok/s]MLX Gen (native):   1%|          | 28/3500 [00:00<00:55, 62.99tok/s]MLX Gen (native):   1%|          | 35/3500 [00:00<00:55, 62.22tok/s]MLX Gen (native):   1%|          | 42/3500 [00:00<00:55, 62.67tok/s]MLX Gen (native):   1%|▏         | 49/3500 [00:00<00:54, 62.96tok/s]MLX Gen (native):   2%|▏         | 56/3500 [00:00<00:54, 63.24tok/s]MLX Gen (native):   2%|▏         | 63/3500 [00:01<00:54, 63.37tok/s]MLX Gen (native):   2%|▏         | 70/3500 [00:01<00:53, 63.55tok/s]MLX Gen (native):   2%|▏         | 77/3500 [00:01<00:53, 63.42tok/s]MLX Gen (native):   2%|▏         | 84/3500 [00:01<00:54, 63.21tok/s]MLX Gen (native):   3%|▎         | 91/3500 [00:01<00:53, 63.14tok/s]MLX Gen (native):   3%|▎         | 98/3500 [00:01<00:53, 63.19tok/s]MLX Gen (native):   3%|▎         | 105/3500 [00:01<00:53, 62.92tok/s]MLX Gen (native):   3%|▎         | 112/3500 [00:01<00:53, 62.92tok/s]MLX Gen (native):   3%|▎         | 119/3500 [00:01<00:53, 63.05tok/s]MLX Gen (native):   4%|▎         | 126/3500 [00:02<00:53, 62.91tok/s]MLX Gen (native):   4%|▍         | 133/3500 [00:02<00:53, 62.96tok/s]MLX Gen (native):   4%|▍         | 140/3500 [00:02<01:00, 55.19tok/s]MLX Gen (native):   4%|▍         | 146/3500 [00:02<01:01, 54.14tok/s]MLX Gen (native):   4%|▍         | 153/3500 [00:02<00:59, 56.54tok/s]MLX Gen (native):   5%|▍         | 160/3500 [00:02<00:57, 58.56tok/s]MLX Gen (native):   5%|▍         | 167/3500 [00:02<00:55, 60.40tok/s]MLX Gen (native):   5%|▍         | 174/3500 [00:02<00:53, 61.76tok/s]MLX Gen (native):   5%|▌         | 181/3500 [00:02<00:52, 62.69tok/s]MLX Gen (native):   5%|▌         | 188/3500 [00:03<00:52, 63.40tok/s]MLX Gen (native):   6%|▌         | 195/3500 [00:03<00:51, 63.90tok/s]MLX Gen (native):   6%|▌         | 202/3500 [00:03<00:51, 64.18tok/s]MLX Gen (native):   6%|▌         | 209/3500 [00:03<00:51, 63.97tok/s]MLX Gen (native):   6%|▌         | 216/3500 [00:03<00:51, 64.25tok/s]MLX Gen (native):   6%|▋         | 223/3500 [00:03<00:50, 64.47tok/s]MLX Gen (native):   7%|▋         | 230/3500 [00:03<00:50, 64.69tok/s]MLX Gen (native):   7%|▋         | 237/3500 [00:03<00:50, 64.65tok/s]MLX Gen (native):   7%|▋         | 244/3500 [00:03<00:50, 64.73tok/s]MLX Gen (native):   7%|▋         | 251/3500 [00:04<00:50, 64.68tok/s]MLX Gen (native):   7%|▋         | 258/3500 [00:04<00:50, 64.53tok/s]MLX Gen (native):   8%|▊         | 265/3500 [00:04<00:50, 64.62tok/s]MLX Gen (native):   8%|▊         | 272/3500 [00:04<00:49, 64.69tok/s]MLX Gen (native):   8%|▊         | 279/3500 [00:04<00:49, 64.68tok/s]MLX Gen (native):   8%|▊         | 286/3500 [00:04<00:49, 64.74tok/s]MLX Gen (native):   8%|▊         | 293/3500 [00:04<00:49, 64.66tok/s]MLX Gen (native):   9%|▊         | 300/3500 [00:04<00:49, 64.66tok/s]MLX Gen (native):   9%|▉         | 307/3500 [00:04<00:49, 64.67tok/s]MLX Gen (native):   9%|▉         | 314/3500 [00:04<00:49, 64.63tok/s]MLX Gen (native):   9%|▉         | 321/3500 [00:05<00:49, 64.60tok/s]MLX Gen (native):   9%|▉         | 328/3500 [00:05<00:49, 64.57tok/s]MLX Gen (native):  10%|▉         | 335/3500 [00:05<00:49, 64.54tok/s]MLX Gen (native):  10%|▉         | 342/3500 [00:05<00:48, 64.55tok/s]MLX Gen (native):  10%|▉         | 349/3500 [00:05<00:48, 64.49tok/s]MLX Gen (native):  10%|█         | 356/3500 [00:05<00:48, 64.47tok/s]MLX Gen (native):  10%|█         | 363/3500 [00:05<00:48, 64.41tok/s]MLX Gen (native):  11%|█         | 370/3500 [00:05<00:48, 64.35tok/s]MLX Gen (native):  11%|█         | 377/3500 [00:05<00:48, 63.87tok/s]MLX Gen (native):  11%|█         | 384/3500 [00:06<00:48, 63.76tok/s]MLX Gen (native):  11%|█         | 391/3500 [00:06<00:48, 63.86tok/s]MLX Gen (native):  11%|█▏        | 398/3500 [00:06<00:48, 63.97tok/s]MLX Gen (native):  12%|█▏        | 405/3500 [00:06<00:48, 63.98tok/s]MLX Gen (native):  12%|█▏        | 412/3500 [00:06<00:48, 64.01tok/s]MLX Gen (native):  12%|█▏        | 419/3500 [00:06<00:48, 64.04tok/s]MLX Gen (native):  12%|█▏        | 426/3500 [00:06<00:48, 63.97tok/s]MLX Gen (native):  12%|█▏        | 433/3500 [00:06<00:47, 64.03tok/s]MLX Gen (native):  13%|█▎        | 439/3500 [00:06<00:48, 63.23tok/s]
+2026-10-23 15:20:43.843 | INFO     | acestep.llm_inference:_run_mlx_single_native:3711 - MLX native generation complete: 439 tokens in 6.95s (63.1 tok/s) | prefill 0.08s + decode 6.95s = 7.03s total
+2026-10-23 15:20:43.843 | DEBUG    | acestep.llm_inference:parse_lm_output:2813 - Debug output text: <think>
+bpm: 100
+caption: A heartfelt Italian folk-pop ballad led by a warm, clear male vocal and an
+  intricately fingerpicked acoustic guitar. The arrangement begins simply, establishing
+  a nostalgic mood. It gradually builds, introducing a steady bassline and a gentle
+  drum kit that provides a soft, driving rhythm in the choruses. The song's dynamics
+  swell for the choruses, creating an anthemic feel, before receding in the verses
+  for more intimate moments. The track concludes with a brief, melodic acoustic guitar
+  solo that fades to silence.
+duration: 152
+genres:Italian folk-pop
+keyscale: A major
+language: it
+timesignature: 4
+
+2026-10-23 15:20:43.843 | INFO     | acestep.llm_inference:create_sample_from_query:2156 - Sample created successfully. Generated {'bpm': 100, 'caption': "A heartfelt Italian folk-pop ballad led by a warm, clear male vocal and an intricately fingerpicked acoustic guitar. The arrangement begins simply, establishing a nostalgic mood. It gradually builds, introducing a steady bassline and a gentle drum kit that provides a soft, driving rhythm in the choruses. The song's dynamics swell for the choruses, creating an anthemic feel, before receding in the verses for more intimate moments. The track concludes with a brief, melodic acoustic guitar solo that fades to silence.", 'duration': 152, 'genres': 'Italian folk-pop', 'keyscale': 'A major', 'language': 'it', 'timesignature': '4', 'lyrics': "[Intro - Acoustic Guitar]\n\n[Verse 1]\nLa luna danza sopra il mare\nIl vento canta un vecchio canto\nLe stelle ridono senza parlare\n\n[Chorus]\nSogni di marmo tra i capelli\nCori nel vento nei cieli sereni\nSogni di marmo che non si spegneranno mai\n\n[Instrumental Break - Acoustic Guitar]\n\n[Verse 2]\nLa roccia resta, ma non per noi\nIl cuore batte, ma non si spegne\nCammino scalzo tra i tuoi e i tuoi\n\n[Chorus]\nSogni di marmo tra i capelli\nCori nel vento nei cieli sereni\nSogni di marmo che non si spegneranno mai\n\n[Instrumental Break - Acoustic Guitar]\n\n[Bridge]\nLe montagne guardano, restano\nIl firmamento sapre d'amaro\nE il tempo si ferma, ma chi lo aspetta?\n\n[Chorus]\nSogni di marmo tra i capelli\nCori nel vento nei cieli sereni\nSogni di marmo che non si spegneranno mai\n\n[Outro - Acoustic Guitar]", 'instrumental': False} fields
+F0 {"phase": "create_sample", "phase_s": 7.04, "elapsed_s": 119.98, "footprint_mb": 13312, "swap_used_mb": 7076, "mlx_active_mb": 4945, "mlx_peak_mb": 7214, "mlx_cache_mb": 60, "mps_driver_mb": 11881, "mps_current_mb": 5876, "ok": true, "bpm": 100, "keyscale": "A major", "language": "it", "lm_duration": 152.0, "caption": "A heartfelt Italian folk-pop ballad led by a warm, clear male vocal and an intricately fingerpicked acoustic guitar. The arrangement begins simply, establishing", "lyrics_lines": 37}
+2026-10-23 15:20:43.888 | INFO     | acestep.inference:generate_music:662 - [generate_music] LLM usage decision: thinking=True, use_cot_caption=True, use_cot_language=True, use_cot_metas=True, need_lm_for_cot=True, llm_initialized=True, use_lm=True
+2026-10-23 15:20:43.888 | INFO     | acestep.inference:generate_music:720 - LM chunk 1/1 (infer_type=llm_dit) (size: 1, seeds: [42])
+2026-10-23 15:20:43.888 | INFO     | acestep.llm_inference:generate_with_stop_condition:1371 - Phase 1: Generating CoT metadata...
+2026-10-23 15:20:43.889 | INFO     | acestep.llm_inference:generate_with_stop_condition:1377 - generate_with_stop_condition: formatted_prompt=<|im_start|>system
+# Instruction
+Generate audio semantic tokens based on the given conditions:
+
+<|im_end|>
+<|im_start|>user
+# Caption
+A heartfelt Italian folk-pop ballad led by a warm, clear male vocal and an intricately fingerpicked acoustic guitar. The arrangement begins simply, establishing a nostalgic mood. It gradually builds, introducing a steady bassline and a gentle drum kit that provides a soft, driving rhythm in the choruses. The song's dynamics swell for the choruses, creating an anthemic feel, before receding in the verses for more intimate moments. The track concludes with a brief, melodic acoustic guitar solo that fades to silence.
+
+# Lyric
+[Intro - Acoustic Guitar]
+
+[Verse 1]
+La luna danza sopra il mare
+Il vento canta un vecchio canto
+Le stelle ridono senza parlare
+
+[Chorus]
+Sogni di marmo tra i capelli
+Cori nel vento nei cieli sereni
+Sogni di marmo che non si spegneranno mai
+
+[Instrumental Break - Acoustic Guitar]
+
+[Verse 2]
+La roccia resta, ma non per noi
+Il cuore batte, ma non si spegne
+Cammino scalzo tra i tuoi e i tuoi
+
+[Chorus]
+Sogni di marmo tra i capelli
+Cori nel vento nei cieli sereni
+Sogni di marmo che non si spegneranno mai
+
+[Instrumental Break - Acoustic Guitar]
+
+[Bridge]
+Le montagne guardano, restano
+Il firmamento sapre d'amaro
+E il tempo si ferma, ma chi lo aspetta?
+
+[Chorus]
+Sogni di marmo tra i capelli
+Cori nel vento nei cieli sereni
+Sogni di marmo che non si spegneranno mai
+
+[Outro - Acoustic Guitar]
+<|im_end|>
+<|im_start|>assistant
+
+2026-10-23 15:20:44.031 | INFO     | acestep.llm_inference:_run_mlx_single_native:3595 - MLX native prefill: 411 tokens in 0.14s (2915.4 tok/s)
+MLX Gen (native):   0%|          | 0/3500 [00:00<?, ?tok/s]MLX Gen (native):   0%|          | 7/3500 [00:00<00:53, 65.59tok/s]MLX Gen (native):   0%|          | 14/3500 [00:00<00:55, 62.26tok/s]MLX Gen (native):   1%|          | 21/3500 [00:00<00:56, 61.27tok/s]MLX Gen (native):   1%|          | 28/3500 [00:00<00:57, 60.81tok/s]MLX Gen (native):   1%|          | 35/3500 [00:00<00:57, 60.53tok/s]MLX Gen (native):   1%|          | 42/3500 [00:00<00:57, 60.35tok/s]MLX Gen (native):   1%|▏         | 49/3500 [00:00<00:57, 60.16tok/s]MLX Gen (native):   2%|▏         | 56/3500 [00:00<00:57, 60.03tok/s]MLX Gen (native):   2%|▏         | 63/3500 [00:01<00:57, 59.94tok/s]MLX Gen (native):   2%|▏         | 69/3500 [00:01<00:57, 59.82tok/s]MLX Gen (native):   2%|▏         | 75/3500 [00:01<00:57, 59.81tok/s]MLX Gen (native):   2%|▏         | 81/3500 [00:01<00:57, 59.79tok/s]MLX Gen (native):   2%|▏         | 87/3500 [00:01<00:57, 59.81tok/s]MLX Gen (native):   3%|▎         | 93/3500 [00:01<00:57, 59.74tok/s]MLX Gen (native):   3%|▎         | 99/3500 [00:01<00:56, 59.78tok/s]MLX Gen (native):   3%|▎         | 105/3500 [00:01<00:57, 59.07tok/s]MLX Gen (native):   3%|▎         | 111/3500 [00:01<00:57, 59.27tok/s]MLX Gen (native):   3%|▎         | 117/3500 [00:01<00:56, 59.48tok/s]MLX Gen (native):   4%|▎         | 123/3500 [00:02<00:56, 59.58tok/s]MLX Gen (native):   4%|▎         | 130/3500 [00:02<00:56, 59.78tok/s]MLX Gen (native):   4%|▍         | 136/3500 [00:02<00:56, 59.84tok/s]MLX Gen (native):   4%|▍         | 143/3500 [00:02<00:56, 59.88tok/s]MLX Gen (native):   4%|▍         | 150/3500 [00:02<00:55, 59.98tok/s]MLX Gen (native):   4%|▍         | 152/3500 [00:02<00:55, 60.04tok/s]
+2026-10-23 15:20:46.563 | INFO     | acestep.llm_inference:_run_mlx_single_native:3711 - MLX native generation complete: 152 tokens in 2.53s (60.0 tok/s) | prefill 0.14s + decode 2.53s = 2.67s total
+2026-10-23 15:20:46.563 | DEBUG    | acestep.llm_inference:parse_lm_output:2813 - Debug output text: <think>
+bpm: 100
+caption: A heartfelt Italian folk-pop ballad led by a warm, clear male vocal and an
+  intricately fingerpicked acoustic guitar. The arrangement begins simply, establishing
+  a nostalgic mood. It gradually builds, introducing a steady bassline and a gentle
+  drum kit that provides a soft, driving rhythm in the choruses. The song's dynamics
+  swell for the choruses, creating an anthemic feel, before receding in the verses
+  for more intimate moments. The track concludes with a brief, melodic acoustic guitar
+  solo that fades to silence.
+duration: 30
+keyscale: A major
+language: it
+timesignature: 4
+<|im_end|>
+2026-10-23 15:20:46.563 | INFO     | acestep.llm_inference:generate_with_stop_condition:1422 - Phase 1 completed in 2.68s. Generated metadata: ['bpm', 'caption', 'duration', 'keyscale', 'language', 'timesignature']
+2026-10-23 15:20:46.563 | INFO     | acestep.llm_inference:generate_with_stop_condition:1482 - Phase 2: Generating audio codes...
+2026-10-23 15:20:46.564 | INFO     | acestep.llm_inference:generate_with_stop_condition:1490 - generate_with_stop_condition: formatted_prompt_with_cot=<|im_start|>system
+# Instruction
+Generate audio semantic tokens based on the given conditions:
+
+<|im_end|>
+<|im_start|>user
+# Caption
+A heartfelt Italian folk-pop ballad led by a warm, clear male vocal and an intricately fingerpicked acoustic guitar. The arrangement begins simply, establishing a nostalgic mood. It gradually builds, introducing a steady bassline and a gentle drum kit that provides a soft, driving rhythm in the choruses. The song's dynamics swell for the choruses, creating an anthemic feel, before receding in the verses for more intimate moments. The track concludes with a brief, melodic acoustic guitar solo that fades to silence.
+
+# Lyric
+[Intro - Acoustic Guitar]
+
+[Verse 1]
+La luna danza sopra il mare
+Il vento canta un vecchio canto
+Le stelle ridono senza parlare
+
+[Chorus]
+Sogni di marmo tra i capelli
+Cori nel vento nei cieli sereni
+Sogni di marmo che non si spegneranno mai
+
+[Instrumental Break - Acoustic Guitar]
+
+[Verse 2]
+La roccia resta, ma non per noi
+Il cuore batte, ma non si spegne
+Cammino scalzo tra i tuoi e i tuoi
+
+[Chorus]
+Sogni di marmo tra i capelli
+Cori nel vento nei cieli sereni
+Sogni di marmo che non si spegneranno mai
+
+[Instrumental Break - Acoustic Guitar]
+
+[Bridge]
+Le montagne guardano, restano
+Il firmamento sapre d'amaro
+E il tempo si ferma, ma chi lo aspetta?
+
+[Chorus]
+Sogni di marmo tra i capelli
+Cori nel vento nei cieli sereni
+Sogni di marmo che non si spegneranno mai
+
+[Outro - Acoustic Guitar]
+<|im_end|>
+<|im_start|>assistant
+<think>
+bpm: 100
+caption: A heartfelt Italian folk-pop ballad led by a warm, clear male vocal and an
+  intricately fingerpicked acoustic guitar. The arrangement begins simply, establishing
+  a nostalgic mood. It gradually builds, introducing a steady bassline and a gentle
+  drum kit that provides a soft, driving rhythm in the choruses. The song's dynamics
+  swell for the choruses, creating an anthemic feel, before receding in the verses
+  for more intimate moments. The track concludes with a brief, melodic acoustic guitar
+  solo that fades to silence.
+duration: 30
+keyscale: A major
+language: it
+timesignature: 4
+</think>
+
+
+2026-10-23 15:20:46.565 | INFO     | acestep.llm_inference:_run_mlx_single_native:3514 - MLX native: pre-transitioned FSM to CODES_GENERATION (native fast path)
+2026-10-23 15:20:46.565 | INFO     | acestep.llm_inference:_build_unconditional_prompt:395 - CFG unconditional prompt (phase=codes, is_batch=False, negative_prompt='NO USER INPUT'):
+<|im_start|>system
+# Instruction
+Generate audio semantic tokens based on the given conditions:
+
+<|im_end|>
+<|im_start|>user
+NO USER INPUT<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+
+2026-10-23 15:20:46.775 | INFO     | acestep.llm_inference:_run_mlx_single_native:3571 - MLX native prefill: 597 tokens (cond=564, uncond=33) in 0.21s (2840.9 tok/s)
+MLX CFG Gen (native):   0%|          | 0/160 [00:00<?, ?tok/s]MLX CFG Gen (native):   3%|▎         | 5/160 [00:00<00:03, 45.05tok/s]MLX CFG Gen (native):   6%|▋         | 10/160 [00:00<00:03, 39.79tok/s]MLX CFG Gen (native):   9%|▉         | 15/160 [00:00<00:03, 38.37tok/s]MLX CFG Gen (native):  12%|█▏        | 19/160 [00:00<00:03, 37.82tok/s]MLX CFG Gen (native):  14%|█▍        | 23/160 [00:00<00:03, 37.51tok/s]MLX CFG Gen (native):  17%|█▋        | 27/160 [00:00<00:03, 37.32tok/s]MLX CFG Gen (native):  19%|█▉        | 31/160 [00:00<00:03, 37.22tok/s]MLX CFG Gen (native):  22%|██▏       | 35/160 [00:00<00:03, 37.09tok/s]MLX CFG Gen (native):  24%|██▍       | 39/160 [00:01<00:03, 36.98tok/s]MLX CFG Gen (native):  27%|██▋       | 43/160 [00:01<00:03, 36.98tok/s]MLX CFG Gen (native):  29%|██▉       | 47/160 [00:01<00:03, 36.90tok/s]MLX CFG Gen (native):  32%|███▏      | 51/160 [00:01<00:02, 36.86tok/s]MLX CFG Gen (native):  34%|███▍      | 55/160 [00:01<00:02, 36.84tok/s]MLX CFG Gen (native):  37%|███▋      | 59/160 [00:01<00:02, 36.83tok/s]MLX CFG Gen (native):  39%|███▉      | 63/160 [00:01<00:02, 36.83tok/s]MLX CFG Gen (native):  42%|████▏     | 67/160 [00:01<00:02, 36.79tok/s]MLX CFG Gen (native):  44%|████▍     | 71/160 [00:01<00:02, 36.78tok/s]MLX CFG Gen (native):  47%|████▋     | 75/160 [00:02<00:02, 36.80tok/s]MLX CFG Gen (native):  49%|████▉     | 79/160 [00:02<00:02, 36.80tok/s]MLX CFG Gen (native):  52%|█████▏    | 83/160 [00:02<00:02, 36.74tok/s]MLX CFG Gen (native):  54%|█████▍    | 87/160 [00:02<00:01, 36.70tok/s]MLX CFG Gen (native):  57%|█████▋    | 91/160 [00:02<00:01, 36.69tok/s]MLX CFG Gen (native):  59%|█████▉    | 95/160 [00:02<00:01, 36.69tok/s]MLX CFG Gen (native):  62%|██████▏   | 99/160 [00:02<00:01, 36.69tok/s]MLX CFG Gen (native):  64%|██████▍   | 103/160 [00:02<00:01, 36.69tok/s]MLX CFG Gen (native):  67%|██████▋   | 107/160 [00:02<00:01, 36.69tok/s]MLX CFG Gen (native):  69%|██████▉   | 111/160 [00:02<00:01, 36.66tok/s]MLX CFG Gen (native):  72%|███████▏  | 115/160 [00:03<00:01, 36.62tok/s]MLX CFG Gen (native):  74%|███████▍  | 119/160 [00:03<00:01, 36.61tok/s]MLX CFG Gen (native):  77%|███████▋  | 123/160 [00:03<00:01, 36.59tok/s]MLX CFG Gen (native):  79%|███████▉  | 127/160 [00:03<00:00, 36.62tok/s]MLX CFG Gen (native):  82%|████████▏ | 131/160 [00:03<00:00, 36.57tok/s]MLX CFG Gen (native):  84%|████████▍ | 135/160 [00:03<00:00, 36.54tok/s]MLX CFG Gen (native):  87%|████████▋ | 139/160 [00:03<00:00, 36.54tok/s]MLX CFG Gen (native):  89%|████████▉ | 143/160 [00:03<00:00, 36.56tok/s]MLX CFG Gen (native):  92%|█████████▏| 147/160 [00:03<00:00, 36.51tok/s]MLX CFG Gen (native):  94%|█████████▍| 151/160 [00:04<00:00, 36.49tok/s]MLX CFG Gen (native):  94%|█████████▍| 151/160 [00:04<00:00, 36.93tok/s]
+2026-10-23 15:20:50.864 | INFO     | acestep.llm_inference:_run_mlx_single_native:3711 - MLX native generation complete: 151 tokens in 4.09s (36.9 tok/s) | prefill 0.21s + decode 4.09s = 4.30s total
+2026-10-23 15:20:50.865 | DEBUG    | acestep.llm_inference:parse_lm_output:2813 - Debug output text: <|audio_code_16548|><|audio_code_24871|><|audio_code_1719|><|audio_code_12527|><|audio_code_62930|><|audio_code_18238|><|audio_code_50178|><|audio_code_11734|><|audio_code_57152|><|audio_code_7367|><|audio_code_14711|><|audio_code_17159|><|audio_code_63815|><|audio_code_9658|><|audio_code_24017|><|audio_code_10705|><|audio_code_54264|><|audio_code_17872|><|audio_code_2553|><|audio_code_53752|><|audio_code_52176|><|audio_code_15353|><|audio_code_61432|><|audio_code_14321|><|audio_code_50948|><|audio_code_63695|><|audio_code_42311|><|audio_code_21063|><|audio_code_96|><|audio_code_17499|><|audio_code_41035|><|audio_code_44352|><|audio_code_5007|><|audio_code_48628|><|audio_code_38222|><|audio_code_62949|><|audio_code_1490|><|audio_code_13810|><|audio_code_8676|><|audio_code_13250|><|audio_code_43458|><|audio_code_50171|><|audio_code_23507|><|audio_code_970|><|audio_code_37843|><|audio_code_6090|><|audio_code_8593|><|audio_code_1003|><|audio_code_21974|><|audio_code_43663|><|audio_code_26783|><|audio_code_20239|><|audio_code_1838|><|audio_code_25105|><|audio_code_53743|><|audio_code_37380|><|audio_code_14290|><|audio_code_36345|><|audio_code_38583|><|audio_code_43493|><|audio_code_41383|><|audio_code_43343|><|audio_code_50666|><|audio_code_59843|><|audio_code_61419|><|audio_code_18409|><|audio_code_1314|><|audio_code_28659|><|audio_code_13274|><|audio_code_62402|><|audio_code_12720|><|audio_code_10694|><|audio_code_38062|><|audio_code_7178|><|audio_code_2132|><|audio_code_13825|><|audio_code_11519|><|audio_code_31654|><|audio_code_51708|><|audio_code_42120|><|audio_code_40265|><|audio_code_17704|><|audio_code_20832|><|audio_code_59790|><|audio_code_921|><|audio_code_51656|><|audio_code_4561|><|audio_code_2041|><|audio_code_2960|><|audio_code_54225|><|audio_code_320|><|audio_code_59337|><|audio_code_25041|><|audio_code_11209|><|audio_code_51184|><|audio_code_9706|><|audio_code_11806|><|audio_code_24066|><|audio_code_17467|><|audio_code_539|><|audio_code_3387|><|audio_code_55528|><|audio_code_51686|><|audio_code_38112|><|audio_code_8700|><|audio_code_27463|><|audio_code_48519|><|audio_code_54599|><|audio_code_53202|><|audio_code_1018|><|audio_code_19411|><|audio_code_450|><|audio_code_58826|><|audio_code_14322|><|audio_code_11731|><|audio_code_51706|><|audio_code_19410|><|audio_code_450|><|audio_code_56777|><|audio_code_38895|><|audio_code_17519|><|audio_code_4132|><|audio_code_32787|><|audio_code_30217|><|audio_code_23997|><|audio_code_24563|><|audio_code_22983|><|audio_code_25543|><|audio_code_27092|><|audio_code_981|><|audio_code_54512|><|audio_code_48559|><|audio_code_11799|><|audio_code_20303|><|audio_code_2206|><|audio_code_27149|><|audio_code_70|><|audio_code_30957|><|audio_code_3371|><|audio_code_24978|><|audio_code_14218|><|audio_code_11138|><|audio_code_18345|><|audio_code_23016|><|audio_code_55050|><|audio_code_43507|><|audio_code_17826|><|audio_code_12272|><|audio_code_25446|><|audio_code_50631|><|im_end|>
+2026-10-23 15:20:50.865 | INFO     | acestep.llm_inference:generate_with_stop_condition:1650 - Phase 2 completed in 4.30s. Generated 150 audio codes
+2026-10-23 15:20:50.865 | INFO     | acestep.core.generation.handler.generate_music:generate_music:313 - [generate_music] Turbo model detected: overriding guidance_scale 7.0 -> 1.0 (turbo does not use CFG).
+2026-10-23 15:20:50.865 | INFO     | acestep.core.generation.handler.generate_music:generate_music:329 - [generate_music] Starting generation...
+2026-10-23 15:20:50.865 | INFO     | acestep.core.generation.handler.generate_music:generate_music:332 - [generate_music] Preparing inputs...
+2026-10-23 15:20:50.866 | INFO     | acestep.core.generation.handler.generate_music_request:_prepare_reference_and_source_audio:204 - [generate_music] cover task: no src_audio but audio codes provided, proceeding with codes
+2026-10-23 15:20:54.079 | INFO     | acestep.core.generation.handler.conditioning_target:_prepare_target_latents_and_wavs:78 - [generate_music] Decoding audio codes for item 0...
+2026-10-23 15:20:56.238 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_precomputed_lm_hints:31 - [generate_music] Decoding audio codes for LM hints for item 0...
+2026-10-23 15:20:56.241 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:119 - 
+======================================================================
+2026-10-23 15:20:56.241 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:120 - 🔍 [DEBUG] DiT TEXT ENCODER INPUT (Inference)
+2026-10-23 15:20:56.241 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:121 - ======================================================================
+2026-10-23 15:20:56.241 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:122 - text_prompt:
+# Instruction
+Generate audio semantic tokens based on the given conditions:
+
+# Caption
+A heartfelt Italian folk-pop ballad led by a warm, clear male vocal and an intricately fingerpicked acoustic guitar. The arrangement begins simply, establishing a nostalgic mood. It gradually builds, introducing a steady bassline and a gentle drum kit that provides a soft, driving rhythm in the choruses. The song's dynamics swell for the choruses, creating an anthemic feel, before receding in the verses for more intimate moments. The track concludes with a brief, melodic acoustic guitar solo that fades to silence.
+
+# Metas
+- bpm: 100
+- timesignature: 4
+- keyscale: A major
+- duration: 30 seconds
+<|endoftext|>
+
+2026-10-23 15:20:56.241 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:123 - ======================================================================
+2026-10-23 15:20:56.241 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:124 - lyrics_text:
+# Languages
+it
+
+# Lyric
+[Intro - Acoustic Guitar]
+
+[Verse 1]
+La luna danza sopra il mare
+Il vento canta un vecchio canto
+Le stelle ridono senza parlare
+
+[Chorus]
+Sogni di marmo tra i capelli
+Cori nel vento nei cieli sereni
+Sogni di marmo che non si spegneranno mai
+
+[Instrumental Break - Acoustic Guitar]
+
+[Verse 2]
+La roccia resta, ma non per noi
+Il cuore batte, ma non si spegne
+Cammino scalzo tra i tuoi e i tuoi
+
+[Chorus]
+Sogni di marmo tra i capelli
+Cori nel vento nei cieli sereni
+Sogni di marmo che non si spegneranno mai
+
+[Instrumental Break - Acoustic Guitar]
+
+[Bridge]
+Le montagne guardano, restano
+Il firmamento sapre d'amaro
+E il tempo si ferma, ma chi lo aspetta?
+
+[Chorus]
+Sogni di marmo tra i capelli
+Cori nel vento nei cieli sereni
+Sogni di marmo che non si spegneranno mai
+
+[Outro - Acoustic Guitar]<|endoftext|>
+2026-10-23 15:20:56.241 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:125 - ======================================================================
+
+2026-10-23 15:20:56.333 | INFO     | acestep.core.generation.handler.conditioning_embed:preprocess_batch:110 - [preprocess_batch] Inferring prompt embeddings...
+2026-10-23 15:20:56.645 | INFO     | acestep.core.generation.handler.conditioning_embed:preprocess_batch:113 - [preprocess_batch] Inferring lyric embeddings...
+2026-10-23 15:20:56.647 | INFO     | acestep.core.generation.handler.service_generate_execute:_execute_service_generate_diffusion:173 - [service_generate] Generating audio... (DiT backend: MLX (native))
+2026-10-23 15:21:05.093 | INFO     | acestep.models.mlx.dit_generate:mlx_generate_diffusion:410 - [MLX-DiT] DCW enabled (mode=double, scaler=0.050, high_scaler=0.020, wavelet=haar, backend=MLX-native Haar).
+Using precomputed LM hints
+MLX DiT diffusion:   0%|          | 0/8 [00:00<?, ?it/s]MLX DiT diffusion:  12%|█▎        | 1/8 [00:02<00:17,  2.45s/it]MLX DiT diffusion:  25%|██▌       | 2/8 [00:03<00:08,  1.40s/it]MLX DiT diffusion:  38%|███▊      | 3/8 [00:03<00:05,  1.00s/it]MLX DiT diffusion:  50%|█████     | 4/8 [00:04<00:03,  1.22it/s]MLX DiT diffusion:  62%|██████▎   | 5/8 [00:04<00:02,  1.39it/s]MLX DiT diffusion:  75%|███████▌  | 6/8 [00:05<00:01,  1.53it/s]MLX DiT diffusion:  88%|████████▊ | 7/8 [00:05<00:00,  1.62it/s]MLX DiT diffusion: 100%|██████████| 8/8 [00:06<00:00,  1.70it/s]MLX DiT diffusion: 100%|██████████| 8/8 [00:06<00:00,  1.27it/s]
+2026-10-23 15:21:11.417 | INFO     | acestep.core.generation.handler.service_generate_execute:_execute_service_generate_diffusion:267 - [service_generate] DiT diffusion complete via MLX (6.32s total, 0.791s/step).
+2026-10-23 15:21:11.418 | INFO     | acestep.core.generation.handler.generate_music_decode:_prepare_generate_music_decode_state:42 - [generate_music] Model generation completed. Decoding latents...
+2026-10-23 15:21:11.420 | DEBUG    | acestep.core.generation.handler.generate_music_decode:_prepare_generate_music_decode_state:64 - [generate_music] pred_latents: torch.Size([1, 750, 64]), dtype=torch.float32
+2026-10-23 15:21:11.420 | DEBUG    | acestep.core.generation.handler.generate_music_decode:_prepare_generate_music_decode_state:65 - [generate_music] time_costs: {'diffusion_time_cost': 6.324696063995361, 'diffusion_per_step_time_cost': 0.7905870079994202, 'total_time_cost': 6.325243234634399, 'sampler_mode': 'euler', 'offload_time_cost': 0.0}
+2026-10-23 15:21:11.440 | INFO     | acestep.core.generation.handler.generate_music_decode:_decode_generate_music_pred_latents:127 - [generate_music] Decoding latents with VAE...
+2026-10-23 15:21:11.445 | DEBUG    | acestep.core.generation.handler.generate_music_decode:_decode_generate_music_pred_latents:136 - [generate_music] Before VAE decode: allocated=0.00GB, max=0.00GB
+2026-10-23 15:21:11.445 | INFO     | acestep.core.generation.handler.generate_music_decode:_decode_generate_music_pred_latents:172 - [generate_music] Using tiled VAE decode to reduce VRAM usage...
+2026-10-23 15:21:19.430 | INFO     | acestep.core.generation.handler.mlx_vae_decode_native:_mlx_vae_decode:66 - [MLX-VAE] Decoded 1 sample(s), 750 latent frames -> audio in 7.98s (convert=0.001s, decode=7.98s, dtype=mlx.core.float32)
+2026-10-23 15:21:19.442 | DEBUG    | acestep.core.generation.handler.generate_music_decode:_decode_generate_music_pred_latents:193 - [generate_music] After VAE decode: allocated=0.00GB, max=0.00GB
+2026-10-23 15:21:19.751 | INFO     | acestep.core.generation.handler.generate_music_payload:_build_generate_music_success_payload:38 - [generate_music] VAE decode completed. Preparing audio tensors...
+2026-10-23 15:21:19.752 | INFO     | acestep.core.generation.handler.generate_music_payload:_build_generate_music_success_payload:50 - [generate_music] Done! Generated 1 audio tensors.
+2026-10-23 15:21:21.914 | INFO     | acestep.inference:generate_music:1002 - [Normalization] Audio 0 BEFORE: Peak=1.0000, Target=-1.0dB
+2026-10-23 15:21:21.928 | INFO     | acestep.inference:generate_music:1007 - [Normalization] Audio 0 AFTER: Peak=0.8913
+2026-10-23 15:21:21.996 | DEBUG    | acestep.audio_utils:save_audio:339 - [AudioSaver] Fallback soundfile Saved audio to /Users/fab/acestep-f0/out/gen/d2da4193-b84b-ee2d-abb9-9580deae7c39.flac (flac, 48000Hz)
+F0 {"phase": "generate_music", "phase_s": 38.11, "elapsed_s": 158.14, "footprint_mb": 13312, "swap_used_mb": 8864, "mlx_active_mb": 4946, "mlx_peak_mb": 9610, "mlx_cache_mb": 11, "mps_driver_mb": 11834, "mps_current_mb": 5876, "ok": true, "error": null, "paths": ["/Users/fab/acestep-f0/out/gen/d2da4193-b84b-ee2d-abb9-9580deae7c39.flac"], "replay": false, "torch_dtype": "torch.float32", "use_mlx_dit": true, "use_mlx_vae": true}
+      159,59 real        25,85 user        20,59 sys
+         12062474240  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+             2135777  page reclaims
+              400377  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+              614607  voluntary context switches
+              405045  involuntary context switches
+        823637861558  instructions retired
+        187194973316  cycles elapsed
+         21044040480  peak memory footprint
+EXIT 0

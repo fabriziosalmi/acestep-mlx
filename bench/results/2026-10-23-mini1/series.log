@@ -1,0 +1,17 @@
+[15:18:43] start gen
+[15:21:23] end gen EXIT 0
+[15:21:43] start ref1
+[15:23:57] end ref1 EXIT 0
+[15:24:17] start ref2
+[15:26:39] end ref2 EXIT 0
+[15:26:59] start a
+[15:28:42] end a EXIT 0
+[15:29:02] start b
+[15:30:57] end b EXIT 0
+[15:31:17] start c
+[15:33:26] end c EXIT 0
+ref2   vs ref1: SNR     inf dB  corr 1.0000  LSD   0.00 dB  rms  -19.4 dBFS
+a      vs ref1: SNR     inf dB  corr 1.0000  LSD   0.00 dB  rms  -19.4 dBFS
+b      vs ref1: SNR   16.84 dB  corr 0.9898  LSD   7.59 dB  rms  -19.3 dBFS
+c      vs ref1: SNR     inf dB  corr 1.0000  LSD   0.00 dB  rms  -19.4 dBFS
+SERIES_DONE

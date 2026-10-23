@@ -1,0 +1,8 @@
+[15:35:08] start bt
+[15:37:07] end bt EXIT 0
+[15:37:27] start bv
+[15:39:09] end bv EXIT 0
+bt     vs ref1: SNR   16.84 dB  corr 0.9898  LSD   4.68 dB  rms  -19.3 dBFS
+bv     vs ref1: SNR   58.06 dB  corr 1.0000  LSD   7.21 dB  rms  -19.4 dBFS
+b      vs ref1: SNR   16.84 dB  corr 0.9898  LSD   7.59 dB  rms  -19.3 dBFS
+SERIES_DONE

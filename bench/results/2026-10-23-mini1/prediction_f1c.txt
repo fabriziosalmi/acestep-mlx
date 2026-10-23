@@ -1,0 +1,4 @@
+F1c PREDICTION, written 2026-10-23 15:35 BEFORE the runs. Same frozen inputs (fixed.json), compared to ref1.
+Context: b (torch bf16 compute + MLX VAE fp16) gave SNR 16.84 dB, corr 0.9898 vs ref1; a (MLX decoder bf16 weights) was bit-identical.
+S1 bt (torch model + text encoder bf16 only, VAE fp32): SNR 14-20 dB (accounts for most of b's deviation, conditioning is upstream of the 8 diffusion steps).
+S2 bv (MLX VAE fp16 only, torch fp32): SNR > 25 dB (decoder output only, no amplification through diffusion).

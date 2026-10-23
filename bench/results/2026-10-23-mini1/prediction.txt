@@ -1,0 +1,8 @@
+F0 PREDICTION, written 2026-10-23 14:28 BEFORE any measurement.
+Setup: Mac mini M4 16 GB (mini1, Mac-mini-di-fab), acestep-v15-turbo + acestep-5Hz-lm-0.6B, backend mlx, batch 1, 30 s, seed 42.
+Basis: safetensors header (2.394B params BF16, decoder 1.575B) + code reading (fp32 on MPS, MLX copy in fp32, torch decoder not freed).
+P1 footprint after init_dit: 18-20 GB (torch DiT fp32 9.58 + MLX decoder fp32 6.30 + text encoder fp32 2.38 + VAE ~0.7-1.35).
+P2 footprint after init_lm: +1.3 to +2.7 GB over P1.
+P3 swap used grows by more than 2 GB during the run.
+P4 use_mlx_dit=True and use_mlx_vae=True (no silent fallback). If False, P1 drops by ~6.3 GB.
+P5 (low confidence, no prior Mac data) create_sample 5-30 s; generate_music for 30 s of audio 20-120 s.
