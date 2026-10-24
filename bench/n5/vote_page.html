@@ -55,7 +55,8 @@
 </div></footer>
 <script>
 const PAIRS = /*PAIRS*/[];
-const STORE = "n5-votes";
+const TAG = /*TAG*/"N5";
+const STORE = TAG.toLowerCase() + "-votes";
 let votes = {};
 try { votes = JSON.parse(localStorage.getItem(STORE)) || {}; } catch (e) { votes = {}; }
 
@@ -66,7 +67,7 @@ function save() {
     const flags = (v.brokenA ? " !a" : "") + (v.brokenB ? " !b" : "");
     return `${p.n} ${v.choice || "-"}${flags}`;
   });
-  document.getElementById("summary").value = "N5 " + lines.join("; ");
+  document.getElementById("summary").value = TAG + " " + lines.join("; ");
   const done = PAIRS.filter(p => (votes[p.n] || {}).choice).length;
   document.getElementById("count").textContent = `${done}/${PAIRS.length}`;
 }

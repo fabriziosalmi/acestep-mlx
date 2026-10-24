@@ -21,11 +21,11 @@ PEAK_MAX = 0.99
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
-def read_clips(clips_dir: str) -> dict:
-    """Clip id -> N5 record, from the two series logs."""
+def read_clips(clips_dir: str, lms=("0.6B", "1.7B"), log_prefix: str = "n5") -> dict:
+    """Clip id -> N5 record, from the series logs."""
     clips = {}
-    for lm in ("0.6B", "1.7B"):
-        with open(os.path.join(clips_dir, f"n5_{lm}.log")) as fh:
+    for lm in lms:
+        with open(os.path.join(clips_dir, f"{log_prefix}_{lm}.log")) as fh:
             for line in fh:
                 if line.startswith("N5 {"):
                     record = json.loads(line[3:])
@@ -52,14 +52,11 @@ def rms(audio: np.ndarray) -> float:
     return float(np.sqrt(np.mean(np.square(audio, dtype=np.float64))))
 
 
-def main() -> None:
-    clips_dir, test_dir, key_path = sys.argv[1:4]
-    sys.path.insert(0, HERE)
-    from make_clips import PROMPTS
-
-    clips = read_clips(clips_dir)
-    rng = random.Random(SHUFFLE_SEED)
-    order = pairs(PROMPTS)
+def build(clips: dict, test_dir: str, key_path: str, prompts: dict, order: list, shuffle_seed: int,
+          tag: str) -> None:
+    """Write the shuffled, level-matched pairs, the vote page tagged ``tag`` and the key."""
+    rng = random.Random(shuffle_seed)
+    order = list(order)
     rng.shuffle(order)
     os.makedirs(os.path.join(test_dir, "clips"), exist_ok=True)
     key, page = {}, []
@@ -70,7 +67,7 @@ def main() -> None:
         levels = [rms(a) for a, _ in audio]
         peaks = [float(np.max(np.abs(a))) for a, _ in audio]
         target = min(lv * min(1.0, PEAK_MAX / pk) for lv, pk in zip(levels, peaks))
-        entry = {"pair": pair_id, "prompt": PROMPTS[prompt_key]}
+        entry = {"pair": pair_id, "prompt": prompts[prompt_key]}
         for letter, (clip, label), (data, rate), level in zip("ab", sides, audio, levels):
             gain = target / level
             sf.write(os.path.join(test_dir, "clips", f"{number}{letter}.wav"), data * gain, rate,
@@ -79,14 +76,23 @@ def main() -> None:
                                      "md5": clips[clip]["md5"], "bpm": clips[clip]["bpm"],
                                      "keyscale": clips[clip]["keyscale"]}
         key[number] = entry
-        page.append({"n": number, "prompt": PROMPTS[prompt_key]})
+        page.append({"n": number, "prompt": prompts[prompt_key]})
     with open(key_path, "w") as fh:
-        json.dump({"shuffle_seed": SHUFFLE_SEED, "pairs": key}, fh, ensure_ascii=False, indent=1)
+        json.dump({"shuffle_seed": shuffle_seed, "pairs": key}, fh, ensure_ascii=False, indent=1)
     with open(os.path.join(HERE, "vote_page.html")) as fh:
-        html = fh.read().replace("/*PAIRS*/[]", json.dumps(page, ensure_ascii=False))
+        html = (fh.read().replace("/*PAIRS*/[]", json.dumps(page, ensure_ascii=False))
+                .replace('/*TAG*/"N5"', json.dumps(tag)))
     with open(os.path.join(test_dir, "index.html"), "w") as fh:
         fh.write(html)
     print(f"{len(order)} pairs written to {test_dir}; key in {key_path}")
+
+
+def main() -> None:
+    clips_dir, test_dir, key_path = sys.argv[1:4]
+    sys.path.insert(0, HERE)
+    from make_clips import PROMPTS
+
+    build(read_clips(clips_dir), test_dir, key_path, PROMPTS, pairs(PROMPTS), SHUFFLE_SEED, "N5")
 
 
 if __name__ == "__main__":

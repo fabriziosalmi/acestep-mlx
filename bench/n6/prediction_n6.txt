@@ -27,3 +27,9 @@ Decision rule, fixed now: literal becomes the default if it wins at least 6 of t
 more of 8 for literal happens about 1 time in 7; pooled with N5 (3 of 4) the evidence is 9 of 12 or better.
 Anything else keeps rewrite as the default and closes the question for now. If the null pair is not judged
 equal, the result is read as weaker and reported as such.
+
+N6 TECHNICAL RESULT, 2026-10-24 (clips in ~/acestep-f0/n6_clips on the Mac mini; key committed after the vote).
+T1 OK: 17 clips, all 30.0 s, no failure, peak footprint 11.83 GB; the 5 BPM prompts and score's D minor forced.
+T2 OK: literal captions equal the prompt in 8/8; rewrite captions are 393-593 characters for 38-60 character prompts.
+Side note: with no BPM in the prompt the LM chose 50 (rewrite) and 120 (literal) for the dark ambient drone.
+The refactor of bench/n5/assemble.py for N6 rebuilds the N5 key and clips byte for byte.
