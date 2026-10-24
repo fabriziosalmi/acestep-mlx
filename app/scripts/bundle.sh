@@ -1,5 +1,5 @@
 #!/bin/zsh
-# Builds build/ACE-Step.app with the engine inside, signed ad hoc.
+# Builds "build/ACE-Step MLX.app" with the engine inside, signed ad hoc.
 #
 # Contents/Resources/runtime holds:
 #   python/    a standalone CPython (uv-managed python-build-standalone) with upstream's
@@ -43,7 +43,7 @@ if [[ ! -f $RUNTIME/.complete ]]; then
   touch "$RUNTIME/.complete"
 fi
 
-APP=build/ACE-Step.app
+APP="build/ACE-Step MLX.app"
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources/runtime/engine"
 cp "$(swift build -c release --show-bin-path)/AceStep" "$APP/Contents/MacOS/AceStep"
@@ -57,10 +57,10 @@ cat > "$APP/Contents/Info.plist" <<PLIST
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <key>CFBundleName</key><string>ACE-Step</string>
+  <key>CFBundleName</key><string>ACE-Step MLX</string>
   <key>CFBundleDevelopmentRegion</key><string>en</string>
   <key>CFBundleLocalizations</key><array><string>en</string></array>
-  <key>CFBundleDisplayName</key><string>ACE-Step</string>
+  <key>CFBundleDisplayName</key><string>ACE-Step MLX</string>
   <key>CFBundleIdentifier</key><string>com.fabriziosalmi.acestep</string>
   <key>CFBundleExecutable</key><string>AceStep</string>
   <key>CFBundleIconFile</key><string>AppIcon</string>

@@ -1,8 +1,8 @@
-# acestep-mlx
+# ACE-Step MLX
 
-Working name. A native macOS app that turns a sentence into a song, built on
+A native macOS app that turns a sentence into a song, built on
 [ACE-Step 1.5](https://github.com/ace-step/ACE-Step-1.5), with MLX used wherever possible and
-no options in the window.
+no options in the window. An independent project, not affiliated with the ACE-Step authors.
 
 Version 0.3.0: a research prototype for Apple Silicon Macs with 16 GB of memory. The app carries
 its engine (Python, upstream's code and its locked dependencies); on the first start it downloads
@@ -45,7 +45,7 @@ defaults does not fit in 16 GB on this machine (MPS out of memory).
 ## How a song is made
 
 The app runs `python -m acestep_mlx.engine_service` with the Python in
-`ACE-Step.app/Contents/Resources/runtime`. On the first start the engine downloads the weights it
+`ACE-Step MLX.app/Contents/Resources/runtime`. On the first start the engine downloads the weights it
 needs from Hugging Face at pinned revisions, checks the sha256 of every weight file and marks
 them done, so later starts need no network (`engine/acestep_mlx/models.py`); upstream's own
 download, which would also fetch the 1.7B LM, is never used. The engine then loads the models
@@ -115,8 +115,8 @@ Requirements: Apple Silicon, macOS 14 or later, Xcode or the Command Line Tools,
 git clone https://github.com/ace-step/ACE-Step-1.5 ~/acestep-f0/ACE-Step-1.5   # read at ca1e85f
 git clone https://github.com/fabriziosalmi/acestep-mlx ~/acestep-mlx
 cd ~/acestep-mlx/app
-./scripts/bundle.sh          # builds build/ACE-Step.app with the engine inside, signed ad hoc
-open build/ACE-Step.app      # the first start downloads the weights
+./scripts/bundle.sh            # builds "build/ACE-Step MLX.app" with the engine inside, signed ad hoc
+open "build/ACE-Step MLX.app"  # the first start downloads the weights
 ```
 
 `bundle.sh` takes upstream's package and `uv.lock` from commit ca1e85f of that clone (`UPSTREAM`
@@ -135,7 +135,7 @@ The engine tests and `swift run` use a development install: upstream's venv and 
 cd ~/acestep-mlx/engine && ~/acestep-f0/ACE-Step-1.5/.venv/bin/python -m unittest discover -s tests
 cd ~/acestep-mlx/app && swift test             # needs Xcode (Swift Testing)
 cd ~/acestep-mlx/app && swift run AceStepE2E   # one real song through the app's model
-ACESTEP_RUNTIME=$PWD/build/ACE-Step.app/Contents/Resources/runtime swift run AceStepE2E  # the app's engine
+ACESTEP_RUNTIME="$PWD/build/ACE-Step MLX.app/Contents/Resources/runtime" swift run AceStepE2E  # the app's engine
 ```
 
 ## Layout
