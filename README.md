@@ -10,11 +10,17 @@ the model weights, 7.7 GB, and keeps them in `~/Library/Application Support/ACE-
 
 ## What it does
 
-Type a description, press Make song (Cmd-Return), and the song appears in the history, where it
-can be played, shown in Finder, have its lyrics copied, or be made again in another version.
+Type a description (or click one of the examples), press Make song (Cmd-Return), and the song
+appears at the top of the history. There it plays (Space plays the selected song, a slider shows
+and moves the position), drags out as a file to Finder or a DAW, shows in Finder, shares, has its
+lyrics copied, is made again in another version, or moves to the Trash. A song finished while the
+app is in the background badges the Dock icon and sends a notification. File > Show Songs Folder
+(Shift-Cmd-O) and Show Engine Log (Shift-Cmd-L) open the two places the app writes to.
+
 The window always says what the engine is doing: downloading models (first start only, with the
-bytes done), loading models, writing lyrics, composing, rendering, or that the models are unloaded
-to free memory.
+bytes done and the percentage on the Dock icon), loading models, writing lyrics, composing,
+rendering, or that the models are unloaded to free memory. Before downloading, the engine checks
+that the disk has room; after a failure, Try again starts it over. The app's text is English.
 
 ## Measured on a Mac mini M4 16 GB (macOS 26.4.1)
 
@@ -89,8 +95,8 @@ The laptop preset has not been measured on a laptop; its 30 s cap is a precautio
 - Without a BPM in the prompt the 0.6B LM can pick odd tempos (40-50 BPM for an Italian folk
   ballad in 3 of 6 runs), and it does not always follow the voice asked for.
 - A song with vocals peaks about 1.2 GB higher than an instrumental one; not attributed yet.
-- A failed download (no network, full disk) leaves the window on the error; reopen the app to
-  try again. Files already complete are kept by huggingface_hub; resuming was not measured.
+- After a failed download, Try again starts it over; files already complete are kept by
+  huggingface_hub, but resuming was not measured.
 - huggingface_hub writes its download log to `~/.cache/huggingface/xet/logs`, outside the app's
   folders.
 
@@ -118,7 +124,7 @@ been run on the Mac mini only, not on a clean Mac. The engine log is
 The engine tests and `swift run` use a development install: upstream's venv and checkpoints in
 `~/acestep-f0/ACE-Step-1.5` (`bench/f0/setup.sh` makes them) and this repo in `~/acestep-mlx`.
 `ACESTEP_RUNTIME` points the app's code at an app's runtime instead; `ACESTEP_PYTHON`,
-`ACESTEP_ENGINE` and `ACESTEP_PROJECT` override single paths.
+`ACESTEP_ENGINE`, `ACESTEP_PROJECT` and `ACESTEP_SONGS` override single paths.
 
 ```sh
 cd ~/acestep-mlx/engine && ~/acestep-f0/ACE-Step-1.5/.venv/bin/python -m unittest discover -s tests
