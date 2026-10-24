@@ -1,0 +1,20 @@
+PASS development install present []
+PASS engine ready in 34 s: ready
+PASS no request error 
+PASS phases seen ["lyrics", "composing", "rendering"]
+PASS audio on disk, 11520088 bytes, made in 20 s
+PASS history lists it
+song: 100 BPM, F minor, unknown, <tmp>/20261024-144400-ede81530/d1d24e0d-cd52-f0f4-2eb2-e3f3daed451c.wav
+PASS cycle 1: asleep after 20 s idle
+E2E 1792845878.9452128 asleep cycle 1
+E2E 1792845894.324544 wake cycle 1
+PASS cycle 1: woke, engine ready in 33 s, song done in 53 s
+PASS cycle 2: asleep after 19 s idle
+E2E 1792845968.12715 asleep cycle 2
+E2E 1792845968.127162 wake cycle 2
+PASS cycle 2: woke, engine ready in 33 s, song done in 53 s
+PASS cycle 3: asleep after 19 s idle
+E2E 1792846042.0180101 asleep cycle 3
+E2E 1792846057.833802 wake cycle 3
+PASS cycle 3: woke, engine ready in 33 s, song done in 54 s
+e2e exit 0

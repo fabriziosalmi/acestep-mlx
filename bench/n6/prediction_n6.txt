@@ -1,0 +1,42 @@
+N6 PREDICTION, written 2026-10-24 BEFORE any clip is made. Second blind A/B round, only literal vs rewrite
+(N5 K3 gave literal 3 of 4, below the 4/4 rule). Mac mini M4 16 GB, engine at 6860095, LM 0.6B, shift 1.0,
+prompt BPM/key forced, 30 s clips. Listener: Fab, same page and level matching as N5, new shuffle seed.
+
+Eight new prompts (none from N5; 3 vocal, 5 instrumental, 2 in Italian, 5 with a BPM, 1 with a key):
+  pop      "canzone pop italiana estiva con voce maschile, 120 bpm"
+  ambient  "dark ambient drone, slow evolving pads"
+  dnb      "drum and bass, 174 bpm, reese bass, amen breaks"
+  blues    "acoustic blues with slide guitar and a raspy male voice"
+  lofi     "lo-fi hip hop beat, 85 bpm, dusty vinyl, mellow piano"
+  score    "orchestral film score, epic strings and brass, D minor"
+  reggae   "reggae, 75 bpm, female vocals, offbeat guitar skank"
+  indus    "techno industriale, 140 bpm, kick distorto, rumore metallico"
+One pair per prompt (each clip generated on its own) plus one null pair: the same file twice (lofi).
+9 pairs, 18 clips, 9 min of audio.
+
+Technical predictions:
+T1 18 clips, all 30.0 s, no failure; forced BPM/key in song.json for the 5 BPM prompts and the D minor one.
+T2 Literal captions equal the prompt word for word; rewrite captions are longer than the prompt in 8/8.
+
+Listening predictions (low confidence):
+L1 Literal wins at least 5 of 8, rewrite at most 2.
+L2 The null pair is judged equal.
+
+Decision rule, fixed now: literal becomes the default if it wins at least 6 of the 8 pairs, rewrite wins at most
+1, and literal clips carry no more broken flags than rewrite clips. With no real difference and no ties, 6 or
+more of 8 for literal happens about 1 time in 7; pooled with N5 (3 of 4) the evidence is 9 of 12 or better.
+Anything else keeps rewrite as the default and closes the question for now. If the null pair is not judged
+equal, the result is read as weaker and reported as such.
+
+N6 TECHNICAL RESULT, 2026-10-24 (clips in ~/acestep-f0/n6_clips on the Mac mini; key committed after the vote).
+T1 OK: 17 clips, all 30.0 s, no failure, peak footprint 11.83 GB; the 5 BPM prompts and score's D minor forced.
+T2 OK: literal captions equal the prompt in 8/8; rewrite captions are 393-593 characters for 38-60 character prompts.
+Side note: with no BPM in the prompt the LM chose 50 (rewrite) and 120 (literal) for the dark ambient drone.
+The refactor of bench/n5/assemble.py for N6 rebuilds the N5 key and clips byte for byte.
+
+N6 LISTENING RESULT, 2026-10-24 (votes and key in bench/results/2026-10-24-mini1-n6/).
+Literal 5 (blues, reggae, pop, score, ambient), rewrite 3 (lofi, indus, dnb), no tie. One broken flag, on a rewrite
+clip (score). Null pair judged equal: L2 OK. L1 half: literal 5 as predicted, rewrite 3 (predicted at most 2).
+Decision by the rule: not met (needs literal >= 6 and rewrite <= 1). Rewrite stays the default; literal stays an
+option. Pooled with N5: literal 8 of 12 (8 or more by chance about 1 time in 5), broken flags 0 literal vs 2 rewrite.
+Post hoc and untested: rewrite won the three beat-driven electronic prompts; not a basis for a decision.

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ascolto alla cieca</title>
+<style>
+  :root { --bg: #f6f5f2; --card: #ffffff; --ink: #1d1d1f; --muted: #6e6e73; --line: #e3e1dc;
+          --accent: #2f6f4f; --accent-ink: #ffffff; --warn: #b3261e; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #161616; --card: #202020; --ink: #f2f2f2; --muted: #a0a0a5; --line: #333;
+            --accent: #6fbf8f; --accent-ink: #0c1a12; --warn: #ff8a80; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 28px 16px 160px; }
+  h1 { font-size: 22px; margin: 0 0 6px; }
+  .intro { color: var(--muted); margin: 0 0 22px; }
+  .pair { background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+          padding: 14px 16px; margin-bottom: 12px; }
+  .head { display: flex; gap: 10px; align-items: baseline; margin-bottom: 10px; }
+  .num { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .prompt { color: var(--muted); }
+  .clip { display: grid; grid-template-columns: 22px 1fr auto; gap: 10px; align-items: center; margin: 6px 0; }
+  .clip b { text-align: center; }
+  audio { width: 100%; height: 36px; }
+  .broken { color: var(--muted); font-size: 13px; white-space: nowrap; }
+  .broken input:checked + span { color: var(--warn); font-weight: 600; }
+  .choice { display: flex; gap: 8px; margin-top: 10px; }
+  .choice button { flex: 1; padding: 8px 0; border-radius: 8px; border: 1px solid var(--line);
+                   background: transparent; color: var(--ink); font: inherit; cursor: pointer; }
+  .choice button.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+  footer { position: fixed; left: 0; right: 0; bottom: 0; background: var(--card); border-top: 1px solid var(--line); }
+  footer div { max-width: 760px; margin: 0 auto; padding: 10px 16px; display: flex; gap: 10px; align-items: center; }
+  footer textarea { flex: 1; height: 54px; resize: none; font: 13px/1.4 ui-monospace, Menlo, monospace;
+                    background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; }
+  footer button { padding: 10px 14px; border-radius: 8px; border: 0; background: var(--accent);
+                  color: var(--accent-ink); font: inherit; font-weight: 600; cursor: pointer; }
+  .count { color: var(--muted); font-size: 13px; white-space: nowrap; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Ascolto alla cieca</h1>
+  <p class="intro">Ogni coppia ha lo stesso prompt e lo stesso volume medio. Scegli quella che preferisci, come musica e
+    come aderenza al prompt, oppure "pari". Spunta "rotto" se una clip ha difetti evidenti (glitch, silenzi, tempo
+    o genere sbagliati). Alla fine copia la riga in basso e incollala in chat.</p>
+  <div id="pairs"></div>
+</main>
+<footer><div>
+  <textarea id="summary" readonly></textarea>
+  <span class="count" id="count"></span>
+  <button id="copy">Copia</button>
+</div></footer>
+<script>
+const PAIRS = /*PAIRS*/[];
+const TAG = /*TAG*/"N5";
+const STORE = TAG.toLowerCase() + "-votes";
+let votes = {};
+try { votes = JSON.parse(localStorage.getItem(STORE)) || {}; } catch (e) { votes = {}; }
+
+function save() {
+  try { localStorage.setItem(STORE, JSON.stringify(votes)); } catch (e) { /* votes stay in the page */ }
+  const lines = PAIRS.map(p => {
+    const v = votes[p.n] || {};
+    const flags = (v.brokenA ? " !a" : "") + (v.brokenB ? " !b" : "");
+    return `${p.n} ${v.choice || "-"}${flags}`;
+  });
+  document.getElementById("summary").value = TAG + " " + lines.join("; ");
+  const done = PAIRS.filter(p => (votes[p.n] || {}).choice).length;
+  document.getElementById("count").textContent = `${done}/${PAIRS.length}`;
+}
+
+const root = document.getElementById("pairs");
+for (const p of PAIRS) {
+  const v = votes[p.n] = votes[p.n] || {};
+  const card = document.createElement("section");
+  card.className = "pair";
+  card.innerHTML = `<div class="head"><span class="num">${p.n}</span><span class="prompt"></span></div>` +
+    ["A", "B"].map(s => `<div class="clip"><b>${s}</b>
+       <audio controls preload="none" src="clips/${p.n}${s.toLowerCase()}.wav"></audio>
+       <label class="broken"><input type="checkbox" data-broken="${s}"> <span>rotto</span></label></div>`).join("") +
+    `<div class="choice">${["A", "=", "B"].map(c =>
+       `<button data-choice="${c}">${c === "=" ? "pari" : "meglio " + c}</button>`).join("")}</div>`;
+  card.querySelector(".prompt").textContent = p.prompt;
+  for (const box of card.querySelectorAll("[data-broken]")) {
+    box.checked = !!v["broken" + box.dataset.broken];
+    box.addEventListener("change", () => { v["broken" + box.dataset.broken] = box.checked; save(); });
+  }
+  const buttons = card.querySelectorAll("[data-choice]");
+  const paint = () => buttons.forEach(b => b.classList.toggle("on", b.dataset.choice === v.choice));
+  buttons.forEach(b => b.addEventListener("click", () => { v.choice = b.dataset.choice; paint(); save(); }));
+  paint();
+  root.appendChild(card);
+}
+// One clip at a time.
+document.addEventListener("play", e => {
+  for (const a of document.querySelectorAll("audio")) if (a !== e.target) a.pause();
+}, true);
+document.getElementById("copy").addEventListener("click", async () => {
+  const text = document.getElementById("summary");
+  try { await navigator.clipboard.writeText(text.value); } catch (e) { text.select(); document.execCommand("copy"); }
+});
+save();
+</script>
+</body>
+</html>

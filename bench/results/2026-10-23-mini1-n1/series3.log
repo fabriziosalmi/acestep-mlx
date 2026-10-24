@@ -1,0 +1,15 @@
+[15:57:05] start vc256
+[15:57:39] end vc256 EXIT 0 peak 20488557008
+[15:57:55] start vc192
+[15:58:32] end vc192 EXIT 0 peak 20246303184
+[15:58:47] start vf16
+[15:59:23] end vf16 EXIT 0 peak 19927715824
+n1b    vs ref1: SNR     inf dB  corr 1.0000  LSD   0.00 dB  rms  -19.4 dBFS
+vc256  vs ref1: SNR     inf dB  corr 1.0000  LSD   0.00 dB  rms  -19.4 dBFS
+vc192  vs ref1: SNR     inf dB  corr 1.0000  LSD   0.00 dB  rms  -19.4 dBFS
+vf16   vs ref1: SNR   58.06 dB  corr 1.0000  LSD   7.21 dB  rms  -19.4 dBFS
+n1b md5 4e731ce4be09621d98420f3be6e4d814 maxfp 18GB maxswap 7589,56M
+vc256 md5 4e731ce4be09621d98420f3be6e4d814 maxfp 19GB maxswap 7149,62M
+vc192 md5 4e731ce4be09621d98420f3be6e4d814 maxfp 18GB maxswap 7442,75M
+vf16 md5 c790043874474c01e7fda743ed10c02e maxfp 19GB maxswap 5894,56M
+SERIES_DONE

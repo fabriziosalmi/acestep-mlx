@@ -1,0 +1,520 @@
+W1023 20:38:04.995000 66791 .venv/lib/python3.12/site-packages/torch/distributed/elastic/multiprocessing/redirects.py:29] NOTE: Redirects are currently not supported in Windows or MacOs.
+2026-10-23 20:38:05.755 | WARNING  | acestep.training.trainer:<module>:40 - bitsandbytes not installed. Using standard AdamW.
+2026-10-23 20:38:05.769 | INFO     | acestep.gpu_config:get_gpu_config:846 - macOS MPS detected (11.8 GB unified memory, tier=tier4). Applying Apple Silicon optimizations: no compile, no quantization, mlx backend, no CPU offload.
+2026-10-23 20:38:05.769 | INFO     | acestep_mlx.lean_handler:initialize_service:69 - [lean] MLX buffer cache limited to 64 MB
+2026-10-23 20:38:05.771 | INFO     | acestep.core.generation.handler.init_service_loader:_load_main_model_from_checkpoint:174 - [initialize_service] Attempting to load model with attention implementation: sdpa
+2026-10-23 20:38:13.668 | INFO     | acestep_mlx.condition:_install_mlx_condition:50 - [lean] condition encoder, tokenizer and detokenizer on MLX (mlx mode)
+2026-10-23 20:38:13.675 | INFO     | acestep_mlx.lean_handler:_load_main_model_from_checkpoint:103 - [lean] MLX decoder loaded from checkpoint; dropped 1.575B torch decoder params; rest of the DiT on mps as torch.float32
+2026-10-23 20:38:15.244 | INFO     | acestep_mlx.text_encoder:_load_text_encoder_and_tokenizer:88 - [lean] text encoder on MLX (bf16 weights, fp32 compute)
+2026-10-23 20:38:15.812 | INFO     | acestep.core.generation.handler.mlx_vae_init:_init_mlx_vae:75 - [MLX-VAE] Decode/encode compiled with mx.compile().
+2026-10-23 20:38:15.812 | INFO     | acestep.core.generation.handler.mlx_vae_init:_init_mlx_vae:85 - [MLX-VAE] Native MLX VAE initialized (dtype=mlx.core.float32, compiled=True).
+2026-10-23 20:38:15.884 | INFO     | acestep_mlx.lean_handler:_init_mlx_vae:119 - [lean] dropped 168.7M torch VAE params after MLX VAE init
+2026-10-23 20:38:15.884 | INFO     | acestep.llm_inference:initialize:609 - loading 5Hz LM tokenizer... it may take 80~90s
+2026-10-23 20:38:24.878 | INFO     | acestep.llm_inference:initialize:613 - 5Hz LM tokenizer loaded successfully in 8.99 seconds
+2026-10-23 20:38:24.878 | INFO     | acestep.llm_inference:initialize:618 - Initializing constrained decoding processor...
+2026-10-23 20:38:24.878 | INFO     | acestep.llm_inference:initialize:624 - Setting constrained decoding max_duration to 480s based on GPU config (tier: tier4)
+2026-10-23 20:38:25.267 | DEBUG    | acestep.constrained_logits_processor:_precompute_audio_code_tokens:577 - Found 1535 audio code tokens with values outside valid range [0, 63999]
+2026-10-23 20:38:26.305 | INFO     | acestep.llm_inference:initialize:632 - Constrained processor initialized in 1.43 seconds
+2026-10-23 20:38:26.305 | INFO     | acestep.llm_inference:initialize:659 - flash_attn not installed: disabling CUDA graph capture for nano-vllm (SDPA fallback uses .item() calls in paged-cache decode that are incompatible with CUDA graph capture)
+2026-10-23 20:38:26.305 | INFO     | acestep.llm_inference:initialize:671 - Triton not available: disabling CUDA graph capture for nano-vllm (CUDA graphs require torch.compile which depends on Triton)
+2026-10-23 20:38:26.305 | INFO     | acestep.llm_inference:initialize:681 - Attempting MLX backend for Apple Silicon acceleration...
+2026-10-23 20:38:26.305 | INFO     | acestep.llm_inference:_load_mlx_model:2947 - Loading MLX model from /Users/fab/acestep-f0/ACE-Step-1.5/checkpoints/acestep-5Hz-lm-1.7B
+2026-10-23 20:38:26.309 | INFO     | acestep.llm_inference:_load_mlx_model:2959 - Standard MLX load failed (Received 310 parameters not in model: 
+embed_tokens.weight,
+layers.0.input_layernorm.weight,
+layers.0.mlp.down_proj.weight,
+layers.0.mlp.gate_proj.weight,
+layers.0.mlp.up_proj.weight,
+layers.0.post_attention_layernorm.weight,
+layers.0.self_attn.k_norm.weight,
+layers.0.self_attn.k_proj.weight,
+layers.0.self_attn.o_proj.weight,
+layers.0.self_attn.q_norm.weight,
+layers.0.self_attn.q_proj.weight,
+layers.0.self_attn.v_proj.weight,
+layers.1.input_layernorm.weight,
+layers.1.mlp.down_proj.weight,
+layers.1.mlp.gate_proj.weight,
+layers.1.mlp.up_proj.weight,
+layers.1.post_attention_layernorm.weight,
+layers.1.self_attn.k_norm.weight,
+layers.1.self_attn.k_proj.weight,
+layers.1.self_attn.o_proj.weight,
+layers.1.self_attn.q_norm.weight,
+layers.1.self_attn.q_proj.weight,
+layers.1.self_attn.v_proj.weight,
+layers.10.input_layernorm.weight,
+layers.10.mlp.down_proj.weight,
+layers.10.mlp.gate_proj.weight,
+layers.10.mlp.up_proj.weight,
+layers.10.post_attention_layernorm.weight,
+layers.10.self_attn.k_norm.weight,
+layers.10.self_attn.k_proj.weight,
+layers.10.self_attn.o_proj.weight,
+layers.10.self_attn.q_norm.weight,
+layers.10.self_attn.q_proj.weight,
+layers.10.self_attn.v_proj.weight,
+layers.11.input_layernorm.weight,
+layers.11.mlp.down_proj.weight,
+layers.11.mlp.gate_proj.weight,
+layers.11.mlp.up_proj.weight,
+layers.11.post_attention_layernorm.weight,
+layers.11.self_attn.k_norm.weight,
+layers.11.self_attn.k_proj.weight,
+layers.11.self_attn.o_proj.weight,
+layers.11.self_attn.q_norm.weight,
+layers.11.self_attn.q_proj.weight,
+layers.11.self_attn.v_proj.weight,
+layers.12.input_layernorm.weight,
+layers.12.mlp.down_proj.weight,
+layers.12.mlp.gate_proj.weight,
+layers.12.mlp.up_proj.weight,
+layers.12.post_attention_layernorm.weight,
+layers.12.self_attn.k_norm.weight,
+layers.12.self_attn.k_proj.weight,
+layers.12.self_attn.o_proj.weight,
+layers.12.self_attn.q_norm.weight,
+layers.12.self_attn.q_proj.weight,
+layers.12.self_attn.v_proj.weight,
+layers.13.input_layernorm.weight,
+layers.13.mlp.down_proj.weight,
+layers.13.mlp.gate_proj.weight,
+layers.13.mlp.up_proj.weight,
+layers.13.post_attention_layernorm.weight,
+layers.13.self_attn.k_norm.weight,
+layers.13.self_attn.k_proj.weight,
+layers.13.self_attn.o_proj.weight,
+layers.13.self_attn.q_norm.weight,
+layers.13.self_attn.q_proj.weight,
+layers.13.self_attn.v_proj.weight,
+layers.14.input_layernorm.weight,
+layers.14.mlp.down_proj.weight,
+layers.14.mlp.gate_proj.weight,
+layers.14.mlp.up_proj.weight,
+layers.14.post_attention_layernorm.weight,
+layers.14.self_attn.k_norm.weight,
+layers.14.self_attn.k_proj.weight,
+layers.14.self_attn.o_proj.weight,
+layers.14.self_attn.q_norm.weight,
+layers.14.self_attn.q_proj.weight,
+layers.14.self_attn.v_proj.weight,
+layers.15.input_layernorm.weight,
+layers.15.mlp.down_proj.weight,
+layers.15.mlp.gate_proj.weight,
+layers.15.mlp.up_proj.weight,
+layers.15.post_attention_layernorm.weight,
+layers.15.self_attn.k_norm.weight,
+layers.15.self_attn.k_proj.weight,
+layers.15.self_attn.o_proj.weight,
+layers.15.self_attn.q_norm.weight,
+layers.15.self_attn.q_proj.weight,
+layers.15.self_attn.v_proj.weight,
+layers.16.input_layernorm.weight,
+layers.16.mlp.down_proj.weight,
+layers.16.mlp.gate_proj.weight,
+layers.16.mlp.up_proj.weight,
+layers.16.post_attention_layernorm.weight,
+layers.16.self_attn.k_norm.weight,
+layers.16.self_attn.k_proj.weight,
+layers.16.self_attn.o_proj.weight,
+layers.16.self_attn.q_norm.weight,
+layers.16.self_attn.q_proj.weight,
+layers.16.self_attn.v_proj.weight,
+layers.17.input_layernorm.weight,
+layers.17.mlp.down_proj.weight,
+layers.17.mlp.gate_proj.weight,
+layers.17.mlp.up_proj.weight,
+layers.17.post_attention_layernorm.weight,
+layers.17.self_attn.k_norm.weight,
+layers.17.self_attn.k_proj.weight,
+layers.17.self_attn.o_proj.weight,
+layers.17.self_attn.q_norm.weight,
+layers.17.self_attn.q_proj.weight,
+layers.17.self_attn.v_proj.weight,
+layers.18.input_layernorm.weight,
+layers.18.mlp.down_proj.weight,
+layers.18.mlp.gate_proj.weight,
+layers.18.mlp.up_proj.weight,
+layers.18.post_attention_layernorm.weight,
+layers.18.self_attn.k_norm.weight,
+layers.18.self_attn.k_proj.weight,
+layers.18.self_attn.o_proj.weight,
+layers.18.self_attn.q_norm.weight,
+layers.18.self_attn.q_proj.weight,
+layers.18.self_attn.v_proj.weight,
+layers.19.input_layernorm.weight,
+layers.19.mlp.down_proj.weight,
+layers.19.mlp.gate_proj.weight,
+layers.19.mlp.up_proj.weight,
+layers.19.post_attention_layernorm.weight,
+layers.19.self_attn.k_norm.weight,
+layers.19.self_attn.k_proj.weight,
+layers.19.self_attn.o_proj.weight,
+layers.19.self_attn.q_norm.weight,
+layers.19.self_attn.q_proj.weight,
+layers.19.self_attn.v_proj.weight,
+layers.2.input_layernorm.weight,
+layers.2.mlp.down_proj.weight,
+layers.2.mlp.gate_proj.weight,
+layers.2.mlp.up_proj.weight,
+layers.2.post_attention_layernorm.weight,
+layers.2.self_attn.k_norm.weight,
+layers.2.self_attn.k_proj.weight,
+layers.2.self_attn.o_proj.weight,
+layers.2.self_attn.q_norm.weight,
+layers.2.self_attn.q_proj.weight,
+layers.2.self_attn.v_proj.weight,
+layers.20.input_layernorm.weight,
+layers.20.mlp.down_proj.weight,
+layers.20.mlp.gate_proj.weight,
+layers.20.mlp.up_proj.weight,
+layers.20.post_attention_layernorm.weight,
+layers.20.self_attn.k_norm.weight,
+layers.20.self_attn.k_proj.weight,
+layers.20.self_attn.o_proj.weight,
+layers.20.self_attn.q_norm.weight,
+layers.20.self_attn.q_proj.weight,
+layers.20.self_attn.v_proj.weight,
+layers.21.input_layernorm.weight,
+layers.21.mlp.down_proj.weight,
+layers.21.mlp.gate_proj.weight,
+layers.21.mlp.up_proj.weight,
+layers.21.post_attention_layernorm.weight,
+layers.21.self_attn.k_norm.weight,
+layers.21.self_attn.k_proj.weight,
+layers.21.self_attn.o_proj.weight,
+layers.21.self_attn.q_norm.weight,
+layers.21.self_attn.q_proj.weight,
+layers.21.self_attn.v_proj.weight,
+layers.22.input_layernorm.weight,
+layers.22.mlp.down_proj.weight,
+layers.22.mlp.gate_proj.weight,
+layers.22.mlp.up_proj.weight,
+layers.22.post_attention_layernorm.weight,
+layers.22.self_attn.k_norm.weight,
+layers.22.self_attn.k_proj.weight,
+layers.22.self_attn.o_proj.weight,
+layers.22.self_attn.q_norm.weight,
+layers.22.self_attn.q_proj.weight,
+layers.22.self_attn.v_proj.weight,
+layers.23.input_layernorm.weight,
+layers.23.mlp.down_proj.weight,
+layers.23.mlp.gate_proj.weight,
+layers.23.mlp.up_proj.weight,
+layers.23.post_attention_layernorm.weight,
+layers.23.self_attn.k_norm.weight,
+layers.23.self_attn.k_proj.weight,
+layers.23.self_attn.o_proj.weight,
+layers.23.self_attn.q_norm.weight,
+layers.23.self_attn.q_proj.weight,
+layers.23.self_attn.v_proj.weight,
+layers.24.input_layernorm.weight,
+layers.24.mlp.down_proj.weight,
+layers.24.mlp.gate_proj.weight,
+layers.24.mlp.up_proj.weight,
+layers.24.post_attention_layernorm.weight,
+layers.24.self_attn.k_norm.weight,
+layers.24.self_attn.k_proj.weight,
+layers.24.self_attn.o_proj.weight,
+layers.24.self_attn.q_norm.weight,
+layers.24.self_attn.q_proj.weight,
+layers.24.self_attn.v_proj.weight,
+layers.25.input_layernorm.weight,
+layers.25.mlp.down_proj.weight,
+layers.25.mlp.gate_proj.weight,
+layers.25.mlp.up_proj.weight,
+layers.25.post_attention_layernorm.weight,
+layers.25.self_attn.k_norm.weight,
+layers.25.self_attn.k_proj.weight,
+layers.25.self_attn.o_proj.weight,
+layers.25.self_attn.q_norm.weight,
+layers.25.self_attn.q_proj.weight,
+layers.25.self_attn.v_proj.weight,
+layers.26.input_layernorm.weight,
+layers.26.mlp.down_proj.weight,
+layers.26.mlp.gate_proj.weight,
+layers.26.mlp.up_proj.weight,
+layers.26.post_attention_layernorm.weight,
+layers.26.self_attn.k_norm.weight,
+layers.26.self_attn.k_proj.weight,
+layers.26.self_attn.o_proj.weight,
+layers.26.self_attn.q_norm.weight,
+layers.26.self_attn.q_proj.weight,
+layers.26.self_attn.v_proj.weight,
+layers.27.input_layernorm.weight,
+layers.27.mlp.down_proj.weight,
+layers.27.mlp.gate_proj.weight,
+layers.27.mlp.up_proj.weight,
+layers.27.post_attention_layernorm.weight,
+layers.27.self_attn.k_norm.weight,
+layers.27.self_attn.k_proj.weight,
+layers.27.self_attn.o_proj.weight,
+layers.27.self_attn.q_norm.weight,
+layers.27.self_attn.q_proj.weight,
+layers.27.self_attn.v_proj.weight,
+layers.3.input_layernorm.weight,
+layers.3.mlp.down_proj.weight,
+layers.3.mlp.gate_proj.weight,
+layers.3.mlp.up_proj.weight,
+layers.3.post_attention_layernorm.weight,
+layers.3.self_attn.k_norm.weight,
+layers.3.self_attn.k_proj.weight,
+layers.3.self_attn.o_proj.weight,
+layers.3.self_attn.q_norm.weight,
+layers.3.self_attn.q_proj.weight,
+layers.3.self_attn.v_proj.weight,
+layers.4.input_layernorm.weight,
+layers.4.mlp.down_proj.weight,
+layers.4.mlp.gate_proj.weight,
+layers.4.mlp.up_proj.weight,
+layers.4.post_attention_layernorm.weight,
+layers.4.self_attn.k_norm.weight,
+layers.4.self_attn.k_proj.weight,
+layers.4.self_attn.o_proj.weight,
+layers.4.self_attn.q_norm.weight,
+layers.4.self_attn.q_proj.weight,
+layers.4.self_attn.v_proj.weight,
+layers.5.input_layernorm.weight,
+layers.5.mlp.down_proj.weight,
+layers.5.mlp.gate_proj.weight,
+layers.5.mlp.up_proj.weight,
+layers.5.post_attention_layernorm.weight,
+layers.5.self_attn.k_norm.weight,
+layers.5.self_attn.k_proj.weight,
+layers.5.self_attn.o_proj.weight,
+layers.5.self_attn.q_norm.weight,
+layers.5.self_attn.q_proj.weight,
+layers.5.self_attn.v_proj.weight,
+layers.6.input_layernorm.weight,
+layers.6.mlp.down_proj.weight,
+layers.6.mlp.gate_proj.weight,
+layers.6.mlp.up_proj.weight,
+layers.6.post_attention_layernorm.weight,
+layers.6.self_attn.k_norm.weight,
+layers.6.self_attn.k_proj.weight,
+layers.6.self_attn.o_proj.weight,
+layers.6.self_attn.q_norm.weight,
+layers.6.self_attn.q_proj.weight,
+layers.6.self_attn.v_proj.weight,
+layers.7.input_layernorm.weight,
+layers.7.mlp.down_proj.weight,
+layers.7.mlp.gate_proj.weight,
+layers.7.mlp.up_proj.weight,
+layers.7.post_attention_layernorm.weight,
+layers.7.self_attn.k_norm.weight,
+layers.7.self_attn.k_proj.weight,
+layers.7.self_attn.o_proj.weight,
+layers.7.self_attn.q_norm.weight,
+layers.7.self_attn.q_proj.weight,
+layers.7.self_attn.v_proj.weight,
+layers.8.input_layernorm.weight,
+layers.8.mlp.down_proj.weight,
+layers.8.mlp.gate_proj.weight,
+layers.8.mlp.up_proj.weight,
+layers.8.post_attention_layernorm.weight,
+layers.8.self_attn.k_norm.weight,
+layers.8.self_attn.k_proj.weight,
+layers.8.self_attn.o_proj.weight,
+layers.8.self_attn.q_norm.weight,
+layers.8.self_attn.q_proj.weight,
+layers.8.self_attn.v_proj.weight,
+layers.9.input_layernorm.weight,
+layers.9.mlp.down_proj.weight,
+layers.9.mlp.gate_proj.weight,
+layers.9.mlp.up_proj.weight,
+layers.9.post_attention_layernorm.weight,
+layers.9.self_attn.k_norm.weight,
+layers.9.self_attn.k_proj.weight,
+layers.9.self_attn.o_proj.weight,
+layers.9.self_attn.q_norm.weight,
+layers.9.self_attn.q_proj.weight,
+layers.9.self_attn.v_proj.weight,
+norm.weight.), retrying with 'model.' prefix remapping...
+2026-10-23 20:38:26.310 | INFO     | acestep.llm_inference:_load_mlx_model:2982 - Adding 'model.' prefix to weight keys for MLX compatibility
+2026-10-23 20:38:28.294 | INFO     | acestep.llm_inference:_load_mlx_model:3003 - MLX model loaded successfully in 1.99s
+2026-10-23 20:38:28.298 | INFO     | acestep.llm_inference:create_sample_from_query:2097 - Creating sample from query: dark techno, 140 bpm in A minor, rolling bassline... (instrumental=True, vocal_language=None)
+2026-10-23 20:38:28.306 | DEBUG    | acestep.llm_inference:create_sample_from_query:2104 - Formatted prompt for inspiration: <|im_start|>system
+# Instruction
+Expand the user's input into a more detailed and specific musical description:
+
+<|im_end|>
+<|im_start|>user
+dark techno, 140 bpm in A minor, rolling bassline
+
+instrumental: true<|im_end|>
+<|im_start|>assistant
+
+2026-10-23 20:38:28.766 | INFO     | acestep.llm_inference:_run_mlx_single_native:3595 - MLX native prefill: 50 tokens in 0.46s (109.0 tok/s)
+MLX Gen (native):   0%|          | 0/3500 [00:00<?, ?tok/s]MLX Gen (native):   0%|          | 4/3500 [00:00<02:00, 29.06tok/s]MLX Gen (native):   0%|          | 7/3500 [00:00<02:13, 26.08tok/s]MLX Gen (native):   0%|          | 10/3500 [00:00<02:18, 25.14tok/s]MLX Gen (native):   0%|          | 13/3500 [00:00<02:22, 24.53tok/s]MLX Gen (native):   0%|          | 16/3500 [00:00<02:23, 24.25tok/s]MLX Gen (native):   1%|          | 19/3500 [00:00<02:24, 24.15tok/s]MLX Gen (native):   1%|          | 22/3500 [00:00<02:24, 24.10tok/s]MLX Gen (native):   1%|          | 25/3500 [00:01<02:24, 24.10tok/s]MLX Gen (native):   1%|          | 28/3500 [00:01<02:24, 24.09tok/s]MLX Gen (native):   1%|          | 31/3500 [00:01<02:24, 24.02tok/s]MLX Gen (native):   1%|          | 34/3500 [00:01<02:23, 24.10tok/s]MLX Gen (native):   1%|          | 37/3500 [00:01<02:24, 24.00tok/s]MLX Gen (native):   1%|          | 40/3500 [00:01<02:24, 23.96tok/s]MLX Gen (native):   1%|          | 43/3500 [00:01<02:24, 24.01tok/s]MLX Gen (native):   1%|▏         | 46/3500 [00:01<02:23, 24.05tok/s]MLX Gen (native):   1%|▏         | 49/3500 [00:02<02:23, 24.05tok/s]MLX Gen (native):   1%|▏         | 52/3500 [00:02<02:23, 24.11tok/s]MLX Gen (native):   2%|▏         | 55/3500 [00:02<02:22, 24.15tok/s]MLX Gen (native):   2%|▏         | 58/3500 [00:02<02:22, 24.16tok/s]MLX Gen (native):   2%|▏         | 61/3500 [00:02<02:22, 24.14tok/s]MLX Gen (native):   2%|▏         | 64/3500 [00:02<02:23, 24.00tok/s]MLX Gen (native):   2%|▏         | 67/3500 [00:02<02:23, 23.95tok/s]MLX Gen (native):   2%|▏         | 70/3500 [00:02<02:23, 23.97tok/s]MLX Gen (native):   2%|▏         | 73/3500 [00:03<02:22, 24.06tok/s]MLX Gen (native):   2%|▏         | 76/3500 [00:03<02:22, 24.07tok/s]MLX Gen (native):   2%|▏         | 79/3500 [00:03<02:21, 24.12tok/s]MLX Gen (native):   2%|▏         | 82/3500 [00:03<02:21, 24.09tok/s]MLX Gen (native):   2%|▏         | 85/3500 [00:03<02:21, 24.06tok/s]MLX Gen (native):   3%|▎         | 88/3500 [00:03<02:22, 23.92tok/s]MLX Gen (native):   3%|▎         | 91/3500 [00:03<02:23, 23.82tok/s]MLX Gen (native):   3%|▎         | 94/3500 [00:03<02:22, 23.88tok/s]MLX Gen (native):   3%|▎         | 97/3500 [00:04<02:22, 23.95tok/s]MLX Gen (native):   3%|▎         | 100/3500 [00:04<02:21, 24.03tok/s]MLX Gen (native):   3%|▎         | 103/3500 [00:04<02:21, 24.09tok/s]MLX Gen (native):   3%|▎         | 106/3500 [00:04<02:21, 24.06tok/s]MLX Gen (native):   3%|▎         | 109/3500 [00:04<02:20, 24.06tok/s]MLX Gen (native):   3%|▎         | 112/3500 [00:04<02:20, 24.05tok/s]MLX Gen (native):   3%|▎         | 115/3500 [00:04<02:21, 23.89tok/s]MLX Gen (native):   3%|▎         | 118/3500 [00:04<02:22, 23.78tok/s]MLX Gen (native):   3%|▎         | 121/3500 [00:05<02:21, 23.83tok/s]MLX Gen (native):   4%|▎         | 124/3500 [00:05<02:21, 23.86tok/s]MLX Gen (native):   4%|▎         | 127/3500 [00:05<02:21, 23.86tok/s]MLX Gen (native):   4%|▎         | 130/3500 [00:05<02:20, 23.91tok/s]MLX Gen (native):   4%|▍         | 133/3500 [00:05<02:20, 23.90tok/s]MLX Gen (native):   4%|▍         | 136/3500 [00:05<02:20, 23.91tok/s]MLX Gen (native):   4%|▍         | 139/3500 [00:05<02:28, 22.58tok/s]MLX Gen (native):   4%|▍         | 142/3500 [00:05<02:32, 22.02tok/s]MLX Gen (native):   4%|▍         | 145/3500 [00:06<02:28, 22.54tok/s]MLX Gen (native):   4%|▍         | 148/3500 [00:06<02:27, 22.80tok/s]MLX Gen (native):   4%|▍         | 151/3500 [00:06<02:24, 23.11tok/s]MLX Gen (native):   4%|▍         | 154/3500 [00:06<02:23, 23.38tok/s]MLX Gen (native):   4%|▍         | 157/3500 [00:06<02:22, 23.52tok/s]MLX Gen (native):   5%|▍         | 160/3500 [00:06<02:20, 23.75tok/s]MLX Gen (native):   5%|▍         | 163/3500 [00:06<02:20, 23.79tok/s]MLX Gen (native):   5%|▍         | 166/3500 [00:06<02:20, 23.81tok/s]MLX Gen (native):   5%|▍         | 169/3500 [00:07<02:19, 23.91tok/s]MLX Gen (native):   5%|▍         | 172/3500 [00:07<02:18, 23.98tok/s]MLX Gen (native):   5%|▌         | 175/3500 [00:07<02:18, 24.04tok/s]MLX Gen (native):   5%|▌         | 178/3500 [00:07<02:17, 24.13tok/s]MLX Gen (native):   5%|▌         | 181/3500 [00:07<02:16, 24.24tok/s]MLX Gen (native):   5%|▌         | 184/3500 [00:07<02:16, 24.23tok/s]MLX Gen (native):   5%|▌         | 187/3500 [00:07<02:16, 24.22tok/s]MLX Gen (native):   5%|▌         | 190/3500 [00:07<02:17, 24.07tok/s]MLX Gen (native):   6%|▌         | 193/3500 [00:08<02:17, 24.05tok/s]MLX Gen (native):   6%|▌         | 196/3500 [00:08<02:17, 24.08tok/s]MLX Gen (native):   6%|▌         | 199/3500 [00:08<02:16, 24.15tok/s]MLX Gen (native):   6%|▌         | 202/3500 [00:08<02:16, 24.12tok/s]MLX Gen (native):   6%|▌         | 205/3500 [00:08<02:16, 24.10tok/s]MLX Gen (native):   6%|▌         | 208/3500 [00:08<02:19, 23.55tok/s]MLX Gen (native):   6%|▌         | 211/3500 [00:08<02:23, 22.88tok/s]MLX Gen (native):   6%|▌         | 214/3500 [00:08<02:21, 23.19tok/s]MLX Gen (native):   6%|▌         | 217/3500 [00:09<02:20, 23.36tok/s]MLX Gen (native):   6%|▋         | 220/3500 [00:09<02:19, 23.57tok/s]MLX Gen (native):   6%|▋         | 223/3500 [00:09<02:18, 23.72tok/s]MLX Gen (native):   6%|▋         | 225/3500 [00:09<02:17, 23.90tok/s]
+2026-10-23 20:38:38.189 | INFO     | acestep.llm_inference:_run_mlx_single_native:3711 - MLX native generation complete: 225 tokens in 9.42s (23.9 tok/s) | prefill 0.46s + decode 9.42s = 9.88s total
+2026-10-23 20:38:38.190 | DEBUG    | acestep.llm_inference:parse_lm_output:2813 - Debug output text: <think>
+bpm: 75
+caption: An energetic and driving instrumental techno track built on a foundation
+  of a punchy four-on-the-floor kick drum and a rolling, arpeggiated synth bassline.
+  Crisp, synthetic hi-hats and a sharp clap provide the rhythmic backbone. The arrangement
+  develops by layering various synth elements, including a simple, plucky melodic
+  motif and atmospheric pads that add depth. The track maintains a steady, hypnotic
+  groove throughout, with subtle filter sweeps and dynamic shifts creating a sense
+  of forward momentum before ending with an abrupt cut.
+duration: 80
+genres:techno
+keyscale: A minor
+language: unknown
+timesignature: 2
+
+2026-10-23 20:38:38.190 | INFO     | acestep.llm_inference:create_sample_from_query:2156 - Sample created successfully. Generated {'bpm': 75, 'caption': 'An energetic and driving instrumental techno track built on a foundation of a punchy four-on-the-floor kick drum and a rolling, arpeggiated synth bassline. Crisp, synthetic hi-hats and a sharp clap provide the rhythmic backbone. The arrangement develops by layering various synth elements, including a simple, plucky melodic motif and atmospheric pads that add depth. The track maintains a steady, hypnotic groove throughout, with subtle filter sweeps and dynamic shifts creating a sense of forward momentum before ending with an abrupt cut.', 'duration': 80, 'genres': 'techno', 'keyscale': 'A minor', 'language': 'unknown', 'timesignature': '2', 'lyrics': '[Intro]\n[Drum machine and synth bass enter]\n\n[Main Groove]\n[Synth arpeggio enters]\n\n[Breakdown]\n[Drums and bass drop out, leaving synth pads and arpeggio]\n\n[Outro]\n[Full groove returns with intensity]\n[abrupt silence]', 'instrumental': True} fields
+2026-10-23 20:38:38.190 | INFO     | acestep.inference:generate_music:662 - [generate_music] LLM usage decision: thinking=True, use_cot_caption=True, use_cot_language=True, use_cot_metas=True, need_lm_for_cot=True, llm_initialized=True, use_lm=True
+2026-10-23 20:38:38.190 | INFO     | acestep.inference:generate_music:720 - LM chunk 1/1 (infer_type=llm_dit) (size: 1, seeds: [3036969735])
+2026-10-23 20:38:38.190 | INFO     | acestep.llm_inference:generate_with_stop_condition:1371 - Phase 1: Generating CoT metadata...
+2026-10-23 20:38:38.192 | INFO     | acestep.llm_inference:generate_with_stop_condition:1377 - generate_with_stop_condition: formatted_prompt=<|im_start|>system
+# Instruction
+Generate audio semantic tokens based on the given conditions:
+
+<|im_end|>
+<|im_start|>user
+# Caption
+An energetic and driving instrumental techno track built on a foundation of a punchy four-on-the-floor kick drum and a rolling, arpeggiated synth bassline. Crisp, synthetic hi-hats and a sharp clap provide the rhythmic backbone. The arrangement develops by layering various synth elements, including a simple, plucky melodic motif and atmospheric pads that add depth. The track maintains a steady, hypnotic groove throughout, with subtle filter sweeps and dynamic shifts creating a sense of forward momentum before ending with an abrupt cut.
+
+# Lyric
+[Instrumental]
+<|im_end|>
+<|im_start|>assistant
+
+2026-10-23 20:38:38.390 | INFO     | acestep.llm_inference:_run_mlx_single_native:3595 - MLX native prefill: 144 tokens in 0.20s (730.4 tok/s)
+MLX Gen (native):   0%|          | 0/3500 [00:00<?, ?tok/s]MLX Gen (native):   0%|          | 4/3500 [00:00<01:55, 30.26tok/s]MLX Gen (native):   0%|          | 8/3500 [00:00<02:15, 25.87tok/s]MLX Gen (native):   0%|          | 11/3500 [00:00<02:20, 24.85tok/s]MLX Gen (native):   0%|          | 14/3500 [00:00<02:23, 24.33tok/s]MLX Gen (native):   0%|          | 17/3500 [00:00<02:24, 24.07tok/s]MLX Gen (native):   1%|          | 20/3500 [00:00<02:25, 23.99tok/s]MLX Gen (native):   1%|          | 23/3500 [00:00<02:25, 23.88tok/s]MLX Gen (native):   1%|          | 26/3500 [00:01<02:26, 23.76tok/s]MLX Gen (native):   1%|          | 29/3500 [00:01<02:26, 23.72tok/s]MLX Gen (native):   1%|          | 32/3500 [00:01<02:26, 23.69tok/s]MLX Gen (native):   1%|          | 35/3500 [00:01<02:27, 23.56tok/s]MLX Gen (native):   1%|          | 38/3500 [00:01<02:27, 23.49tok/s]MLX Gen (native):   1%|          | 41/3500 [00:01<02:27, 23.52tok/s]MLX Gen (native):   1%|▏         | 44/3500 [00:01<02:26, 23.55tok/s]MLX Gen (native):   1%|▏         | 47/3500 [00:01<02:26, 23.60tok/s]MLX Gen (native):   1%|▏         | 50/3500 [00:02<02:26, 23.56tok/s]MLX Gen (native):   2%|▏         | 53/3500 [00:02<02:25, 23.63tok/s]MLX Gen (native):   2%|▏         | 56/3500 [00:02<02:25, 23.66tok/s]MLX Gen (native):   2%|▏         | 59/3500 [00:02<02:25, 23.61tok/s]MLX Gen (native):   2%|▏         | 62/3500 [00:02<02:26, 23.49tok/s]MLX Gen (native):   2%|▏         | 65/3500 [00:02<02:26, 23.51tok/s]MLX Gen (native):   2%|▏         | 68/3500 [00:02<02:26, 23.50tok/s]MLX Gen (native):   2%|▏         | 71/3500 [00:02<02:26, 23.35tok/s]MLX Gen (native):   2%|▏         | 74/3500 [00:03<02:26, 23.40tok/s]MLX Gen (native):   2%|▏         | 77/3500 [00:03<02:25, 23.45tok/s]MLX Gen (native):   2%|▏         | 80/3500 [00:03<02:25, 23.44tok/s]MLX Gen (native):   2%|▏         | 83/3500 [00:03<02:25, 23.46tok/s]MLX Gen (native):   2%|▏         | 86/3500 [00:03<02:26, 23.37tok/s]MLX Gen (native):   3%|▎         | 89/3500 [00:03<02:26, 23.34tok/s]MLX Gen (native):   3%|▎         | 92/3500 [00:03<02:25, 23.50tok/s]MLX Gen (native):   3%|▎         | 95/3500 [00:04<02:24, 23.53tok/s]MLX Gen (native):   3%|▎         | 98/3500 [00:04<02:24, 23.56tok/s]MLX Gen (native):   3%|▎         | 101/3500 [00:04<02:24, 23.58tok/s]MLX Gen (native):   3%|▎         | 104/3500 [00:04<02:24, 23.57tok/s]MLX Gen (native):   3%|▎         | 107/3500 [00:04<02:23, 23.56tok/s]MLX Gen (native):   3%|▎         | 110/3500 [00:04<02:25, 23.28tok/s]MLX Gen (native):   3%|▎         | 113/3500 [00:04<02:25, 23.26tok/s]MLX Gen (native):   3%|▎         | 116/3500 [00:04<02:25, 23.22tok/s]MLX Gen (native):   3%|▎         | 119/3500 [00:05<02:24, 23.35tok/s]MLX Gen (native):   3%|▎         | 122/3500 [00:05<02:24, 23.41tok/s]MLX Gen (native):   4%|▎         | 125/3500 [00:05<02:23, 23.45tok/s]MLX Gen (native):   4%|▎         | 128/3500 [00:05<02:23, 23.54tok/s]MLX Gen (native):   4%|▎         | 131/3500 [00:05<02:23, 23.54tok/s]MLX Gen (native):   4%|▍         | 134/3500 [00:05<02:23, 23.52tok/s]MLX Gen (native):   4%|▍         | 137/3500 [00:05<02:24, 23.35tok/s]MLX Gen (native):   4%|▍         | 140/3500 [00:05<02:23, 23.42tok/s]MLX Gen (native):   4%|▍         | 143/3500 [00:06<02:22, 23.48tok/s]MLX Gen (native):   4%|▍         | 146/3500 [00:06<02:23, 23.43tok/s]MLX Gen (native):   4%|▍         | 149/3500 [00:06<02:23, 23.41tok/s]MLX Gen (native):   4%|▍         | 152/3500 [00:06<02:22, 23.45tok/s]MLX Gen (native):   4%|▍         | 154/3500 [00:06<02:21, 23.62tok/s]
+2026-10-23 20:38:44.910 | INFO     | acestep.llm_inference:_run_mlx_single_native:3711 - MLX native generation complete: 154 tokens in 6.52s (23.6 tok/s) | prefill 0.20s + decode 6.52s = 6.72s total
+2026-10-23 20:38:44.911 | DEBUG    | acestep.llm_inference:parse_lm_output:2813 - Debug output text: <think>
+bpm: 140
+caption: An energetic and driving instrumental techno track built on a foundation
+  of a punchy four-on-the-floor kick drum and a rolling, arpeggiated synth bassline.
+  Crisp, synthetic hi-hats and a sharp clap provide the rhythmic backbone. The arrangement
+  develops by layering various synth elements, including a simple, plucky melodic
+  motif and atmospheric pads that add depth. The track maintains a steady, hypnotic
+  groove throughout, with subtle filter sweeps and dynamic shifts creating a sense
+  of forward momentum before ending with an abrupt cut.
+duration: 30
+keyscale: A minor
+language: unknown
+timesignature: 4
+<|im_end|>
+2026-10-23 20:38:44.911 | INFO     | acestep.llm_inference:generate_with_stop_condition:1422 - Phase 1 completed in 6.72s. Generated metadata: ['bpm', 'caption', 'duration', 'keyscale', 'language', 'timesignature']
+2026-10-23 20:38:44.911 | INFO     | acestep.llm_inference:generate_with_stop_condition:1482 - Phase 2: Generating audio codes...
+2026-10-23 20:38:44.912 | INFO     | acestep.llm_inference:generate_with_stop_condition:1490 - generate_with_stop_condition: formatted_prompt_with_cot=<|im_start|>system
+# Instruction
+Generate audio semantic tokens based on the given conditions:
+
+<|im_end|>
+<|im_start|>user
+# Caption
+An energetic and driving instrumental techno track built on a foundation of a punchy four-on-the-floor kick drum and a rolling, arpeggiated synth bassline. Crisp, synthetic hi-hats and a sharp clap provide the rhythmic backbone. The arrangement develops by layering various synth elements, including a simple, plucky melodic motif and atmospheric pads that add depth. The track maintains a steady, hypnotic groove throughout, with subtle filter sweeps and dynamic shifts creating a sense of forward momentum before ending with an abrupt cut.
+
+# Lyric
+[Instrumental]
+<|im_end|>
+<|im_start|>assistant
+<think>
+bpm: 140
+caption: An energetic and driving instrumental techno track built on a foundation
+  of a punchy four-on-the-floor kick drum and a rolling, arpeggiated synth bassline.
+  Crisp, synthetic hi-hats and a sharp clap provide the rhythmic backbone. The arrangement
+  develops by layering various synth elements, including a simple, plucky melodic
+  motif and atmospheric pads that add depth. The track maintains a steady, hypnotic
+  groove throughout, with subtle filter sweeps and dynamic shifts creating a sense
+  of forward momentum before ending with an abrupt cut.
+duration: 30
+keyscale: A minor
+language: unknown
+timesignature: 4
+</think>
+
+
+2026-10-23 20:38:44.913 | INFO     | acestep.llm_inference:_run_mlx_single_native:3514 - MLX native: pre-transitioned FSM to CODES_GENERATION (native fast path)
+2026-10-23 20:38:44.913 | INFO     | acestep.llm_inference:_build_unconditional_prompt:395 - CFG unconditional prompt (phase=codes, is_batch=False, negative_prompt='NO USER INPUT'):
+<|im_start|>system
+# Instruction
+Generate audio semantic tokens based on the given conditions:
+
+<|im_end|>
+<|im_start|>user
+NO USER INPUT<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+
+2026-10-23 20:38:45.312 | INFO     | acestep.llm_inference:_run_mlx_single_native:3571 - MLX native prefill: 332 tokens (cond=299, uncond=33) in 0.40s (831.3 tok/s)
+MLX CFG Gen (native):   0%|          | 0/160 [00:00<?, ?tok/s]MLX CFG Gen (native):   2%|▏         | 3/160 [00:00<00:09, 16.15tok/s]MLX CFG Gen (native):   3%|▎         | 5/160 [00:00<00:11, 13.30tok/s]MLX CFG Gen (native):   4%|▍         | 7/160 [00:00<00:12, 12.35tok/s]MLX CFG Gen (native):   6%|▌         | 9/160 [00:00<00:12, 11.92tok/s]MLX CFG Gen (native):   7%|▋         | 11/160 [00:00<00:12, 11.69tok/s]MLX CFG Gen (native):   8%|▊         | 13/160 [00:01<00:12, 11.84tok/s]MLX CFG Gen (native):   9%|▉         | 15/160 [00:01<00:12, 11.90tok/s]MLX CFG Gen (native):  11%|█         | 17/160 [00:01<00:11, 12.04tok/s]MLX CFG Gen (native):  12%|█▏        | 19/160 [00:01<00:11, 12.14tok/s]MLX CFG Gen (native):  13%|█▎        | 21/160 [00:01<00:11, 12.21tok/s]MLX CFG Gen (native):  14%|█▍        | 23/160 [00:01<00:11, 12.24tok/s]MLX CFG Gen (native):  16%|█▌        | 25/160 [00:02<00:11, 12.25tok/s]MLX CFG Gen (native):  17%|█▋        | 27/160 [00:02<00:10, 12.26tok/s]MLX CFG Gen (native):  18%|█▊        | 29/160 [00:02<00:10, 12.28tok/s]MLX CFG Gen (native):  19%|█▉        | 31/160 [00:02<00:10, 12.30tok/s]MLX CFG Gen (native):  21%|██        | 33/160 [00:02<00:10, 12.30tok/s]MLX CFG Gen (native):  22%|██▏       | 35/160 [00:02<00:10, 12.34tok/s]MLX CFG Gen (native):  23%|██▎       | 37/160 [00:03<00:10, 12.30tok/s]MLX CFG Gen (native):  24%|██▍       | 39/160 [00:03<00:09, 12.26tok/s]MLX CFG Gen (native):  26%|██▌       | 41/160 [00:03<00:09, 12.27tok/s]MLX CFG Gen (native):  27%|██▋       | 43/160 [00:03<00:09, 12.30tok/s]MLX CFG Gen (native):  28%|██▊       | 45/160 [00:03<00:09, 12.31tok/s]MLX CFG Gen (native):  29%|██▉       | 47/160 [00:03<00:09, 12.31tok/s]MLX CFG Gen (native):  31%|███       | 49/160 [00:03<00:09, 12.32tok/s]MLX CFG Gen (native):  32%|███▏      | 51/160 [00:04<00:08, 12.28tok/s]MLX CFG Gen (native):  33%|███▎      | 53/160 [00:04<00:08, 12.29tok/s]MLX CFG Gen (native):  34%|███▍      | 55/160 [00:04<00:08, 12.28tok/s]MLX CFG Gen (native):  36%|███▌      | 57/160 [00:04<00:08, 12.30tok/s]MLX CFG Gen (native):  37%|███▋      | 59/160 [00:04<00:08, 12.32tok/s]MLX CFG Gen (native):  38%|███▊      | 61/160 [00:04<00:08, 12.32tok/s]MLX CFG Gen (native):  39%|███▉      | 63/160 [00:05<00:07, 12.32tok/s]MLX CFG Gen (native):  41%|████      | 65/160 [00:05<00:07, 12.24tok/s]MLX CFG Gen (native):  42%|████▏     | 67/160 [00:05<00:07, 12.25tok/s]MLX CFG Gen (native):  43%|████▎     | 69/160 [00:05<00:07, 12.29tok/s]MLX CFG Gen (native):  44%|████▍     | 71/160 [00:05<00:07, 12.28tok/s]MLX CFG Gen (native):  46%|████▌     | 73/160 [00:05<00:07, 12.28tok/s]MLX CFG Gen (native):  47%|████▋     | 75/160 [00:06<00:06, 12.31tok/s]MLX CFG Gen (native):  48%|████▊     | 77/160 [00:06<00:06, 12.31tok/s]MLX CFG Gen (native):  49%|████▉     | 79/160 [00:06<00:06, 12.27tok/s]MLX CFG Gen (native):  51%|█████     | 81/160 [00:06<00:06, 12.29tok/s]MLX CFG Gen (native):  52%|█████▏    | 83/160 [00:06<00:06, 12.30tok/s]MLX CFG Gen (native):  53%|█████▎    | 85/160 [00:06<00:06, 12.32tok/s]MLX CFG Gen (native):  54%|█████▍    | 87/160 [00:07<00:05, 12.34tok/s]MLX CFG Gen (native):  56%|█████▌    | 89/160 [00:07<00:05, 12.29tok/s]MLX CFG Gen (native):  57%|█████▋    | 91/160 [00:07<00:05, 12.26tok/s]MLX CFG Gen (native):  58%|█████▊    | 93/160 [00:07<00:05, 12.24tok/s]MLX CFG Gen (native):  59%|█████▉    | 95/160 [00:07<00:05, 12.29tok/s]MLX CFG Gen (native):  61%|██████    | 97/160 [00:07<00:05, 12.29tok/s]MLX CFG Gen (native):  62%|██████▏   | 99/160 [00:08<00:04, 12.30tok/s]MLX CFG Gen (native):  63%|██████▎   | 101/160 [00:08<00:04, 12.31tok/s]MLX CFG Gen (native):  64%|██████▍   | 103/160 [00:08<00:04, 12.28tok/s]MLX CFG Gen (native):  66%|██████▌   | 105/160 [00:08<00:04, 12.27tok/s]MLX CFG Gen (native):  67%|██████▋   | 107/160 [00:08<00:04, 12.26tok/s]MLX CFG Gen (native):  68%|██████▊   | 109/160 [00:08<00:04, 12.29tok/s]MLX CFG Gen (native):  69%|██████▉   | 111/160 [00:09<00:03, 12.31tok/s]MLX CFG Gen (native):  71%|███████   | 113/160 [00:09<00:03, 12.32tok/s]MLX CFG Gen (native):  72%|███████▏  | 115/160 [00:09<00:03, 12.27tok/s]MLX CFG Gen (native):  73%|███████▎  | 117/160 [00:09<00:03, 12.23tok/s]MLX CFG Gen (native):  74%|███████▍  | 119/160 [00:09<00:03, 12.21tok/s]MLX CFG Gen (native):  76%|███████▌  | 121/160 [00:09<00:03, 12.24tok/s]MLX CFG Gen (native):  77%|███████▋  | 123/160 [00:10<00:03, 12.26tok/s]MLX CFG Gen (native):  78%|███████▊  | 125/160 [00:10<00:02, 12.29tok/s]MLX CFG Gen (native):  79%|███████▉  | 127/160 [00:10<00:02, 12.28tok/s]MLX CFG Gen (native):  81%|████████  | 129/160 [00:10<00:02, 12.27tok/s]MLX CFG Gen (native):  82%|████████▏ | 131/160 [00:10<00:02, 12.25tok/s]MLX CFG Gen (native):  83%|████████▎ | 133/160 [00:10<00:02, 12.27tok/s]MLX CFG Gen (native):  84%|████████▍ | 135/160 [00:10<00:02, 12.28tok/s]MLX CFG Gen (native):  86%|████████▌ | 137/160 [00:11<00:01, 12.28tok/s]MLX CFG Gen (native):  87%|████████▋ | 139/160 [00:11<00:01, 12.31tok/s]MLX CFG Gen (native):  88%|████████▊ | 141/160 [00:11<00:01, 12.29tok/s]MLX CFG Gen (native):  89%|████████▉ | 143/160 [00:11<00:01, 12.24tok/s]MLX CFG Gen (native):  91%|█████████ | 145/160 [00:11<00:01, 12.20tok/s]MLX CFG Gen (native):  92%|█████████▏| 147/160 [00:11<00:01, 12.24tok/s]MLX CFG Gen (native):  93%|█████████▎| 149/160 [00:12<00:00, 12.29tok/s]MLX CFG Gen (native):  94%|█████████▍| 151/160 [00:12<00:00, 12.30tok/s]MLX CFG Gen (native):  94%|█████████▍| 151/160 [00:12<00:00, 12.28tok/s]
+2026-10-23 20:38:57.609 | INFO     | acestep.llm_inference:_run_mlx_single_native:3711 - MLX native generation complete: 151 tokens in 12.30s (12.3 tok/s) | prefill 0.40s + decode 12.30s = 12.70s total
+2026-10-23 20:38:57.609 | DEBUG    | acestep.llm_inference:parse_lm_output:2813 - Debug output text: <|audio_code_38392|><|audio_code_51091|><|audio_code_27590|><|audio_code_1467|><|audio_code_26448|><|audio_code_16859|><|audio_code_21478|><|audio_code_53202|><|audio_code_9699|><|audio_code_61412|><|audio_code_16763|><|audio_code_53747|><|audio_code_12738|><|audio_code_34284|><|audio_code_48538|><|audio_code_50113|><|audio_code_15355|><|audio_code_2490|><|audio_code_10171|><|audio_code_39389|><|audio_code_41377|><|audio_code_4566|><|audio_code_11257|><|audio_code_61435|><|audio_code_56258|><|audio_code_52683|><|audio_code_21449|><|audio_code_31522|><|audio_code_26581|><|audio_code_42482|><|audio_code_10731|><|audio_code_49098|><|audio_code_4084|><|audio_code_25549|><|audio_code_38882|><|audio_code_55794|><|audio_code_51686|><|audio_code_50677|><|audio_code_29690|><|audio_code_2004|><|audio_code_24058|><|audio_code_25585|><|audio_code_2538|><|audio_code_37346|><|audio_code_46947|><|audio_code_38338|><|audio_code_51138|><|audio_code_5626|><|audio_code_39362|><|audio_code_27099|><|audio_code_40922|><|audio_code_11221|><|audio_code_14330|><|audio_code_63995|><|audio_code_1451|><|audio_code_11737|><|audio_code_53724|><|audio_code_18313|><|audio_code_54755|><|audio_code_63971|><|audio_code_37824|><|audio_code_50962|><|audio_code_17350|><|audio_code_1218|><|audio_code_26569|><|audio_code_40409|><|audio_code_31205|><|audio_code_12161|><|audio_code_12193|><|audio_code_291|><|audio_code_28930|><|audio_code_14187|><|audio_code_34624|><|audio_code_15844|><|audio_code_50528|><|audio_code_24000|><|audio_code_2432|><|audio_code_7300|><|audio_code_1858|><|audio_code_29148|><|audio_code_54552|><|audio_code_63957|><|audio_code_11257|><|audio_code_48634|><|audio_code_58826|><|audio_code_964|><|audio_code_25769|><|audio_code_23842|><|audio_code_39901|><|audio_code_33472|><|audio_code_2496|><|audio_code_40770|><|audio_code_2501|><|audio_code_10698|><|audio_code_29396|><|audio_code_42924|><|audio_code_49126|><|audio_code_63402|><|audio_code_40890|><|audio_code_5066|><|audio_code_16826|><|audio_code_12241|><|audio_code_3563|><|audio_code_49836|><|audio_code_38243|><|audio_code_38338|><|audio_code_48928|><|audio_code_16377|><|audio_code_52682|><|audio_code_29147|><|audio_code_53712|><|audio_code_21780|><|audio_code_13114|><|audio_code_12675|><|audio_code_1931|><|audio_code_1440|><|audio_code_53667|><|audio_code_20873|><|audio_code_42459|><|audio_code_61915|><|audio_code_26752|><|audio_code_53523|><|audio_code_28102|><|audio_code_144|><|audio_code_15833|><|audio_code_2010|><|audio_code_21470|><|audio_code_53186|><|audio_code_12708|><|audio_code_5396|><|audio_code_31611|><|audio_code_14259|><|audio_code_21881|><|audio_code_49484|><|audio_code_33689|><|audio_code_60409|><|audio_code_12763|><|audio_code_48106|><|audio_code_28034|><|audio_code_35855|><|audio_code_35847|><|audio_code_35847|><|audio_code_35847|><|audio_code_35847|><|audio_code_35847|><|audio_code_35847|><|audio_code_35855|><|audio_code_37127|><|audio_code_35855|><|audio_code_35847|><|im_end|>
+2026-10-23 20:38:57.609 | INFO     | acestep.llm_inference:generate_with_stop_condition:1650 - Phase 2 completed in 12.70s. Generated 150 audio codes
+2026-10-23 20:38:57.609 | INFO     | acestep.core.generation.handler.generate_music:generate_music:313 - [generate_music] Turbo model detected: overriding guidance_scale 7.0 -> 1.0 (turbo does not use CFG).
+2026-10-23 20:38:57.609 | INFO     | acestep.core.generation.handler.generate_music:generate_music:329 - [generate_music] Starting generation...
+2026-10-23 20:38:57.609 | INFO     | acestep.core.generation.handler.generate_music:generate_music:332 - [generate_music] Preparing inputs...
+2026-10-23 20:38:57.610 | INFO     | acestep.core.generation.handler.generate_music_request:_prepare_reference_and_source_audio:204 - [generate_music] cover task: no src_audio but audio codes provided, proceeding with codes
+2026-10-23 20:38:57.622 | INFO     | acestep.core.generation.handler.conditioning_target:_prepare_target_latents_and_wavs:78 - [generate_music] Decoding audio codes for item 0...
+2026-10-23 20:38:57.741 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_precomputed_lm_hints:31 - [generate_music] Decoding audio codes for LM hints for item 0...
+2026-10-23 20:38:57.819 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:119 - 
+======================================================================
+2026-10-23 20:38:57.819 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:120 - 🔍 [DEBUG] DiT TEXT ENCODER INPUT (Inference)
+2026-10-23 20:38:57.819 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:121 - ======================================================================
+2026-10-23 20:38:57.819 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:122 - text_prompt:
+# Instruction
+Generate audio semantic tokens based on the given conditions:
+
+# Caption
+An energetic and driving instrumental techno track built on a foundation of a punchy four-on-the-floor kick drum and a rolling, arpeggiated synth bassline. Crisp, synthetic hi-hats and a sharp clap provide the rhythmic backbone. The arrangement develops by layering various synth elements, including a simple, plucky melodic motif and atmospheric pads that add depth. The track maintains a steady, hypnotic groove throughout, with subtle filter sweeps and dynamic shifts creating a sense of forward momentum before ending with an abrupt cut.
+
+# Metas
+- bpm: 140
+- timesignature: 4
+- keyscale: A minor
+- duration: 30 seconds
+<|endoftext|>
+
+2026-10-23 20:38:57.819 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:123 - ======================================================================
+2026-10-23 20:38:57.819 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:124 - lyrics_text:
+# Languages
+unknown
+
+# Lyric
+[Instrumental]<|endoftext|>
+2026-10-23 20:38:57.819 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:125 - ======================================================================
+
+2026-10-23 20:38:57.845 | INFO     | acestep.core.generation.handler.conditioning_embed:preprocess_batch:110 - [preprocess_batch] Inferring prompt embeddings...
+2026-10-23 20:38:58.052 | INFO     | acestep.core.generation.handler.conditioning_embed:preprocess_batch:113 - [preprocess_batch] Inferring lyric embeddings...
+2026-10-23 20:38:58.053 | INFO     | acestep.core.generation.handler.service_generate_execute:_execute_service_generate_diffusion:173 - [service_generate] Generating audio... (DiT backend: MLX (native))
+2026-10-23 20:38:58.314 | INFO     | acestep.models.mlx.dit_generate:mlx_generate_diffusion:410 - [MLX-DiT] DCW enabled (mode=double, scaler=0.050, high_scaler=0.020, wavelet=haar, backend=MLX-native Haar).
+Using precomputed LM hints
+MLX DiT diffusion:   0%|          | 0/8 [00:00<?, ?it/s]MLX DiT diffusion:  12%|█▎        | 1/8 [00:00<00:04,  1.66it/s]MLX DiT diffusion:  25%|██▌       | 2/8 [00:01<00:03,  1.72it/s]MLX DiT diffusion:  38%|███▊      | 3/8 [00:01<00:02,  1.73it/s]MLX DiT diffusion:  50%|█████     | 4/8 [00:02<00:02,  1.74it/s]MLX DiT diffusion:  62%|██████▎   | 5/8 [00:02<00:01,  1.73it/s]MLX DiT diffusion:  75%|███████▌  | 6/8 [00:03<00:01,  1.74it/s]MLX DiT diffusion:  88%|████████▊ | 7/8 [00:04<00:00,  1.74it/s]MLX DiT diffusion: 100%|██████████| 8/8 [00:04<00:00,  1.75it/s]MLX DiT diffusion: 100%|██████████| 8/8 [00:04<00:00,  1.74it/s]
+2026-10-23 20:39:02.922 | INFO     | acestep.core.generation.handler.service_generate_execute:_execute_service_generate_diffusion:267 - [service_generate] DiT diffusion complete via MLX (4.61s total, 0.576s/step).
+2026-10-23 20:39:02.923 | INFO     | acestep.core.generation.handler.generate_music_decode:_prepare_generate_music_decode_state:42 - [generate_music] Model generation completed. Decoding latents...
+2026-10-23 20:39:02.925 | DEBUG    | acestep.core.generation.handler.generate_music_decode:_prepare_generate_music_decode_state:64 - [generate_music] pred_latents: torch.Size([1, 750, 64]), dtype=torch.float32
+2026-10-23 20:39:02.926 | DEBUG    | acestep.core.generation.handler.generate_music_decode:_prepare_generate_music_decode_state:65 - [generate_music] time_costs: {'diffusion_time_cost': 4.606990814208984, 'diffusion_per_step_time_cost': 0.575873851776123, 'total_time_cost': 4.607231855392456, 'sampler_mode': 'euler', 'offload_time_cost': 0.0}
+2026-10-23 20:39:02.961 | INFO     | acestep.core.generation.handler.generate_music_decode:_decode_generate_music_pred_latents:127 - [generate_music] Decoding latents with VAE...
+2026-10-23 20:39:02.965 | DEBUG    | acestep.core.generation.handler.generate_music_decode:_decode_generate_music_pred_latents:136 - [generate_music] Before VAE decode: allocated=0.00GB, max=0.00GB
+2026-10-23 20:39:02.965 | INFO     | acestep.core.generation.handler.generate_music_decode:_decode_generate_music_pred_latents:172 - [generate_music] Using tiled VAE decode to reduce VRAM usage...
+2026-10-23 20:39:09.339 | INFO     | acestep.core.generation.handler.mlx_vae_decode_native:_mlx_vae_decode:66 - [MLX-VAE] Decoded 1 sample(s), 750 latent frames -> audio in 6.37s (convert=0.000s, decode=6.37s, dtype=mlx.core.float32)
+2026-10-23 20:39:09.339 | DEBUG    | acestep.core.generation.handler.generate_music_decode:_decode_generate_music_pred_latents:193 - [generate_music] After VAE decode: allocated=0.00GB, max=0.00GB
+2026-10-23 20:39:09.747 | INFO     | acestep.core.generation.handler.generate_music_payload:_build_generate_music_success_payload:38 - [generate_music] VAE decode completed. Preparing audio tensors...
+2026-10-23 20:39:09.747 | INFO     | acestep.core.generation.handler.generate_music_payload:_build_generate_music_success_payload:50 - [generate_music] Done! Generated 1 audio tensors.
+2026-10-23 20:39:09.892 | DEBUG    | acestep.audio_utils:save_audio:296 - [AudioSaver] Saved audio to /Users/fab/acestep-f0/n4_songs/s17_030/20261023-203838-s17_030-/9c8d2b38-b075-8238-3b14-557b32c1943f.wav (wav32, 48000Hz)
+N4 {"tag": "s17_030", "lm_model": "acestep-5Hz-lm-1.7B", "requested_s": 30.0, "load_s": 25.4, "song_s": 41.6, "phase_start_s": {"lyrics": 0.0, "composing": 9.9, "rendering": 29.32}, "mlx_peak_mb": {"before_lyrics": 9915, "before_composing": 10017, "before_rendering": 10115, "after_rendering": 12165}, "audio_s": 30.0, "subtype": "FLOAT", "bpm": 140, "keyscale": "A minor", "instrumental": true, "lyrics_lines": 1}
+       68,12 real        17,12 user        10,07 sys
+         12817891328  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+             1511568  page reclaims
+              316038  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+               11489  voluntary context switches
+              252008  involuntary context switches
+        434419204953  instructions retired
+         99950730677  cycles elapsed
+         13968581800  peak memory footprint

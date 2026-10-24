@@ -1,0 +1,9 @@
+n3_compare EXIT 0 peak 14373247744 md5 540bd467f8b9f43de58aefc4aacadae5 maxfp 13GB audio in 6.14s
+n3_mlx EXIT 0 peak 10476215160 md5 540bd467f8b9f43de58aefc4aacadae5 maxfp 9930MB audio in 6.08s
+n3_mlx2 EXIT 0 peak 10476755568 md5 540bd467f8b9f43de58aefc4aacadae5 maxfp 9917MB audio in 6.04s
+te_mlx vs ref1: SNR   79.81 dB  corr 1.0000  LSD   3.34 dB  rms  -19.3 dBFS
+n3_compare vs ref1: SNR   77.69 dB  corr 1.0000  LSD   3.42 dB  rms  -19.3 dBFS
+n3_mlx vs ref1: SNR   77.69 dB  corr 1.0000  LSD   3.42 dB  rms  -19.3 dBFS
+n3_mlx2 vs ref1: SNR   77.69 dB  corr 1.0000  LSD   3.42 dB  rms  -19.3 dBFS
+n3_mlx vs te_mlx: SNR   81.95 dB  corr 1.0000  LSD   2.75 dB  rms  -19.3 dBFS
+SERIES_DONE

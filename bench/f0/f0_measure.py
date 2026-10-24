@@ -145,10 +145,14 @@ def main() -> int:
     report("start", T0)
 
     t = time.time()
-    from acestep.handler import AceStepHandler
+    if os.environ.get("F0_ENGINE") == "lean":
+        sys.path.insert(0, os.path.expanduser("~/acestep-mlx/engine"))
+        from acestep_mlx.lean_handler import LeanAceStepHandler as AceStepHandler
+    else:
+        from acestep.handler import AceStepHandler
     from acestep.inference import GenerationConfig, GenerationParams, create_sample, generate_music
     from acestep.llm_inference import LLMHandler
-    report("imports", t)
+    report("imports", t, engine=os.environ.get("F0_ENGINE", "upstream"))
 
     t = time.time()
     dit = AceStepHandler()

@@ -1,0 +1,202 @@
+W1023 20:27:02.691000 62026 .venv/lib/python3.12/site-packages/torch/distributed/elastic/multiprocessing/redirects.py:29] NOTE: Redirects are currently not supported in Windows or MacOs.
+2026-10-23 20:27:03.421 | WARNING  | acestep.training.trainer:<module>:40 - bitsandbytes not installed. Using standard AdamW.
+2026-10-23 20:27:03.435 | INFO     | acestep.gpu_config:get_gpu_config:846 - macOS MPS detected (11.8 GB unified memory, tier=tier4). Applying Apple Silicon optimizations: no compile, no quantization, mlx backend, no CPU offload.
+2026-10-23 20:27:03.435 | INFO     | acestep_mlx.lean_handler:initialize_service:69 - [lean] MLX buffer cache limited to 64 MB
+2026-10-23 20:27:03.437 | INFO     | acestep.core.generation.handler.init_service_loader:_load_main_model_from_checkpoint:174 - [initialize_service] Attempting to load model with attention implementation: sdpa
+2026-10-23 20:27:08.054 | INFO     | acestep_mlx.condition:_install_mlx_condition:50 - [lean] condition encoder, tokenizer and detokenizer on MLX (mlx mode)
+2026-10-23 20:27:08.066 | INFO     | acestep_mlx.lean_handler:_load_main_model_from_checkpoint:103 - [lean] MLX decoder loaded from checkpoint; dropped 1.575B torch decoder params; rest of the DiT on mps as torch.float32
+2026-10-23 20:27:09.687 | INFO     | acestep_mlx.text_encoder:_load_text_encoder_and_tokenizer:88 - [lean] text encoder on MLX (bf16 weights, fp32 compute)
+2026-10-23 20:27:10.291 | INFO     | acestep.core.generation.handler.mlx_vae_init:_init_mlx_vae:75 - [MLX-VAE] Decode/encode compiled with mx.compile().
+2026-10-23 20:27:10.291 | INFO     | acestep.core.generation.handler.mlx_vae_init:_init_mlx_vae:85 - [MLX-VAE] Native MLX VAE initialized (dtype=mlx.core.float32, compiled=True).
+2026-10-23 20:27:10.362 | INFO     | acestep_mlx.lean_handler:_init_mlx_vae:119 - [lean] dropped 168.7M torch VAE params after MLX VAE init
+2026-10-23 20:27:10.362 | INFO     | acestep.llm_inference:initialize:609 - loading 5Hz LM tokenizer... it may take 80~90s
+2026-10-23 20:27:19.249 | INFO     | acestep.llm_inference:initialize:613 - 5Hz LM tokenizer loaded successfully in 8.89 seconds
+2026-10-23 20:27:19.249 | INFO     | acestep.llm_inference:initialize:618 - Initializing constrained decoding processor...
+2026-10-23 20:27:19.249 | INFO     | acestep.llm_inference:initialize:624 - Setting constrained decoding max_duration to 480s based on GPU config (tier: tier4)
+2026-10-23 20:27:19.632 | DEBUG    | acestep.constrained_logits_processor:_precompute_audio_code_tokens:577 - Found 1535 audio code tokens with values outside valid range [0, 63999]
+2026-10-23 20:27:20.649 | INFO     | acestep.llm_inference:initialize:632 - Constrained processor initialized in 1.40 seconds
+2026-10-23 20:27:20.649 | INFO     | acestep.llm_inference:initialize:659 - flash_attn not installed: disabling CUDA graph capture for nano-vllm (SDPA fallback uses .item() calls in paged-cache decode that are incompatible with CUDA graph capture)
+2026-10-23 20:27:20.649 | INFO     | acestep.llm_inference:initialize:671 - Triton not available: disabling CUDA graph capture for nano-vllm (CUDA graphs require torch.compile which depends on Triton)
+2026-10-23 20:27:20.649 | INFO     | acestep.llm_inference:initialize:681 - Attempting MLX backend for Apple Silicon acceleration...
+2026-10-23 20:27:20.649 | INFO     | acestep.llm_inference:_load_mlx_model:2947 - Loading MLX model from /Users/fab/acestep-f0/ACE-Step-1.5/checkpoints/acestep-5Hz-lm-0.6B
+2026-10-23 20:27:30.452 | INFO     | acestep.llm_inference:_load_mlx_model:3003 - MLX model loaded successfully in 9.80s
+2026-10-23 20:27:30.465 | INFO     | acestep.llm_inference:create_sample_from_query:2097 - Creating sample from query: dark techno, 140 bpm in A minor, rolling bassline... (instrumental=True, vocal_language=None)
+2026-10-23 20:27:30.472 | DEBUG    | acestep.llm_inference:create_sample_from_query:2104 - Formatted prompt for inspiration: <|im_start|>system
+# Instruction
+Expand the user's input into a more detailed and specific musical description:
+
+<|im_end|>
+<|im_start|>user
+dark techno, 140 bpm in A minor, rolling bassline
+
+instrumental: true<|im_end|>
+<|im_start|>assistant
+
+2026-10-23 20:27:30.536 | INFO     | acestep.llm_inference:_run_mlx_single_native:3595 - MLX native prefill: 50 tokens in 0.06s (802.5 tok/s)
+MLX Gen (native):   0%|          | 0/3500 [00:00<?, ?tok/s]MLX Gen (native):   0%|          | 7/3500 [00:00<00:54, 64.22tok/s]MLX Gen (native):   0%|          | 14/3500 [00:00<00:56, 61.71tok/s]MLX Gen (native):   1%|          | 21/3500 [00:00<00:56, 61.50tok/s]MLX Gen (native):   1%|          | 28/3500 [00:00<00:56, 61.71tok/s]MLX Gen (native):   1%|          | 35/3500 [00:00<00:56, 61.09tok/s]MLX Gen (native):   1%|          | 42/3500 [00:00<00:56, 60.73tok/s]MLX Gen (native):   1%|▏         | 49/3500 [00:00<00:58, 58.55tok/s]MLX Gen (native):   2%|▏         | 55/3500 [00:00<01:00, 57.40tok/s]MLX Gen (native):   2%|▏         | 62/3500 [00:01<00:58, 58.44tok/s]MLX Gen (native):   2%|▏         | 69/3500 [00:01<00:57, 59.49tok/s]MLX Gen (native):   2%|▏         | 76/3500 [00:01<00:57, 59.91tok/s]MLX Gen (native):   2%|▏         | 83/3500 [00:01<00:56, 60.67tok/s]MLX Gen (native):   3%|▎         | 90/3500 [00:01<00:55, 60.94tok/s]MLX Gen (native):   3%|▎         | 97/3500 [00:01<00:56, 60.73tok/s]MLX Gen (native):   3%|▎         | 104/3500 [00:01<00:55, 60.65tok/s]MLX Gen (native):   3%|▎         | 111/3500 [00:01<01:04, 52.35tok/s]MLX Gen (native):   3%|▎         | 118/3500 [00:02<01:01, 54.70tok/s]MLX Gen (native):   4%|▎         | 125/3500 [00:02<00:59, 56.60tok/s]MLX Gen (native):   4%|▍         | 132/3500 [00:02<00:57, 58.42tok/s]MLX Gen (native):   4%|▍         | 139/3500 [00:02<00:56, 59.51tok/s]MLX Gen (native):   4%|▍         | 146/3500 [00:02<00:55, 60.45tok/s]MLX Gen (native):   4%|▍         | 153/3500 [00:02<00:54, 61.38tok/s]MLX Gen (native):   5%|▍         | 160/3500 [00:02<00:54, 61.61tok/s]MLX Gen (native):   5%|▍         | 167/3500 [00:02<00:54, 61.52tok/s]MLX Gen (native):   5%|▍         | 174/3500 [00:02<00:55, 59.86tok/s]MLX Gen (native):   5%|▌         | 181/3500 [00:03<00:57, 57.24tok/s]MLX Gen (native):   5%|▌         | 187/3500 [00:03<00:59, 55.25tok/s]MLX Gen (native):   6%|▌         | 193/3500 [00:03<01:01, 53.86tok/s]MLX Gen (native):   6%|▌         | 197/3500 [00:03<00:56, 58.35tok/s]
+2026-10-23 20:27:33.924 | INFO     | acestep.llm_inference:_run_mlx_single_native:3711 - MLX native generation complete: 197 tokens in 3.39s (58.2 tok/s) | prefill 0.06s + decode 3.39s = 3.45s total
+2026-10-23 20:27:33.924 | DEBUG    | acestep.llm_inference:parse_lm_output:2813 - Debug output text: <think>
+bpm: 90
+caption: An energetic and hypnotic electronic loop driven by a punchy, four-on-the-floor
+  drum machine beat and a rolling, arpeggiated synth bassline. A bright, slightly
+  detuned synth lead plays a catchy, repeating melodic pattern, giving the track a
+  classic trance or techno feel. The production is clean and direct, with a driving,
+  club-ready energy throughout the repetitive structure.
+duration: 28
+genres:Techno
+keyscale: A minor
+language: unknown
+timesignature: 4
+
+2026-10-23 20:27:33.925 | INFO     | acestep.llm_inference:create_sample_from_query:2156 - Sample created successfully. Generated {'bpm': 90, 'caption': 'An energetic and hypnotic electronic loop driven by a punchy, four-on-the-floor drum machine beat and a rolling, arpeggiated synth bassline. A bright, slightly detuned synth lead plays a catchy, repeating melodic pattern, giving the track a classic trance or techno feel. The production is clean and direct, with a driving, club-ready energy throughout the repetitive structure.', 'duration': 28, 'genres': 'Techno', 'keyscale': 'A minor', 'language': 'unknown', 'timesignature': '4', 'lyrics': '[Instrumental]\n\n[0:00-0:20] [Driving synth arpeggio and four-on-the-floor beat begins]\n[0:20-0:45] [Layered synth pads enter, building intensity]\n[0:20-0:35] [Abrupt silence]', 'instrumental': True} fields
+2026-10-23 20:27:33.926 | INFO     | acestep.inference:generate_music:662 - [generate_music] LLM usage decision: thinking=True, use_cot_caption=True, use_cot_language=True, use_cot_metas=True, need_lm_for_cot=True, llm_initialized=True, use_lm=True
+2026-10-23 20:27:33.926 | INFO     | acestep.inference:generate_music:720 - LM chunk 1/1 (infer_type=llm_dit) (size: 1, seeds: [2996978750])
+2026-10-23 20:27:33.926 | INFO     | acestep.llm_inference:generate_with_stop_condition:1371 - Phase 1: Generating CoT metadata...
+2026-10-23 20:27:33.930 | INFO     | acestep.llm_inference:generate_with_stop_condition:1377 - generate_with_stop_condition: formatted_prompt=<|im_start|>system
+# Instruction
+Generate audio semantic tokens based on the given conditions:
+
+<|im_end|>
+<|im_start|>user
+# Caption
+An energetic and hypnotic electronic loop driven by a punchy, four-on-the-floor drum machine beat and a rolling, arpeggiated synth bassline. A bright, slightly detuned synth lead plays a catchy, repeating melodic pattern, giving the track a classic trance or techno feel. The production is clean and direct, with a driving, club-ready energy throughout the repetitive structure.
+
+# Lyric
+[Instrumental]
+<|im_end|>
+<|im_start|>assistant
+
+2026-10-23 20:27:34.000 | INFO     | acestep.llm_inference:_run_mlx_single_native:3595 - MLX native prefill: 115 tokens in 0.07s (1707.1 tok/s)
+MLX Gen (native):   0%|          | 0/3500 [00:00<?, ?tok/s]MLX Gen (native):   0%|          | 6/3500 [00:00<01:01, 56.82tok/s]MLX Gen (native):   0%|          | 12/3500 [00:00<01:00, 57.52tok/s]MLX Gen (native):   1%|          | 18/3500 [00:00<00:59, 58.25tok/s]MLX Gen (native):   1%|          | 24/3500 [00:00<00:59, 58.01tok/s]MLX Gen (native):   1%|          | 30/3500 [00:00<01:00, 57.24tok/s]MLX Gen (native):   1%|          | 36/3500 [00:00<01:00, 57.44tok/s]MLX Gen (native):   1%|          | 42/3500 [00:00<00:59, 58.14tok/s]MLX Gen (native):   1%|▏         | 48/3500 [00:00<00:59, 58.33tok/s]MLX Gen (native):   2%|▏         | 54/3500 [00:00<00:58, 58.58tok/s]MLX Gen (native):   2%|▏         | 60/3500 [00:01<00:58, 58.74tok/s]MLX Gen (native):   2%|▏         | 66/3500 [00:01<00:58, 58.80tok/s]MLX Gen (native):   2%|▏         | 72/3500 [00:01<00:58, 58.83tok/s]MLX Gen (native):   2%|▏         | 78/3500 [00:01<00:58, 58.76tok/s]MLX Gen (native):   2%|▏         | 84/3500 [00:01<00:58, 58.53tok/s]MLX Gen (native):   3%|▎         | 90/3500 [00:01<00:59, 57.24tok/s]MLX Gen (native):   3%|▎         | 96/3500 [00:01<00:59, 57.53tok/s]MLX Gen (native):   3%|▎         | 102/3500 [00:01<00:59, 57.59tok/s]MLX Gen (native):   3%|▎         | 108/3500 [00:01<00:58, 58.21tok/s]MLX Gen (native):   3%|▎         | 114/3500 [00:01<00:58, 58.33tok/s]MLX Gen (native):   3%|▎         | 120/3500 [00:02<00:57, 58.52tok/s]MLX Gen (native):   3%|▎         | 121/3500 [00:02<00:58, 58.17tok/s]
+2026-10-23 20:27:36.080 | INFO     | acestep.llm_inference:_run_mlx_single_native:3711 - MLX native generation complete: 121 tokens in 2.08s (58.2 tok/s) | prefill 0.07s + decode 2.08s = 2.15s total
+2026-10-23 20:27:36.080 | DEBUG    | acestep.llm_inference:parse_lm_output:2813 - Debug output text: <think>
+bpm: 140
+caption: An energetic and hypnotic electronic loop driven by a punchy, four-on-the-floor
+  drum machine beat and a rolling, arpeggiated synth bassline. A bright, slightly
+  detuned synth lead plays a catchy, repeating melodic pattern, giving the track a
+  classic trance or techno feel. The production is clean and direct, with a driving,
+  club-ready energy throughout the repetitive structure.
+duration: 30
+keyscale: A minor
+language: unknown
+timesignature: 4
+<|im_end|>
+2026-10-23 20:27:36.080 | INFO     | acestep.llm_inference:generate_with_stop_condition:1422 - Phase 1 completed in 2.15s. Generated metadata: ['bpm', 'caption', 'duration', 'keyscale', 'language', 'timesignature']
+2026-10-23 20:27:36.080 | INFO     | acestep.llm_inference:generate_with_stop_condition:1482 - Phase 2: Generating audio codes...
+2026-10-23 20:27:36.081 | INFO     | acestep.llm_inference:generate_with_stop_condition:1490 - generate_with_stop_condition: formatted_prompt_with_cot=<|im_start|>system
+# Instruction
+Generate audio semantic tokens based on the given conditions:
+
+<|im_end|>
+<|im_start|>user
+# Caption
+An energetic and hypnotic electronic loop driven by a punchy, four-on-the-floor drum machine beat and a rolling, arpeggiated synth bassline. A bright, slightly detuned synth lead plays a catchy, repeating melodic pattern, giving the track a classic trance or techno feel. The production is clean and direct, with a driving, club-ready energy throughout the repetitive structure.
+
+# Lyric
+[Instrumental]
+<|im_end|>
+<|im_start|>assistant
+<think>
+bpm: 140
+caption: An energetic and hypnotic electronic loop driven by a punchy, four-on-the-floor
+  drum machine beat and a rolling, arpeggiated synth bassline. A bright, slightly
+  detuned synth lead plays a catchy, repeating melodic pattern, giving the track a
+  classic trance or techno feel. The production is clean and direct, with a driving,
+  club-ready energy throughout the repetitive structure.
+duration: 30
+keyscale: A minor
+language: unknown
+timesignature: 4
+</think>
+
+
+2026-10-23 20:27:36.082 | INFO     | acestep.llm_inference:_run_mlx_single_native:3514 - MLX native: pre-transitioned FSM to CODES_GENERATION (native fast path)
+2026-10-23 20:27:36.082 | INFO     | acestep.llm_inference:_build_unconditional_prompt:395 - CFG unconditional prompt (phase=codes, is_batch=False, negative_prompt='NO USER INPUT'):
+<|im_start|>system
+# Instruction
+Generate audio semantic tokens based on the given conditions:
+
+<|im_end|>
+<|im_start|>user
+NO USER INPUT<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+
+2026-10-23 20:27:36.206 | INFO     | acestep.llm_inference:_run_mlx_single_native:3571 - MLX native prefill: 270 tokens (cond=237, uncond=33) in 0.12s (2177.1 tok/s)
+MLX CFG Gen (native):   0%|          | 0/160 [00:00<?, ?tok/s]MLX CFG Gen (native):   3%|▎         | 5/160 [00:00<00:03, 44.22tok/s]MLX CFG Gen (native):   6%|▋         | 10/160 [00:00<00:03, 39.10tok/s]MLX CFG Gen (native):   9%|▉         | 14/160 [00:00<00:03, 37.61tok/s]MLX CFG Gen (native):  11%|█▏        | 18/160 [00:00<00:03, 37.00tok/s]MLX CFG Gen (native):  14%|█▍        | 22/160 [00:00<00:03, 36.05tok/s]MLX CFG Gen (native):  16%|█▋        | 26/160 [00:00<00:03, 36.18tok/s]MLX CFG Gen (native):  19%|█▉        | 30/160 [00:00<00:03, 36.17tok/s]MLX CFG Gen (native):  21%|██▏       | 34/160 [00:00<00:03, 36.09tok/s]MLX CFG Gen (native):  24%|██▍       | 38/160 [00:01<00:03, 36.18tok/s]MLX CFG Gen (native):  26%|██▋       | 42/160 [00:01<00:03, 36.21tok/s]MLX CFG Gen (native):  29%|██▉       | 46/160 [00:01<00:03, 36.07tok/s]MLX CFG Gen (native):  31%|███▏      | 50/160 [00:01<00:03, 36.00tok/s]MLX CFG Gen (native):  34%|███▍      | 54/160 [00:01<00:02, 35.53tok/s]MLX CFG Gen (native):  36%|███▋      | 58/160 [00:01<00:02, 35.58tok/s]MLX CFG Gen (native):  39%|███▉      | 62/160 [00:01<00:02, 35.68tok/s]MLX CFG Gen (native):  41%|████▏     | 66/160 [00:01<00:02, 35.88tok/s]MLX CFG Gen (native):  44%|████▍     | 70/160 [00:01<00:02, 35.86tok/s]MLX CFG Gen (native):  46%|████▋     | 74/160 [00:02<00:02, 35.82tok/s]MLX CFG Gen (native):  49%|████▉     | 78/160 [00:02<00:02, 35.96tok/s]MLX CFG Gen (native):  51%|█████▏    | 82/160 [00:02<00:02, 35.81tok/s]MLX CFG Gen (native):  54%|█████▍    | 86/160 [00:02<00:02, 35.73tok/s]MLX CFG Gen (native):  56%|█████▋    | 90/160 [00:02<00:01, 35.55tok/s]MLX CFG Gen (native):  59%|█████▉    | 94/160 [00:02<00:01, 35.41tok/s]MLX CFG Gen (native):  61%|██████▏   | 98/160 [00:02<00:01, 35.53tok/s]MLX CFG Gen (native):  64%|██████▍   | 102/160 [00:02<00:01, 35.60tok/s]MLX CFG Gen (native):  66%|██████▋   | 106/160 [00:02<00:01, 35.70tok/s]MLX CFG Gen (native):  69%|██████▉   | 110/160 [00:03<00:01, 35.70tok/s]MLX CFG Gen (native):  71%|███████▏  | 114/160 [00:03<00:01, 35.82tok/s]MLX CFG Gen (native):  74%|███████▍  | 118/160 [00:03<00:01, 35.82tok/s]MLX CFG Gen (native):  76%|███████▋  | 122/160 [00:03<00:01, 35.77tok/s]MLX CFG Gen (native):  79%|███████▉  | 126/160 [00:03<00:00, 35.76tok/s]MLX CFG Gen (native):  81%|████████▏ | 130/160 [00:03<00:00, 35.42tok/s]MLX CFG Gen (native):  84%|████████▍ | 134/160 [00:03<00:00, 35.45tok/s]MLX CFG Gen (native):  86%|████████▋ | 138/160 [00:03<00:00, 35.64tok/s]MLX CFG Gen (native):  89%|████████▉ | 142/160 [00:03<00:00, 35.69tok/s]MLX CFG Gen (native):  91%|█████████▏| 146/160 [00:04<00:00, 35.66tok/s]MLX CFG Gen (native):  94%|█████████▍| 150/160 [00:04<00:00, 35.79tok/s]MLX CFG Gen (native):  94%|█████████▍| 151/160 [00:04<00:00, 35.97tok/s]
+2026-10-23 20:27:40.404 | INFO     | acestep.llm_inference:_run_mlx_single_native:3711 - MLX native generation complete: 151 tokens in 4.20s (36.0 tok/s) | prefill 0.12s + decode 4.20s = 4.32s total
+2026-10-23 20:27:40.405 | DEBUG    | acestep.llm_inference:parse_lm_output:2813 - Debug output text: <|audio_code_40834|><|audio_code_46035|><|audio_code_16209|><|audio_code_52563|><|audio_code_29532|><|audio_code_11042|><|audio_code_61292|><|audio_code_51707|><|audio_code_61890|><|audio_code_4978|><|audio_code_59328|><|audio_code_1476|><|audio_code_369|><|audio_code_50099|><|audio_code_39659|><|audio_code_27332|><|audio_code_58558|><|audio_code_49930|><|audio_code_62867|><|audio_code_25003|><|audio_code_30058|><|audio_code_46045|><|audio_code_53634|><|audio_code_27954|><|audio_code_17860|><|audio_code_31682|><|audio_code_21368|><|audio_code_22432|><|audio_code_57316|><|audio_code_61346|><|audio_code_40821|><|audio_code_37699|><|audio_code_5949|><|audio_code_39655|><|audio_code_2252|><|audio_code_48619|><|audio_code_48571|><|audio_code_56258|><|audio_code_5043|><|audio_code_56195|><|audio_code_2816|><|audio_code_14786|><|audio_code_10722|><|audio_code_28464|><|audio_code_10640|><|audio_code_2490|><|audio_code_7545|><|audio_code_2309|><|audio_code_16644|><|audio_code_15158|><|audio_code_44318|><|audio_code_6933|><|audio_code_37306|><|audio_code_28025|><|audio_code_2435|><|audio_code_3457|><|audio_code_5955|><|audio_code_19232|><|audio_code_39315|><|audio_code_51138|><|audio_code_39192|><|audio_code_56266|><|audio_code_57299|><|audio_code_1355|><|audio_code_16798|><|audio_code_43868|><|audio_code_56589|><|audio_code_63877|><|audio_code_53684|><|audio_code_7482|><|audio_code_2937|><|audio_code_435|><|audio_code_2489|><|audio_code_49587|><|audio_code_45833|><|audio_code_27970|><|audio_code_55796|><|audio_code_27480|><|audio_code_36818|><|audio_code_25074|><|audio_code_36746|><|audio_code_41429|><|audio_code_48564|><|audio_code_20284|><|audio_code_35726|><|audio_code_21396|><|audio_code_19201|><|audio_code_16664|><|audio_code_62354|><|audio_code_61777|><|audio_code_40819|><|audio_code_9921|><|audio_code_16195|><|audio_code_29139|><|audio_code_4874|><|audio_code_35818|><|audio_code_46075|><|audio_code_10211|><|audio_code_63987|><|audio_code_22965|><|audio_code_16138|><|audio_code_20860|><|audio_code_7965|><|audio_code_26408|><|audio_code_10513|><|audio_code_14762|><|audio_code_21810|><|audio_code_27908|><|audio_code_16649|><|audio_code_18755|><|audio_code_14314|><|audio_code_53659|><|audio_code_40953|><|audio_code_28090|><|audio_code_28099|><|audio_code_18818|><|audio_code_18300|><|audio_code_15650|><|audio_code_62909|><|audio_code_31429|><|audio_code_40721|><|audio_code_46035|><|audio_code_16209|><|audio_code_52563|><|audio_code_29532|><|audio_code_11042|><|audio_code_61292|><|audio_code_51707|><|audio_code_61898|><|audio_code_4978|><|audio_code_59328|><|audio_code_1476|><|audio_code_369|><|audio_code_50099|><|audio_code_39659|><|audio_code_27332|><|audio_code_58558|><|audio_code_38119|><|audio_code_35847|><|audio_code_35847|><|audio_code_35847|><|audio_code_35847|><|audio_code_35847|><|audio_code_35847|><|audio_code_35847|><|audio_code_35847|><|audio_code_35847|><|audio_code_62151|><|audio_code_33807|><|audio_code_35847|><|im_end|>
+2026-10-23 20:27:40.405 | INFO     | acestep.llm_inference:generate_with_stop_condition:1650 - Phase 2 completed in 4.32s. Generated 150 audio codes
+2026-10-23 20:27:40.405 | INFO     | acestep.core.generation.handler.generate_music:generate_music:313 - [generate_music] Turbo model detected: overriding guidance_scale 7.0 -> 1.0 (turbo does not use CFG).
+2026-10-23 20:27:40.405 | INFO     | acestep.core.generation.handler.generate_music:generate_music:329 - [generate_music] Starting generation...
+2026-10-23 20:27:40.405 | INFO     | acestep.core.generation.handler.generate_music:generate_music:332 - [generate_music] Preparing inputs...
+2026-10-23 20:27:40.407 | INFO     | acestep.core.generation.handler.generate_music_request:_prepare_reference_and_source_audio:204 - [generate_music] cover task: no src_audio but audio codes provided, proceeding with codes
+2026-10-23 20:27:40.416 | INFO     | acestep.core.generation.handler.conditioning_target:_prepare_target_latents_and_wavs:78 - [generate_music] Decoding audio codes for item 0...
+2026-10-23 20:27:40.561 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_precomputed_lm_hints:31 - [generate_music] Decoding audio codes for LM hints for item 0...
+2026-10-23 20:27:40.641 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:119 - 
+======================================================================
+2026-10-23 20:27:40.641 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:120 - 🔍 [DEBUG] DiT TEXT ENCODER INPUT (Inference)
+2026-10-23 20:27:40.642 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:121 - ======================================================================
+2026-10-23 20:27:40.642 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:122 - text_prompt:
+# Instruction
+Generate audio semantic tokens based on the given conditions:
+
+# Caption
+An energetic and hypnotic electronic loop driven by a punchy, four-on-the-floor drum machine beat and a rolling, arpeggiated synth bassline. A bright, slightly detuned synth lead plays a catchy, repeating melodic pattern, giving the track a classic trance or techno feel. The production is clean and direct, with a driving, club-ready energy throughout the repetitive structure.
+
+# Metas
+- bpm: 140
+- timesignature: 4
+- keyscale: A minor
+- duration: 30 seconds
+<|endoftext|>
+
+2026-10-23 20:27:40.642 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:123 - ======================================================================
+2026-10-23 20:27:40.642 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:124 - lyrics_text:
+# Languages
+unknown
+
+# Lyric
+[Instrumental]<|endoftext|>
+2026-10-23 20:27:40.642 | INFO     | acestep.core.generation.handler.conditioning_text:_prepare_text_conditioning_inputs:125 - ======================================================================
+
+2026-10-23 20:27:40.665 | INFO     | acestep.core.generation.handler.conditioning_embed:preprocess_batch:110 - [preprocess_batch] Inferring prompt embeddings...
+2026-10-23 20:27:40.771 | INFO     | acestep.core.generation.handler.conditioning_embed:preprocess_batch:113 - [preprocess_batch] Inferring lyric embeddings...
+2026-10-23 20:27:40.772 | INFO     | acestep.core.generation.handler.service_generate_execute:_execute_service_generate_diffusion:173 - [service_generate] Generating audio... (DiT backend: MLX (native))
+2026-10-23 20:27:41.023 | INFO     | acestep.models.mlx.dit_generate:mlx_generate_diffusion:410 - [MLX-DiT] DCW enabled (mode=double, scaler=0.050, high_scaler=0.020, wavelet=haar, backend=MLX-native Haar).
+Using precomputed LM hints
+MLX DiT diffusion:   0%|          | 0/8 [00:00<?, ?it/s]MLX DiT diffusion:  12%|█▎        | 1/8 [00:00<00:04,  1.66it/s]MLX DiT diffusion:  25%|██▌       | 2/8 [00:01<00:03,  1.72it/s]MLX DiT diffusion:  38%|███▊      | 3/8 [00:01<00:02,  1.72it/s]MLX DiT diffusion:  50%|█████     | 4/8 [00:02<00:02,  1.72it/s]MLX DiT diffusion:  62%|██████▎   | 5/8 [00:02<00:01,  1.73it/s]MLX DiT diffusion:  75%|███████▌  | 6/8 [00:03<00:01,  1.74it/s]MLX DiT diffusion:  88%|████████▊ | 7/8 [00:04<00:00,  1.74it/s]MLX DiT diffusion: 100%|██████████| 8/8 [00:04<00:00,  1.75it/s]MLX DiT diffusion: 100%|██████████| 8/8 [00:04<00:00,  1.73it/s]
+2026-10-23 20:27:45.643 | INFO     | acestep.core.generation.handler.service_generate_execute:_execute_service_generate_diffusion:267 - [service_generate] DiT diffusion complete via MLX (4.62s total, 0.577s/step).
+2026-10-23 20:27:45.644 | INFO     | acestep.core.generation.handler.generate_music_decode:_prepare_generate_music_decode_state:42 - [generate_music] Model generation completed. Decoding latents...
+2026-10-23 20:27:45.646 | DEBUG    | acestep.core.generation.handler.generate_music_decode:_prepare_generate_music_decode_state:64 - [generate_music] pred_latents: torch.Size([1, 750, 64]), dtype=torch.float32
+2026-10-23 20:27:45.646 | DEBUG    | acestep.core.generation.handler.generate_music_decode:_prepare_generate_music_decode_state:65 - [generate_music] time_costs: {'diffusion_time_cost': 4.619332790374756, 'diffusion_per_step_time_cost': 0.5774165987968445, 'total_time_cost': 4.619520664215088, 'sampler_mode': 'euler', 'offload_time_cost': 0.0}
+2026-10-23 20:27:45.687 | INFO     | acestep.core.generation.handler.generate_music_decode:_decode_generate_music_pred_latents:127 - [generate_music] Decoding latents with VAE...
+2026-10-23 20:27:45.692 | DEBUG    | acestep.core.generation.handler.generate_music_decode:_decode_generate_music_pred_latents:136 - [generate_music] Before VAE decode: allocated=0.00GB, max=0.00GB
+2026-10-23 20:27:45.692 | INFO     | acestep.core.generation.handler.generate_music_decode:_decode_generate_music_pred_latents:172 - [generate_music] Using tiled VAE decode to reduce VRAM usage...
+2026-10-23 20:27:51.941 | INFO     | acestep.core.generation.handler.mlx_vae_decode_native:_mlx_vae_decode:66 - [MLX-VAE] Decoded 1 sample(s), 750 latent frames -> audio in 6.25s (convert=0.000s, decode=6.25s, dtype=mlx.core.float32)
+2026-10-23 20:27:51.941 | DEBUG    | acestep.core.generation.handler.generate_music_decode:_decode_generate_music_pred_latents:193 - [generate_music] After VAE decode: allocated=0.00GB, max=0.00GB
+2026-10-23 20:27:52.076 | INFO     | acestep.core.generation.handler.generate_music_payload:_build_generate_music_success_payload:38 - [generate_music] VAE decode completed. Preparing audio tensors...
+2026-10-23 20:27:52.077 | INFO     | acestep.core.generation.handler.generate_music_payload:_build_generate_music_success_payload:50 - [generate_music] Done! Generated 1 audio tensors.
+2026-10-23 20:27:52.214 | DEBUG    | acestep.audio_utils:save_audio:296 - [AudioSaver] Saved audio to /Users/fab/acestep-f0/n4_songs/s06_030/20261023-202733-s06_030-/75f45de1-46da-6264-a636-dfc234ec2dbd.wav (wav32, 48000Hz)
+N4 {"tag": "s06_030", "lm_model": "acestep-5Hz-lm-0.6B", "requested_s": 30.0, "load_s": 29.7, "song_s": 21.8, "phase_start_s": {"lyrics": 0.0, "composing": 3.46, "rendering": 9.94}, "mlx_peak_mb": {"before_lyrics": 7642, "before_composing": 7739, "before_rendering": 7956, "after_rendering": 9892}, "audio_s": 30.0, "subtype": "FLOAT", "bpm": 140, "keyscale": "A minor", "instrumental": true, "lyrics_lines": 1}
+       52,05 real        25,46 user         8,21 sys
+         11590893568  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+             1559465  page reclaims
+              133807  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                7897  voluntary context switches
+              154997  involuntary context switches
+        687958531318  instructions retired
+        130833656911  cycles elapsed
+         11776368344  peak memory footprint

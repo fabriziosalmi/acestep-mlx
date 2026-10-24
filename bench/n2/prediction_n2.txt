@@ -1,0 +1,15 @@
+N2 PREDICTION, written 2026-10-23 16:40 BEFORE the runs. mini1, lean defaults (tiles 64/16, cache 64 MB, torch VAE dropped),
+replay fixed.json, seed 42. Text encoder Qwen3-Embedding-0.6B on mlx-lm Qwen3Model, bf16 weights, fp32 embeddings in.
+E1 compare: lyric_embeddings bit-identical to torch (bf16 table values cast to fp32 on both sides).
+   hidden_states not bit-identical; min per-token cosine > 0.99999.
+E2 mlx: audio md5 differs from ref1 (4e731ce4...); SNR vs ref1 > 30 dB (low confidence).
+   torch MPS current 5423 -> 3000-3500 MB; MLX active 3681 -> 4700-5000 MB; process peak 13.0-13.8 GB (was 14.09-14.14).
+E3 compare and mlx runs produce the same md5 (both return the MLX outputs).
+
+N2 RESULT: E1 OK (lyric embeddings bit-identical; hidden states max abs 1.812e-04, mean abs 9.593e-06, min cosine 0.99999988).
+E2 OK: md5 834d8f80d4a8454f3802e331d2703ac1, SNR 79.81 dB vs ref1; torch MPS 3127 MB, MLX 4817 MB, peak 13.22 GB, generate 12.1 s.
+E3 OK (compare and mlx md5 identical). Default switched to mlx.
+
+APP-FLOW 2 PREDICTION, written 2026-10-23 16:42 BEFORE the run: full flow with MLX text encoder default:
+F1 peak 14.4-15.2 GB (15.87 - ~1.1 GB); wall time 60-80 s; 30 s of music.
+APP-FLOW 2 RESULT: F1 peak 14.20 GB (below range, good direction), wall 63.88 s (init_dit 12.2, init_lm 20.2, create_sample 6.9, generate 20.6), swap 0.96 -> 1.84 GB, 30.0 s, RMS -16.8 dBFS.

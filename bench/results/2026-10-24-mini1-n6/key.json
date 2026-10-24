@@ -1,0 +1,185 @@
+{
+ "shuffle_seed": 20261024,
+ "pairs": {
+  "01": {
+   "pair": "K3-blues",
+   "prompt": "acoustic blues with slide guitar and a raspy male voice",
+   "A": {
+    "clip": "K3-blues-literal",
+    "side": "literal",
+    "gain_db": -2.02,
+    "md5": "6c64edcdc813ccb555b985baadf5333a",
+    "bpm": 100,
+    "keyscale": "G major"
+   },
+   "B": {
+    "clip": "K3-blues-rewrite",
+    "side": "rewrite",
+    "gain_db": -0.09,
+    "md5": "08b032cb857ad5146d2cc83c392e2163",
+    "bpm": 100,
+    "keyscale": "E minor"
+   }
+  },
+  "02": {
+   "pair": "K3-lofi",
+   "prompt": "lo-fi hip hop beat, 85 bpm, dusty vinyl, mellow piano",
+   "A": {
+    "clip": "K3-lofi-literal",
+    "side": "literal",
+    "gain_db": -0.59,
+    "md5": "27c8e1308248d3a7832511b12798edf1",
+    "bpm": 85,
+    "keyscale": "A♭ major"
+   },
+   "B": {
+    "clip": "K3-lofi-rewrite",
+    "side": "rewrite",
+    "gain_db": -0.09,
+    "md5": "b70b72cc3fd63ac25f73be67000b0180",
+    "bpm": 85,
+    "keyscale": "G major"
+   }
+  },
+  "03": {
+   "pair": "K3-reggae",
+   "prompt": "reggae, 75 bpm, female vocals, offbeat guitar skank",
+   "A": {
+    "clip": "K3-reggae-rewrite",
+    "side": "rewrite",
+    "gain_db": -0.09,
+    "md5": "e0372785b754638ad13e1cc30f1c4642",
+    "bpm": 75,
+    "keyscale": "B♭ minor"
+   },
+   "B": {
+    "clip": "K3-reggae-literal",
+    "side": "literal",
+    "gain_db": -0.37,
+    "md5": "040f6617043bc64d848491cfb0f8c5b8",
+    "bpm": 75,
+    "keyscale": "F major"
+   }
+  },
+  "04": {
+   "pair": "K3-indus",
+   "prompt": "techno industriale, 140 bpm, kick distorto, rumore metallico",
+   "A": {
+    "clip": "K3-indus-literal",
+    "side": "literal",
+    "gain_db": -0.09,
+    "md5": "8720f0216efc4532ddab374427813b75",
+    "bpm": 140,
+    "keyscale": "C minor"
+   },
+   "B": {
+    "clip": "K3-indus-rewrite",
+    "side": "rewrite",
+    "gain_db": -1.12,
+    "md5": "3e97730ff763adf461802945ab5dcff6",
+    "bpm": 140,
+    "keyscale": "E minor"
+   }
+  },
+  "05": {
+   "pair": "K3-pop",
+   "prompt": "canzone pop italiana estiva con voce maschile, 120 bpm",
+   "A": {
+    "clip": "K3-pop-literal",
+    "side": "literal",
+    "gain_db": -0.09,
+    "md5": "7e1e733e6a3b8c1717f5ef1c85755a72",
+    "bpm": 120,
+    "keyscale": "D minor"
+   },
+   "B": {
+    "clip": "K3-pop-rewrite",
+    "side": "rewrite",
+    "gain_db": -0.63,
+    "md5": "a384ef6db02521b7428633eebccad773",
+    "bpm": 120,
+    "keyscale": "C minor"
+   }
+  },
+  "06": {
+   "pair": "K3-score",
+   "prompt": "orchestral film score, epic strings and brass, D minor",
+   "A": {
+    "clip": "K3-score-literal",
+    "side": "literal",
+    "gain_db": -1.58,
+    "md5": "7302ef8ecbaf99f99f83ad935b9c309a",
+    "bpm": 100,
+    "keyscale": "D minor"
+   },
+   "B": {
+    "clip": "K3-score-rewrite",
+    "side": "rewrite",
+    "gain_db": -0.09,
+    "md5": "46030f6e0cbb95fc8ac8df766316f415",
+    "bpm": 100,
+    "keyscale": "D minor"
+   }
+  },
+  "07": {
+   "pair": "N1-lofi",
+   "prompt": "lo-fi hip hop beat, 85 bpm, dusty vinyl, mellow piano",
+   "A": {
+    "clip": "N1-lofi",
+    "side": "same file",
+    "gain_db": -0.09,
+    "md5": "1b40e4cd09eb35476788e57c54d9f753",
+    "bpm": 85,
+    "keyscale": "B minor"
+   },
+   "B": {
+    "clip": "N1-lofi",
+    "side": "same file",
+    "gain_db": -0.09,
+    "md5": "1b40e4cd09eb35476788e57c54d9f753",
+    "bpm": 85,
+    "keyscale": "B minor"
+   }
+  },
+  "08": {
+   "pair": "K3-ambient",
+   "prompt": "dark ambient drone, slow evolving pads",
+   "A": {
+    "clip": "K3-ambient-rewrite",
+    "side": "rewrite",
+    "gain_db": -4.55,
+    "md5": "a712dcc41a988d7ea62bcb0756f41ddc",
+    "bpm": 50,
+    "keyscale": "C minor"
+   },
+   "B": {
+    "clip": "K3-ambient-literal",
+    "side": "literal",
+    "gain_db": 0.0,
+    "md5": "2bee8ce0f3a05244583f84d011ae0e6d",
+    "bpm": 120,
+    "keyscale": "E minor"
+   }
+  },
+  "09": {
+   "pair": "K3-dnb",
+   "prompt": "drum and bass, 174 bpm, reese bass, amen breaks",
+   "A": {
+    "clip": "K3-dnb-rewrite",
+    "side": "rewrite",
+    "gain_db": -1.14,
+    "md5": "2e042e99fb03950fa77db1d02fc9ec09",
+    "bpm": 174,
+    "keyscale": "F minor"
+   },
+   "B": {
+    "clip": "K3-dnb-literal",
+    "side": "literal",
+    "gain_db": -0.09,
+    "md5": "78140a00121a81efa90199d74e0dd504",
+    "bpm": 174,
+    "keyscale": "C minor"
+   }
+  }
+ }
+}

@@ -1,0 +1,9 @@
+t256_64 EXIT 0 peak 20487885288 md5 4e731ce4be09621d98420f3be6e4d814 maxfp 18GB tiles 6 maxtile 8345 audio in 7.93s
+t128_32 EXIT 0 peak 19925668304 md5 4e731ce4be09621d98420f3be6e4d814 maxfp 19GB tiles 12 maxtile 6670 audio in 7.63s
+t64_16 EXIT 0 peak 17842065896 md5 4e731ce4be09621d98420f3be6e4d814 maxfp 16GB tiles 24 maxtile 5931 audio in 6.82s
+t48_12 EXIT 0 peak 16976106584 md5 8068624a30b496feb3702d938101c78b maxfp 15GB tiles 32 maxtile 5495 audio in 6.94s
+t256_64 vs ref1: SNR     inf dB  corr 1.0000  LSD   0.00 dB  rms  -19.4 dBFS
+t128_32 vs ref1: SNR     inf dB  corr 1.0000  LSD   0.00 dB  rms  -19.4 dBFS
+t64_16 vs ref1: SNR     inf dB  corr 1.0000  LSD   0.00 dB  rms  -19.4 dBFS
+t48_12 vs ref1: SNR  130.78 dB  corr 1.0000  LSD   0.00 dB  rms  -19.4 dBFS
+SERIES_DONE

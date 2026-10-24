@@ -1,0 +1,61 @@
+N5 PREDICTION, written 2026-10-23 23:30 BEFORE any clip is made. Blind A/B listening test, Mac mini M4 16 GB,
+engine at 44c7a1f. All clips 30 s. Listener: Fab, one overall preference per pair (A, B or equal) plus a
+"broken" flag per clip. Pair order and A/B side are shuffled with a recorded seed; the key stays off the Desktop.
+
+Prompts (2 vocal, 2 instrumental, 3 with an explicit BPM, 1 with an explicit key):
+  folk   "ballata folk italiana, chitarra acustica, voce femminile"
+  rock   "energetic pop rock song with male vocals, 128 bpm, D major"
+  house  "minimal house, 124 bpm, deep rolling groove"
+  tekno  "freetekno, 180 bpm, acid 303 line, distorted kick"
+Baseline = the current recipe: LM 0.6B rewrites, prompt BPM/key bind the LM, DiT turbo 8 steps, shift 1.0.
+Every clip is generated on its own (no clip appears in two pairs), except the identical null pair.
+
+Knobs (one pair per prompt unless noted):
+  K1 shift 1.0 vs 3.0 (upstream docs recommend 3.0 for turbo; the engine uses the API default 1.0).
+     Same LM codes, caption, metadata and DiT seed: only the timestep schedule differs.
+  K2 LM 0.6B vs 1.7B (whole pipeline).
+  K3 rewrite vs literal (prompt passed to the DiT as written).
+  K4 BPM/key forced vs free (the LM may read the number but is not constrained); rock, house, tekno only.
+  N1 the same file twice (house); N2 two baseline runs with different seeds (rock).
+17 pairs, 34 clips, ~17 min of audio.
+
+Technical predictions:
+T1 Every clip is 30.0 s +-0.1; forced runs report the prompt BPM/key in song.json; no generation fails.
+T2 K1: re-rendering the baseline from its own codes with shift 1.0 and the same seed reproduces the original
+   audio bit for bit (md5) in 4/4 (medium confidence: the caption/language reconstruction may differ).
+T3 K1 shift 3.0 render time within 10% of shift 1.0 (same 8 steps).
+T4 K4 free: the LM's BPM differs from the prompt's in at least 1 of 3 (it gave 168 for "180 bpm" before).
+
+Listening predictions (low confidence, they are the reason for the test):
+L1 K1 shift 3.0 preferred in >= 3/4.
+L2 K2 no clear winner (neither side 4/4).
+L3 K3 literal preferred in >= 2/4 for the instrumental genre prompts (the rewrite drifted from freetekno before).
+L4 K4 no "broken" flag on a forced clip.
+L5 N1 judged equal; N2 any answer (it measures how much seed noise looks like a preference).
+
+Decision rule, fixed now: with 4 pairs and no real difference, 4/4 for one side happens 1 time in 8 and at least 3/4 for one side
+5 times in 8. A knob changes the default only on 4/4 (3/3 for K4) with no broken flag on the winner; 3/4 changes it
+only for K1 shift 3.0, the documented upstream setting; anything else keeps the current default. If N1 is not
+judged equal or N2 gets a strong preference, all results are read as weaker. Any broken flag on a forced K4
+clip is reported as a declared limit of forcing.
+
+N5 TECHNICAL RESULT, 2026-10-23 23:52 (clips on the Mac mini in ~/acestep-f0/n5_clips; key in ~/acestep-f0/n5_key.json,
+committed after the vote). The smoke run found that the recorded seed was not the DiT's seed (fixed in 5ea94d8
+before the series: re-render SNR -1.8 dB before, bit-identical after).
+T1 OK: 37 clips, all 30.000 s FLOAT, no failure; forced runs carry the prompt BPM (128, 124, 180) and rock's D major.
+   Peak footprint 11.86 GB (0.6B series), 13.97 GB (1.7B series).
+T2 OK: shift 1.0 re-render bit-identical to the original in 4/4 (sample md5).
+T3 OK: render 11.6-11.9 s for both shifts.
+T4 OK, stronger than predicted: free BPM differs from the prompt in 3/3 (128 -> 100, 124 -> 50, 180 -> 100).
+Side note: the 0.6B LM gave the Italian folk ballad 40 or 50 BPM in 3 of 6 runs.
+Within each pair both clips are at the same RMS (largest mismatch below 0.05 dB), 16-bit PCM.
+
+N5 LISTENING RESULT, 2026-10-24 (votes in bench/results/2026-10-23-mini1-n5/votes.txt, key next to it).
+K1 shift 3.0: 1 win, 3 equal, 0 for 1.0. L1 MISS. Not 3/4: the default stays 1.0.
+K2 LM 1.7B: 0 wins, 3 equal, 1 for 0.6B. L2 OK. The default stays 0.6B (1.7B costs +2.2 GB and 2-3x the LM time).
+K3 literal: 3 wins (folk, house, tekno), 1 for rewrite (rock). L3 OK. 3/4 is below the rule: the default stays rewrite.
+   The only broken flag in K3 is on a rewrite clip (tekno).
+K4 forced: 3/3, no broken flag on a forced clip. L4 OK. Forcing stays the default and is now backed by a vote.
+N1 equal: OK. N2 got a preference (run a): one-pair preferences are at seed-noise level.
+Freetekno: 5 of 8 tekno clips flagged broken (both sides of the K1 and K2 tekno pairs, the K3 rewrite one); the
+forced K4 tekno clip and the K3 literal one were not. Declared limit: freetekno at 180 BPM breaks often.

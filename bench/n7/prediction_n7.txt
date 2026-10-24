@@ -1,0 +1,31 @@
+N7 PREDICTION, written 2026-10-24 BEFORE the change is measured. Memory at rest: the app stops the engine
+process after an idle period and starts it again on the next request. Mac mini M4 16 GB, driven by AceStepE2E
+with a short idle period (ACESTEP_IDLE_SECONDS=20); default periods: laptop 120 s, mini 1200 s.
+
+Design: stopping the process instead of unloading models inside Python, so all of the engine's memory goes back to
+the system by construction (no allocator caches, no leftover torch/MLX buffers). The window shows "Ready" while
+the engine sleeps; a request then shows "Loading models" and is sent when the engine reports ready.
+
+P1 Engine footprint just before it sleeps (footprint -p, after one 30 s song): 7.0-9.5 GB (N4: about 9 GB with
+   the LM loaded, 7.1 GB with only the DiT).
+P2 After the idle period the engine process is gone within 5 s and nothing of it is left (no python child).
+P3 Wake: request to engine ready 25-40 s (model files in the page cache); request to song done 45-75 s for 30 s.
+P4 Three sleep/wake cycles in a row: every song arrives, the app process (AceStepE2E) grows by less than 20 MB.
+P5 A request made while the engine is stopping is not lost: it is sent once the restarted engine is ready.
+Unit tests: the idle transition, a wake request, a request during stopping and an unexpected exit; each test must
+fail when the behaviour it checks is disabled (break-test).
+
+N7 RESULT, 2026-10-24 (bench/n7/run_n7.sh; logs in bench/results/2026-10-24-mini1-n7/). AceStepE2E: every check
+PASS, first load 34 s, first song 20 s, then 3 sleep/wake cycles.
+P1 OK: engine footprint just before each sleep 8875-8880 MB.
+P2 OK: the engine process is gone in the first sample after the idle stop (1 s resolution). The system's
+   free+inactive counter rises by 4.6-4.7 GB (7.6 -> 12.2 GB), not by the full 8.9 GB footprint; the gap is not
+   attributed (compressed and file-backed pages are counted differently). One sample shows a 240 KB child of a
+   working engine, not a second engine; no sample shows two loaded engines.
+P3 OK: request to engine ready 33 s in 3/3; request to song done 53-54 s.
+P4 OK: AceStepE2E RSS 5.6 MB after start, 8.8 MB at the end, over 4 songs and 3 restarts.
+P5 OK as far as 1 s sampling shows: the cycle 2 request was made in the same second the engine was told to stop;
+   a single new engine loaded and the song arrived. The ordering itself is covered by the unit test
+   aRequestWhileStoppingWaitsForTheExit.
+Found while testing: EngineProcess waited for the exit with waitUntilExit on the pipe queue and hung in 30 of 300
+launches (old code); the exit is now reported once stdout EOF and termination are both in: 0 of 300.
