@@ -41,7 +41,7 @@ func temporaryDirectory() throws -> URL {
 @Suite struct EngineConfigTests {
     @Test func defaultsFollowHomeAndEnvironmentOverrides() {
         let home = URL(fileURLWithPath: "/Users/someone")
-        let plain = EngineConfig.resolve(environment: [:], home: home, hasBattery: false)
+        let plain = EngineConfig.resolve(environment: [:], home: home, hasBattery: false, runtime: nil)
         #expect(plain.preset == "mini")
         #expect(EngineConfig.resolve(environment: [:], home: home, hasBattery: true).preset == "laptop")
         #expect(plain.idleSeconds == 1200)
@@ -57,19 +57,54 @@ func temporaryDirectory() throws -> URL {
         #expect(plain.python.path == "/Users/someone/acestep-f0/ACE-Step-1.5/.venv/bin/python")
         #expect(plain.songsDir.path == "/Users/someone/Music/ACE-Step")
         let custom = EngineConfig.resolve(environment: ["ACESTEP_PROJECT": "/opt/ace"], home: home,
-                                          hasBattery: false)
+                                          hasBattery: false, runtime: nil)
         #expect(custom.project.path == "/opt/ace")
         #expect(custom.arguments == ["-m", "acestep_mlx.engine_service", "--project", "/opt/ace",
                                      "--out", "/Users/someone/Music/ACE-Step", "--preset", "mini"])
-        #expect(custom.environment(base: ["HOME": "/h"])["PYTHONPATH"] == "/Users/someone/acestep-mlx/engine")
+        let env = custom.environment(base: ["HOME": "/h", "PYTHONHOME": "/elsewhere"])
+        #expect(env["PYTHONPATH"] == "/Users/someone/acestep-mlx/engine:/opt/ace")
+        #expect(env["PYTHONHOME"] == nil)
+        #expect(env["PYTHONNOUSERSITE"] == "1")
+        #expect(env["PYTHONPYCACHEPREFIX"] == nil)
+        #expect(env["HOME"] == "/h")
     }
 
-    @Test func reportsMissingPaths() throws {
+    @Test func anAppRuntimeIsUsedWhenItHoldsAPython() throws {
+        let home = URL(fileURLWithPath: "/Users/someone")
+        let runtime = try temporaryDirectory()
+        let empty = EngineConfig.resolve(environment: [:], home: home, hasBattery: false, runtime: runtime)
+        #expect(empty.python.path == "/Users/someone/acestep-f0/ACE-Step-1.5/.venv/bin/python")
+        let bin = runtime.appendingPathComponent("python/bin")
+        try FileManager.default.createDirectory(at: bin, withIntermediateDirectories: true)
+        FileManager.default.createFile(atPath: bin.appendingPathComponent("python3").path, contents: nil)
+        let app = EngineConfig.resolve(environment: [:], home: home, hasBattery: false, runtime: runtime)
+        #expect(app.python == runtime.appendingPathComponent("python/bin/python3"))
+        #expect(app.engineDir == runtime.appendingPathComponent("engine"))
+        #expect(app.upstreamDir == runtime.appendingPathComponent("upstream"))
+        #expect(app.project.path == "/Users/someone/Library/Application Support/ACE-Step")
+        let env = app.environment(base: [:])
+        #expect(env["PYTHONPATH"] == "\(runtime.path)/engine:\(runtime.path)/upstream")
+        #expect(env["PYTHONPYCACHEPREFIX"] == "/Users/someone/Library/Caches/ACE-Step/pycache")
+    }
+
+    @Test func aRuntimeNamedInTheEnvironmentIsUsedEvenIfMissing() {
+        let home = URL(fileURLWithPath: "/Users/someone")
+        let config = EngineConfig.resolve(environment: ["ACESTEP_RUNTIME": "/nowhere/runtime"], home: home,
+                                          hasBattery: false, runtime: nil)
+        #expect(config.python.path == "/nowhere/runtime/python/bin/python3")
+        #expect(config.missingPaths() == ["/nowhere/runtime/python/bin/python3",
+                                          "/nowhere/runtime/engine/acestep_mlx/engine_service.py",
+                                          "/nowhere/runtime/upstream/acestep/__init__.py"])
+    }
+
+    @Test func reportsMissingPathsButNotModelWeights() throws {
         let root = try temporaryDirectory()
-        let config = EngineConfig.resolve(environment: [:], home: root, hasBattery: false)
+        let config = EngineConfig.resolve(environment: [:], home: root, hasBattery: false, runtime: nil)
         #expect(config.missingPaths().count == 3)
-        let ckpt = root.appendingPathComponent("acestep-f0/ACE-Step-1.5/checkpoints")
-        try FileManager.default.createDirectory(at: ckpt, withIntermediateDirectories: true)
+        let upstream = root.appendingPathComponent("acestep-f0/ACE-Step-1.5/acestep")
+        try FileManager.default.createDirectory(at: upstream, withIntermediateDirectories: true)
+        FileManager.default.createFile(atPath: upstream.appendingPathComponent("__init__.py").path, contents: nil)
         #expect(config.missingPaths().count == 2)
+        #expect(!config.missingPaths().contains { $0.hasSuffix("checkpoints") })
     }
 }

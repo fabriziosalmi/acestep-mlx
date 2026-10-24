@@ -117,6 +117,39 @@ func sleepyModel(_ transport: FakeTransport, _ gate: IdleGate) -> AppModel {
         #expect(model.state == .ready)
     }
 
+    @Test func aFirstStartDownloadsThenLoadsThenIsReady() {
+        var clock = t0
+        let model = AppModel(transport: FakeTransport(), now: { clock })
+        model.prompt = "song"
+        model.handle(.event(.download(done: 0, total: 100, complete: false)))
+        #expect(model.state == .downloading(done: 0, total: 100))
+        model.handle(.event(.download(done: 60, total: 100, complete: false)))
+        #expect(model.state == .downloading(done: 60, total: 100))
+        #expect(!model.canMake)
+        clock = t0.addingTimeInterval(500)
+        model.handle(.event(.download(done: 100, total: 100, complete: true)))
+        #expect(model.state == .starting(since: t0.addingTimeInterval(500)))
+        model.handle(.event(.ready(loadSeconds: 30)))
+        #expect(model.state == .ready)
+        // A late download line once ready changes nothing.
+        model.handle(.event(.download(done: 1, total: 100, complete: false)))
+        #expect(model.state == .ready)
+    }
+
+    @Test func aDownloadFailureIsFatal() {
+        let model = AppModel(transport: FakeTransport(), now: { t0 })
+        model.handle(.event(.download(done: 10, total: 100, complete: false)))
+        model.handle(.event(.error(id: nil, message: "models could not be downloaded: x")))
+        #expect(model.state == .failed("models could not be downloaded: x"))
+    }
+
+    @Test func readyDuringADownloadIsAccepted() {
+        let model = AppModel(transport: FakeTransport(), now: { t0 })
+        model.handle(.event(.download(done: 10, total: 100, complete: false)))
+        model.handle(.event(.ready(loadSeconds: 30)))
+        #expect(model.state == .ready)
+    }
+
     @Test func withoutEngineShowsWhatIsMissing() {
         let model = AppModel(transport: nil, missing: ["/x/python"])
         #expect(model.state == .notInstalled(["/x/python"]))

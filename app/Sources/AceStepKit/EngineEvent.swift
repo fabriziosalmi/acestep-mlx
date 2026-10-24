@@ -47,6 +47,9 @@ public struct Song: Codable, Sendable, Equatable, Identifiable {
 
 /// A message from the engine process (see engine/acestep_mlx/protocol.py).
 public enum EngineEvent: Sendable, Equatable {
+    /// Model files being fetched before `ready`: bytes present of bytes needed; `complete`
+    /// once every file is checked.
+    case download(done: Int64, total: Int64, complete: Bool)
     case ready(loadSeconds: Double?)
     case phase(id: String, phase: Phase)
     case done(id: String, song: Song)
@@ -63,6 +66,9 @@ public enum EngineEvent: Sendable, Equatable {
         let song: Song?
         let message: String?
         let load_s: Double?
+        let done: Int64?
+        let total: Int64?
+        let complete: Bool?
     }
 
     /// Decodes one protocol line.
@@ -75,6 +81,11 @@ public enum EngineEvent: Sendable, Equatable {
             throw DecodingFailure(reason: "invalid event: \(error)")
         }
         switch (wire.event, wire.id, wire.phase, wire.song, wire.message) {
+        case ("download", _, _, _, _):
+            guard let done = wire.done, let total = wire.total else {
+                throw DecodingFailure(reason: "download without done and total")
+            }
+            return .download(done: done, total: total, complete: wire.complete ?? false)
         case ("ready", _, _, _, _):
             return .ready(loadSeconds: wire.load_s)
         case let ("phase", id?, phase?, _, _):

@@ -1,5 +1,7 @@
 // Drives the real engine through AppModel, as the app does, and checks the result.
 // Usage on a machine with the development install: swift run AceStepE2E [prompt]
+// With ACESTEP_RUNTIME=<app>/Contents/Resources/runtime it drives the app's own engine,
+// downloading the model weights first if they are missing.
 // Exit status 0 only if a song was made, written to disk and found by SongStore.
 // With ACESTEP_E2E_CYCLES=N it then waits for the engine to sleep (ACESTEP_IDLE_SECONDS)
 // and wakes it with a new song N times; the second wake is requested while it stops.
@@ -23,16 +25,39 @@ func check(_ ok: Bool, _ what: String) -> Bool {
 @MainActor
 func run() async -> Bool {
     var config = EngineConfig.resolve()
-    guard check(config.missingPaths().isEmpty, "development install present \(config.missingPaths())") else {
+    guard check(config.missingPaths().isEmpty, "engine present \(config.missingPaths())") else {
         return false
     }
+    print("engine: \(config.python.path), models in \(config.project.path)")
     config.songsDir = FileManager.default.temporaryDirectory
         .appendingPathComponent("acestep-e2e-\(UUID().uuidString)")
     let model = AppModel(transport: EngineProcess(config: config), idleSeconds: config.idleSeconds)
     let started = Date()
     model.start()
-    await waitFor(180) { model.state == .ready }
+    var download: (first: Int64, last: Int64, total: Int64, rising: Bool)?
+    var loadingFrom = started
+    // A download can take long; loading then gets its own 180 s from the end of it.
+    await waitFor(7200) {
+        switch model.state {
+        case let .downloading(done, total):
+            if let d = download {
+                download = (d.first, done, total, d.rising && done >= d.last)
+            } else {
+                download = (done, done, total, true)
+            }
+            loadingFrom = Date()
+            return false
+        case .starting: return Date().timeIntervalSince(loadingFrom) > 180
+        default: return true
+        }
+    }
     let loaded = Date()
+    if let d = download {
+        print("download: \(d.first) -> \(d.last) of \(d.total) bytes, rising \(d.rising), \(Int(loadingFrom.timeIntervalSince(started))) s")
+        guard check(d.rising, "download progress never went back") else { return false }
+    } else {
+        print("download: none")
+    }
     guard check(model.state == .ready, "engine ready in \(Int(loaded.timeIntervalSince(started))) s: \(model.state)") else {
         return false
     }

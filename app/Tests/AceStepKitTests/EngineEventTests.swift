@@ -21,6 +21,14 @@ let doneLine = """
             == .phase(id: "a", phase: .rendering))
         #expect(try EngineEvent.decode(Data(#"{"event": "error", "id": null, "message": "no"}"#.utf8))
             == .error(id: nil, message: "no"))
+        #expect(try EngineEvent.decode(Data(
+            #"{"event": "download", "done": 4000000000, "total": 7700000000, "complete": false}"#.utf8))
+            == .download(done: 4_000_000_000, total: 7_700_000_000, complete: false))
+        #expect(try EngineEvent.decode(Data(#"{"event": "download", "done": 5, "total": 5, "complete": true}"#.utf8))
+            == .download(done: 5, total: 5, complete: true))
+        #expect(throws: EngineEvent.DecodingFailure.self) {
+            try EngineEvent.decode(Data(#"{"event": "download", "done": 5}"#.utf8))
+        }
     }
 
     @Test func decodesARealDoneLine() throws {
