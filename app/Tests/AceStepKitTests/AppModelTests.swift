@@ -222,6 +222,22 @@ func sleepyModel(_ transport: FakeTransport, _ gate: IdleGate) -> AppModel {
         #expect(!model.canMake)
     }
 
+    @Test func ownLyricsAreSentTrimmedAndBlankOnesAreNot() {
+        let transport = FakeTransport()
+        var ids = 0
+        let model = AppModel(transport: transport, now: { t0 }, makeID: { ids += 1; return "req-\(ids)" })
+        model.handle(.event(.ready(loadSeconds: 1)))
+        model.prompt = "folk"
+        model.lyrics = " \n "
+        model.make()
+        #expect(transport.sent.last == ["id": "req-1", "cmd": "generate", "prompt": "folk"])
+        model.handle(.event(.done(id: "req-1", song: song("folk"))))
+        model.lyrics = "\n[Verse]\nCiao mare\n"
+        model.make()
+        #expect(transport.sent.last == ["id": "req-2", "cmd": "generate", "prompt": "folk",
+                                        "options.lyrics": "[Verse]\nCiao mare"])
+    }
+
     @Test func anotherLikeThisSendsTheSongFolder() {
         let transport = FakeTransport()
         let model = readyModel(transport)

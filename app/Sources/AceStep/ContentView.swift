@@ -10,6 +10,7 @@ struct ContentView: View {
     @FocusState private var promptFocused: Bool
     @State private var selection: Song.ID?
     @State private var notice: String?
+    @State private var lyricsShown = false
 
     /// Prompts the listening tests found reliable; a click puts one in the editor.
     static let examples = [
@@ -24,6 +25,7 @@ struct ContentView: View {
             Text("Describe a song")
                 .font(.title2.weight(.semibold))
             promptEditor
+            lyricsSection
             HStack(alignment: .center, spacing: 12) {
                 StatusLine(state: model.state, lastError: model.lastError ?? player.failure ?? notice,
                            retry: model.canRetry ? { model.retry() } : nil)
@@ -70,6 +72,44 @@ struct ContentView: View {
                 }
             }
             .accessibilityLabel("Song description")
+    }
+
+    /// Optional own lyrics: closed by default; the button says when some are set.
+    @ViewBuilder
+    private var lyricsSection: some View {
+        let lines = model.lyrics.split(whereSeparator: \.isNewline)
+            .filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.count
+        Button {
+            withAnimation(.easeInOut(duration: 0.15)) { lyricsShown.toggle() }
+        } label: {
+            Label(lines == 0 ? "Add your own lyrics" : "Your lyrics, \(lines) line\(lines == 1 ? "" : "s")",
+                  systemImage: lyricsShown ? "chevron.down" : "chevron.right")
+        }
+        .buttonStyle(.link)
+        .help("Leave empty and the lyrics are written for you")
+        if lyricsShown {
+            VStack(alignment: .leading, spacing: 6) {
+                TextEditor(text: $model.lyrics)
+                    .font(.body)
+                    .scrollContentBackground(.hidden)
+                    .padding(8)
+                    .frame(height: 140)
+                    .background(.quaternary.opacity(0.5), in: RoundedRectangle(cornerRadius: 10))
+                    .overlay(alignment: .topLeading) {
+                        if model.lyrics.isEmpty {
+                            Text("[Verse]\nYour words, one line each\n[Chorus]\n…")
+                                .foregroundStyle(.tertiary)
+                                .padding(.horizontal, 13)
+                                .padding(.vertical, 8)
+                                .allowsHitTesting(false)
+                        }
+                    }
+                    .accessibilityLabel("Your lyrics")
+                Text("Sung as written, always with a voice. Songs are 30 seconds, so a long text is cut after its first lines.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
     }
 
     @ViewBuilder

@@ -25,6 +25,8 @@ public final class AppModel {
     /// The last failed request's message; cleared by the next request.
     public private(set) var lastError: String?
     public var prompt = ""
+    /// The user's own lyrics; blank means the LM writes them.
+    public var lyrics = ""
     /// The engine's process has ended on its own (not for idleness); observed, so the window
     /// shows "Try again" as soon as the exit arrives.
     public private(set) var engineExited = false
@@ -115,7 +117,9 @@ public final class AppModel {
     /// Asks the engine for a song from the current prompt.
     public func make() {
         guard canMake else { return }
-        request(GenerateRequest(id: makeID(), prompt: prompt.trimmingCharacters(in: .whitespacesAndNewlines)))
+        let own = lyrics.trimmingCharacters(in: .whitespacesAndNewlines)
+        request(GenerateRequest(id: makeID(), prompt: prompt.trimmingCharacters(in: .whitespacesAndNewlines),
+                                options: GenerateOptions(lyrics: own.isEmpty ? nil : own)))
     }
 
     /// Asks for another version of `song`: same text and metadata, new seed.

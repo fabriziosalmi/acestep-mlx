@@ -126,14 +126,17 @@ public struct GenerateOptions: Encodable, Sendable, Equatable {
     public var format: String?
     /// Folder name of a song to make another version of.
     public var like: String?
+    /// The user's own lyrics, sung as written.
+    public var lyrics: String?
 
     public init(literal: Bool? = nil, vocals: Bool? = nil, duration: Double? = nil,
-                format: String? = nil, like: String? = nil) {
+                format: String? = nil, like: String? = nil, lyrics: String? = nil) {
         self.literal = literal
         self.vocals = vocals
         self.duration = duration
         self.format = format
         self.like = like
+        self.lyrics = lyrics
     }
 }
 
