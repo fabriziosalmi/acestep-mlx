@@ -4,7 +4,7 @@ A native macOS app that turns a sentence into a song, built on
 [ACE-Step 1.5](https://github.com/ace-step/ACE-Step-1.5), with MLX used wherever possible and
 no options in the window. An independent project, not affiliated with the ACE-Step authors.
 
-Version 0.3.0: a research prototype for Apple Silicon Macs with 16 GB of memory. The app carries
+Version 0.4.0: a research prototype for Apple Silicon Macs with 16 GB of memory. The app carries
 its engine (Python, upstream's code and its locked dependencies); on the first start it downloads
 the model weights, 7.7 GB, and keeps them in `~/Library/Application Support/ACE-Step`.
 
@@ -146,3 +146,9 @@ ACESTEP_RUNTIME="$PWD/build/ACE-Step MLX.app/Contents/Resources/runtime" swift r
   window), `AceStepE2E` (end-to-end check), `scripts/bundle.sh` (the app with its engine).
 - `bench/`: one folder per measured step, each with its prediction written before the run and
   the result after it; raw logs, listening-test keys and votes in `bench/results/`.
+
+## License
+
+MIT (`LICENSE`). The app bundles upstream's `acestep` package with its own MIT license
+(`Contents/Resources/runtime/upstream/LICENSE`) and the third-party packages of upstream's lock,
+each under its own license; the model weights are downloaded from Hugging Face under theirs.
