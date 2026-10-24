@@ -1,0 +1,9 @@
+N8_RESULT {"python": "/Users/fab/acestep-f0/ACE-Step-1.5/.venv/bin/python", "seed": 973694259, "bpm": 80, "rate": 48000, "frames": 1440000, "caption_md5": "541315913f28e8329ef7609f7b418caf", "lyrics_md5": "394035f076b2352303e0fe405a352503", "samples_md5": "d35ba10c457e8f5dc2fe98d4632435bb"}
+N8_RESULT {"python": "/Users/fab/acestep-mlx/app/build/ACE-Step.app/Contents/Resources/runtime/python/bin/python3", "seed": 973694259, "bpm": 80, "rate": 48000, "frames": 1440000, "caption_md5": "541315913f28e8329ef7609f7b418caf", "lyrics_md5": "394035f076b2352303e0fe405a352503", "samples_md5": "d35ba10c457e8f5dc2fe98d4632435bb"}
+
+disk before/after (df -k used, KB):
+170739916
+178402628
+hf cache before/after (KB):
+4322664
+4323308

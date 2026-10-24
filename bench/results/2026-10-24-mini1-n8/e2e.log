@@ -1,0 +1,21 @@
+=== run 1 1792860413
+PASS engine present []
+engine: /Users/fab/acestep-mlx/app/build/ACE-Step.app/Contents/Resources/runtime/python/bin/python3, models in /Users/fab/Library/Application Support/ACE-Step
+download: 0 -> 7575330668 of 7709383012 bytes, rising true, 958 s
+PASS download progress never went back
+PASS engine ready in 996 s: ready
+PASS no request error 
+PASS phases seen ["lyrics", "composing", "rendering"]
+PASS audio on disk, 11520088 bytes, made in 21 s
+PASS history lists it
+song: 100 BPM, C major, unknown, <tmp>/acestep-e2e-6BD12E4A-450F-484A-8DC1-F12B9DD619FF/20261024-190332-73b604e0/7b849feb-4523-16ba-7e08-9393851fea50.wav
+=== run 2 1792861431
+PASS engine present []
+engine: /Users/fab/acestep-mlx/app/build/ACE-Step.app/Contents/Resources/runtime/python/bin/python3, models in /Users/fab/Library/Application Support/ACE-Step
+download: none
+PASS engine ready in 33 s: ready
+PASS no request error 
+PASS phases seen ["lyrics", "composing", "rendering"]
+PASS audio on disk, 11520088 bytes, made in 20 s
+PASS history lists it
+song: 180 BPM, G major, unknown, <tmp>/acestep-e2e-41266B9D-6845-4348-B7A6-2699FF2CF558/20261024-190427-23af68df/736167bb-f2b0-2503-5d5f-6264db350abf.wav
