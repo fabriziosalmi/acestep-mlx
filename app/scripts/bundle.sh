@@ -3,7 +3,7 @@
 #
 # Contents/Resources/runtime holds:
 #   python/    a standalone CPython (uv-managed python-build-standalone) with upstream's
-#              dependencies installed from its uv.lock, hashes required;
+#              dependencies installed from its uv.lock, hashes required, minus scripts/prune.txt;
 #   upstream/  upstream's acestep package and LICENSE, from git archive of UPSTREAM_COMMIT;
 #   engine/    this repo's engine.
 # Model weights are not bundled: the engine downloads them on the first start into
@@ -20,7 +20,7 @@ swift build -c release --product AceStep
 # The runtime is built once per set of inputs and cached under build/; the engine is
 # copied fresh every time.
 key=$( { echo "$PYTHON_VERSION"; git -C "$UPSTREAM" rev-parse "$UPSTREAM_COMMIT^{commit}";
-         git -C "$UPSTREAM" show "${UPSTREAM_COMMIT}:uv.lock"; cat "$0"; } | shasum -a 256 | cut -c1-12)
+         git -C "$UPSTREAM" show "${UPSTREAM_COMMIT}:uv.lock"; cat "$0" scripts/prune.txt; } | shasum -a 256 | cut -c1-12)
 RUNTIME=build/runtime-$key
 if [[ ! -f $RUNTIME/.complete ]]; then
   rm -rf build/runtime-*(N)
@@ -36,6 +36,8 @@ if [[ ! -f $RUNTIME/.complete ]]; then
   (cd "$src" && uv export --frozen --no-emit-project --no-emit-local --format requirements.txt \
      -o requirements.txt >/dev/null)
   uv pip install --python "$RUNTIME/python/bin/python3" --no-deps --require-hashes -r "$src/requirements.txt"
+  # What no engine path imports (scripts/prune.txt, measured by bench/n11).
+  uv pip uninstall --python "$RUNTIME/python/bin/python3" $(grep -v '^#' scripts/prune.txt)
   cp -R "$src/acestep" "$src/LICENSE" "$RUNTIME/upstream/"
   rm -rf "$src"
   touch "$RUNTIME/.complete"
