@@ -130,8 +130,11 @@ def plan_request(prompt: str, opts: Options, preset: Preset) -> Plan:
     }
     if opts.lyrics is not None:
         sources["lyrics"] = "user"
+    # With own lyrics the prompt is the caption as written: the LM's caption of them lost the
+    # genre asked for ("dark techno" became "pop-punk", bench/n9).
+    literal = opts.literal or opts.lyrics is not None
     return Plan(
-        literal=opts.literal, instrumental=not vocals, bpm=bpm, keyscale=keyscale,
+        literal=literal, instrumental=not vocals, bpm=bpm, keyscale=keyscale,
         duration=float(opts.duration if opts.duration is not None else preset.default_duration),
         format=opts.format, like=opts.like, lyrics=opts.lyrics, sources=sources,
     )

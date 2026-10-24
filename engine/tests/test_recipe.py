@@ -134,6 +134,8 @@ class PlanTests(unittest.TestCase):
         self.assertEqual(plan.lyrics, "[Verse]\nNotte")
         self.assertEqual(plan.sources["vocals"], "lyrics")
         self.assertEqual(plan.sources["lyrics"], "user")
+        self.assertTrue(plan.literal)
+        self.assertFalse(plan_request("dark techno", Options(), MINI).literal)
         self.assertIsNone(plan_request("dark techno", Options(), MINI).lyrics)
 
 
