@@ -4,10 +4,13 @@ One JSON object per line in each direction. Requests (stdin):
     {"id": "<uuid>", "cmd": "generate", "prompt": "<description>", "options": {...}}
     {"cmd": "shutdown"}
 Events (stdout):
-    {"event": "ready", "protocol": 1, "load_s": 31.2}
+    {"event": "download", "done": 1048576, "total": 7700000000, "complete": false}
+    {"event": "ready", "protocol": 2, "load_s": 31.2}
     {"event": "phase", "id": ..., "phase": "lyrics" | "composing" | "rendering"}
     {"event": "done", "id": ..., "song": {...}}            # see engine_service.Song
     {"event": "error", "id": ... | null, "message": "..."}
+``download`` comes only before ``ready``, when model files are missing: bytes present out of
+bytes needed, then once with ``complete`` true when every file is checked (``models.ensure``).
 ``options`` is optional; its keys are validated by ``recipe.parse_options``.
 The engine handles one request at a time; the app does not send a new one before
 ``done`` or ``error``.
@@ -17,7 +20,7 @@ import json
 import threading
 from typing import Any, Callable, Dict, Optional, TextIO
 
-PROTOCOL_VERSION = 1
+PROTOCOL_VERSION = 2
 PHASES = ("lyrics", "composing", "rendering")
 
 

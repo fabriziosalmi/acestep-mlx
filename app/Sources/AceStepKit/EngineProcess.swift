@@ -37,19 +37,33 @@ public final class EngineProcess: EngineTransport, @unchecked Sendable {
         private let lock = NSLock()
         private var splitter = LineSplitter()
         private var stderrTail: [String] = []
-        private var sawEOF = false
+        private var stdoutEOF = false
+        private var stderrEOF = false
         private var status: Int32?
         private var finished = false
 
-        /// Records stdout EOF or the exit status; true exactly once, when both are in.
-        func complete(eof: Bool = false, status: Int32? = nil) -> Int32? {
+        /// Records an EOF or the exit status; returns the status exactly once, when stdout
+        /// EOF, stderr EOF and the status are all in, or with `giveUpOnStderr` when only
+        /// stderr EOF is missing.
+        func complete(stdoutEOF: Bool = false, stderrEOF: Bool = false, status: Int32? = nil,
+                      giveUpOnStderr: Bool = false) -> Int32? {
             lock.lock()
             defer { lock.unlock() }
-            if eof { sawEOF = true }
+            if stdoutEOF { self.stdoutEOF = true }
+            if stderrEOF { self.stderrEOF = true }
             if let status { self.status = status }
-            guard sawEOF, let done = self.status, !finished else { return nil }
+            guard self.stdoutEOF, self.stderrEOF || giveUpOnStderr, let done = self.status, !finished else {
+                return nil
+            }
             finished = true
             return done
+        }
+
+        /// The process is gone and stdout is done, but stderr is still open.
+        var onlyStderrOpen: Bool {
+            lock.lock()
+            defer { lock.unlock() }
+            return stdoutEOF && status != nil && !stderrEOF && !finished
         }
 
         func lines(from chunk: Data) -> [Data] {
@@ -73,14 +87,21 @@ public final class EngineProcess: EngineTransport, @unchecked Sendable {
         }
     }
 
-    public init(config: EngineConfig) {
+    /// How long the exit waits for stderr EOF once the process is gone and stdout is done:
+    /// a child process that inherited stderr can keep it open after the engine exits.
+    private let stderrGrace: Double
+
+    public init(config: EngineConfig, stderrGrace: Double = 2) {
         self.config = config
+        self.stderrGrace = stderrGrace
     }
 
     public func start() throws -> AsyncStream<EngineOutput> {
         let (stream, continuation) = AsyncStream.makeStream(of: EngineOutput.self)
         let log = try openLog()
         try FileManager.default.createDirectory(at: config.songsDir, withIntermediateDirectories: true)
+        // The working folder; on the first start it is empty and the engine fills checkpoints/.
+        try FileManager.default.createDirectory(at: config.project, withIntermediateDirectories: true)
         let run = Run()
         let process = run.process
         process.executableURL = config.python
@@ -91,16 +112,29 @@ public final class EngineProcess: EngineTransport, @unchecked Sendable {
         process.standardOutput = run.stdout
         process.standardError = run.stderr
 
-        // The exit is reported after stdout EOF (every protocol line delivered) and the
-        // termination, whichever comes last; nothing blocks waiting for the other.
+        // The exit is reported after stdout EOF (every protocol line delivered), stderr EOF
+        // (the last log lines in the tail) and the termination, whichever comes last;
+        // nothing blocks waiting for the others.
         let finish: @Sendable (Int32) -> Void = { status in
             try? log.close()
             let tail = run.tail()
             continuation.yield(.exited("exit \(status)\(tail.isEmpty ? "" : ": \(tail)")"))
             continuation.finish()
         }
+        let grace = stderrGrace
+        // Once the process is gone and stdout is done, stderr gets `grace` seconds more.
+        let waitForStderr: @Sendable () -> Void = {
+            guard run.onlyStderrOpen else { return }
+            DispatchQueue.global().asyncAfter(deadline: .now() + grace) {
+                if let status = run.complete(giveUpOnStderr: true) { finish(status) }
+            }
+        }
         process.terminationHandler = { process in
-            if let status = run.complete(status: process.terminationStatus) { finish(status) }
+            if let status = run.complete(status: process.terminationStatus) {
+                finish(status)
+            } else {
+                waitForStderr()
+            }
         }
         run.stdout.fileHandleForReading.readabilityHandler = { handle in
             let chunk = handle.availableData
@@ -114,7 +148,11 @@ public final class EngineProcess: EngineTransport, @unchecked Sendable {
             }
             if chunk.isEmpty {
                 handle.readabilityHandler = nil
-                if let status = run.complete(eof: true) { finish(status) }
+                if let status = run.complete(stdoutEOF: true) {
+                    finish(status)
+                } else {
+                    waitForStderr()
+                }
             }
         }
         run.stderr.fileHandleForReading.readabilityHandler = { handle in
@@ -122,6 +160,7 @@ public final class EngineProcess: EngineTransport, @unchecked Sendable {
             guard !data.isEmpty else {
                 // EOF; without this the handler keeps firing on an empty pipe.
                 handle.readabilityHandler = nil
+                if let status = run.complete(stderrEOF: true) { finish(status) }
                 return
             }
             try? log.write(contentsOf: data)

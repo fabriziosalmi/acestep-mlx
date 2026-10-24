@@ -1,0 +1,11 @@
+engine open files, lsof every 1 s, 998 samples, 312 distinct names
+under ~/acestep-f0, ~/acestep-mlx/engine, ~/.local/share/uv, /opt/homebrew, a venv: 0
+libraries (.so/.dylib): 156, outside the app runtime and the system: 0
+files outside the app, its folders and the system:
+
+/Users/fab/.cache/huggingface/xet/logs/xet_20261024T184658315+0200_6112.log
+count=0, state=0x8
+count=0, state=0xa
+count=1, state=0x8
+count=2, state=0x8
+network connections in run 2: 0

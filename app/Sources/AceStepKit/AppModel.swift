@@ -3,9 +3,11 @@ import Observation
 
 /// What the engine is doing, as the window shows it.
 public enum EngineState: Equatable, Sendable {
-    /// The development install is incomplete; the paths are missing.
+    /// The engine's files are incomplete; the paths are missing.
     case notInstalled([String])
     case starting(since: Date)
+    /// First start: the engine is fetching model files; bytes present of bytes needed.
+    case downloading(done: Int64, total: Int64)
     case ready
     /// The engine was stopped after an idle period to give its memory back; the next
     /// request starts it again.
@@ -158,8 +160,11 @@ public final class AppModel {
             currentRequest = nil
             pending = nil
             state = .failed("The engine stopped (\(reason)).")
+        case let .event(.download(done, total, complete)):
+            guard isStarting else { return }
+            state = complete ? .starting(since: now()) : .downloading(done: done, total: total)
         case .event(.ready):
-            guard case .starting = state else { return }
+            guard isStarting else { return }
             state = .ready
             if let request = pending {
                 pending = nil
@@ -176,12 +181,20 @@ public final class AppModel {
             songs.insert(song, at: 0)
             finishRequest()
         case let .event(.error(id, message)):
-            if case .starting = state {
+            if isStarting {
                 state = .failed(message)
             } else if id == nil || id == currentRequest {
                 lastError = message
                 if id != nil { finishRequest() }
             }
+        }
+    }
+
+    /// Launched and not ready yet: loading models or fetching them first.
+    private var isStarting: Bool {
+        switch state {
+        case .starting, .downloading: true
+        default: false
         }
     }
 

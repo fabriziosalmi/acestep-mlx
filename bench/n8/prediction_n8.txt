@@ -1,0 +1,49 @@
+N8 PREDICTION, written 2026-10-24 BEFORE the bundle is built or measured. The engine moves inside the app:
+Contents/Resources/runtime holds a standalone CPython 3.12.13 (uv-managed python-build-standalone, 72 MB), upstream's
+locked dependencies installed from uv.lock at ca1e85f with hashes required, upstream's acestep package and LICENSE from
+git archive of ca1e85f, and this repo's engine. Model weights stay outside the app, in
+~/Library/Application Support/ACE-Step/checkpoints: the engine downloads them on the first start from Hugging Face at
+pinned revisions (Ace-Step1.5 19671f40, acestep-5Hz-lm-0.6B 148d8ea0, the revisions already on mini1), checks the
+sha256 of every LFS file, then writes a marker so later starts need no network. Bytecode goes to
+~/Library/Caches/ACE-Step/pycache, so the signed bundle is never written to. Mac mini M4 16 GB (mini1).
+
+P1 Size: the app is 1.3-1.6 GB (dev venv 1.3 GB, interpreter 72 MB, upstream 12 MB).
+P2 Packages: the bundled interpreter has the same name==version set as the dev venv, apart from ace-step itself
+   (editable in the venv, plain source in the bundle).
+P3 Isolation: with ~/acestep-f0 renamed, AceStepE2E pointed at the app's runtime passes; while it runs, the engine
+   process has no file open under ~/acestep-f0, ~/acestep-mlx, ~/.local/share/uv or /opt/homebrew (lsof every 1 s).
+P4 Same audio: one prompt with the same seed through the dev install and through the bundle gives identical float32
+   samples (md5 equal).
+P5 Load time: first start with an empty bytecode cache 35-90 s; the next start 31-38 s (dev install: 33-34 s).
+P6 Download, real, into an empty checkpoints folder: completes; every LFS file's sha256 matches; the download events
+   rise monotonically and end with done == total; the size downloaded is 7.0-7.4 GB; the time depends on the line
+   and is reported, not predicted. A second start sends no download event.
+P7 The signed app still verifies (codesign --verify --strict) after the runs of P3-P6.
+Unit tests: a source with a marker is not fetched; a corrupted LFS file fails the check and leaves no marker; the
+app's state goes starting -> downloading -> starting -> ready; each must fail with the behaviour disabled.
+
+N8 RESULT, 2026-10-24 (bench/n8/run_n8.sh, same_seed.py; logs in bench/results/2026-10-24-mini1-n8/). Both
+AceStepE2E runs: every check PASS, with ~/acestep-f0 renamed for their whole duration.
+P1 MISS (smaller): the app is 1.2 GB. The venv's 1.3 GB includes 96 MB of bytecode, the bundle ships none for
+   third-party packages (it goes to ~/Library/Caches/ACE-Step/pycache, 103 MB after the runs).
+P2 OK: the same 125 name==version lines as the venv, apart from ace-step (editable in the venv) and pip (shipped with
+   the interpreter).
+P3 OK: 998 lsof samples, 312 distinct names: none under ~/acestep-f0, ~/acestep-mlx/engine, ~/.local/share/uv,
+   /opt/homebrew or a venv; 156 libraries, all from the app's runtime or the system. The one file outside the app's
+   folders is huggingface_hub's xet log in ~/.cache/huggingface/xet/logs (the hf cache grew by 0.6 MB).
+P4 OK: dev install and app runtime give the same seed, caption, lyrics and float32 samples (md5 d35ba10c...,
+   30.0 s, RMS 0.069): the downloaded weights and the bundled packages make the same song.
+P5 OK: first start with an empty bytecode cache, download excluded: 38 s; second start 33 s. Songs 21 s and 20 s.
+P6 OK except the size: download into an empty folder in 958 s (about 8 MB/s), every LFS sha256 matched, progress only
+   rose, the last event complete; 7.71 GB, above the predicted 7.0-7.4 (the "7.2 GB" in the README was du's GiB).
+   The second start sent no download event and opened no network connection.
+P7 OK: codesign --verify --strict passes after the runs; the 28 __pycache__ folders in the app are the standard
+   library's, shipped with the interpreter and older than the signature.
+Found while testing, fixed and covered by tests that fail without the fix:
+- Upstream's model check wants every component of its main repository, including the 1.7B LM, and downloads the whole
+  repository when one is missing (it started on the first, aborted run; mini1's dev install had the 1.7B from N5).
+  LeanAceStepHandler now checks the DiT, VAE and text encoder folders and never downloads.
+- huggingface_hub creates partial files at full size and fills them in place: progress counted by size jumped ahead;
+  it now counts blocks written.
+- The exit was reported before the last stderr lines were read (1 run in 30 of the test suite lost the traceback): it
+  now waits for stderr EOF too, at most 2 s, because a child process can keep stderr open after the engine exits.

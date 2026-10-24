@@ -69,6 +69,25 @@ class LeanAceStepHandler(MLXConditionMixin, MLXTextEncoderMixin, MemLogMixin, Ac
             logger.info(f"[lean] MLX buffer cache limited to {limit_mb} MB")
         return super().initialize_service(*args, use_mlx_dit=True, **kwargs)
 
+    def _ensure_models_present(self, *, checkpoint_path, config_path, prefer_source=None,
+                               vae_variant=None):
+        """Check the DiT, VAE and text encoder folders without downloading anything.
+
+        The engine fetches exactly the files it needs before init (``models.ensure``).
+        Upstream's check wants every component of its main repository, including the 1.7B
+        LM this engine does not use, and downloads the whole repository when one is missing.
+
+        Returns:
+            None when every folder has weights, else upstream's (message, False) error.
+        """
+        from acestep.model_downloader import check_model_exists
+
+        missing = [name for name in (config_path, "vae", "Qwen3-Embedding-0.6B")
+                   if not check_model_exists(name, checkpoint_path)]
+        if missing:
+            return f"ERROR: model weights missing in {checkpoint_path}: {', '.join(missing)}", False
+        return None
+
     def _load_main_model_from_checkpoint(self, *, model_checkpoint_path, device, **kwargs) -> str:
         """Load the DiT so that the decoder lives only in MLX when running on MPS.
 

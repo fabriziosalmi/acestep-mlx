@@ -16,6 +16,7 @@ import sys
 import time
 from datetime import datetime, timezone
 
+from acestep_mlx import models
 from acestep_mlx.protocol import Emitter, serve
 from acestep_mlx.recipe import (PRESETS, UPSTREAM_FORMAT, Options, Plan, Preset, parse_options,
                                 plan_request, song_folder)
@@ -165,11 +166,18 @@ def main(argv=None) -> int:
     parser.add_argument("--preset", choices=sorted(PRESETS), default="mini")
     args = parser.parse_args(argv)
     emitter = Emitter(protocol_stdout())
-    sys.path.insert(0, args.project)
     os.makedirs(args.out, exist_ok=True)
+    preset = PRESETS[args.preset]
+    try:
+        models.ensure(os.path.join(args.project, "checkpoints"), models.sources_for(preset.lm_model),
+                      lambda done, total, complete: emitter.emit(
+                          "download", done=done, total=total, complete=complete))
+    except Exception as exc:  # noqa: BLE001 - the app shows it
+        emitter.emit("error", id=None, message=f"models could not be downloaded: {exc}")
+        return 1
     started = time.time()
     try:
-        engine = LeanEngine(args.project, args.out, PRESETS[args.preset])
+        engine = LeanEngine(args.project, args.out, preset)
     except Exception as exc:  # noqa: BLE001 - the app shows it
         emitter.emit("error", id=None, message=f"engine failed to load: {exc}")
         return 1

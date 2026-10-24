@@ -82,6 +82,15 @@ struct StatusLine: View {
                 .lineLimit(3)
         case .starting(let since):
             busy("Loading models", since: since)
+        case let .downloading(done, total):
+            HStack(spacing: 8) {
+                ProgressView(value: Double(done), total: Double(max(total, 1)))
+                    .frame(width: 120)
+                Text("Downloading models, \(Self.gigabytes(done)) of \(Self.gigabytes(total)) GB")
+                    .monospacedDigit()
+                    .foregroundStyle(.secondary)
+            }
+            .help("First start only: the models stay in ~/Library/Application Support/ACE-Step.")
         case .working(let phase, let since):
             busy(Self.label(phase), since: since)
         case .asleep:
@@ -112,6 +121,10 @@ struct StatusLine: View {
                     .foregroundStyle(.secondary)
             }
         }
+    }
+
+    static func gigabytes(_ bytes: Int64) -> String {
+        String(format: "%.1f", Double(bytes) / 1e9)
     }
 
     static func label(_ phase: Phase) -> String {

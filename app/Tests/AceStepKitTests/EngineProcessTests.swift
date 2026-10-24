@@ -50,6 +50,36 @@ import Testing
         #expect(log.contains("loading models"))
     }
 
+    /// A child keeps stderr open past the engine's exit: its last line still reaches the tail,
+    /// and a child that keeps it open for long does not hold the exit back.
+    @Test func theExitWaitsBrieflyForStderr() async throws {
+        for (holdSeconds, expectLine) in [("0.5", true), ("8", false)] {
+            let root = try temporaryDirectory()
+            let script = root.appendingPathComponent("fake-engine")
+            try Data("""
+            #!/bin/sh
+            printf '{"event": "ready", "protocol": 2, "load_s": 0.1}\\n'
+            exec 1>&-
+            (sleep \(holdSeconds); echo 'late words' >&2) &
+            exit 3
+
+            """.utf8).write(to: script)
+            try FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: script.path)
+            let config = EngineConfig(python: script, engineDir: root, project: root,
+                                      songsDir: root.appendingPathComponent("songs"),
+                                      logFile: root.appendingPathComponent("logs/engine.log"))
+            let started = Date()
+            var reason: String?
+            for await output in try EngineProcess(config: config, stderrGrace: 2).start() {
+                if case let .exited(text) = output { reason = text }
+            }
+            let waited = Date().timeIntervalSince(started)
+            #expect(reason?.hasPrefix("exit 3") == true)
+            #expect(reason?.contains("late words") == expectLine, "hold \(holdSeconds) s: \(reason ?? "-")")
+            #expect(waited < 4, "hold \(holdSeconds) s: exit after \(waited) s")
+        }
+    }
+
     @Test func startsAgainAfterAnExit() async throws {
         let root = try temporaryDirectory()
         let script = root.appendingPathComponent("fake-engine")

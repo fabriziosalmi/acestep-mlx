@@ -4,28 +4,32 @@ Working name. A native macOS app that turns a sentence into a song, built on
 [ACE-Step 1.5](https://github.com/ace-step/ACE-Step-1.5), with MLX used wherever possible and
 no options in the window.
 
-Version 0.1.0: a research prototype for Apple Silicon Macs with 16 GB of memory. It runs from a
-development install (upstream's checkout and venv next to this repository); the engine is not
-bundled inside the app yet.
+Version 0.2.0: a research prototype for Apple Silicon Macs with 16 GB of memory. The app carries
+its engine (Python, upstream's code and its locked dependencies); on the first start it downloads
+the model weights, 7.7 GB, and keeps them in `~/Library/Application Support/ACE-Step`.
 
 ## What it does
 
 Type a description, press Make song (Cmd-Return), and the song appears in the history, where it
 can be played, shown in Finder, have its lyrics copied, or be made again in another version.
-The window always says what the engine is doing: loading models, writing lyrics, composing,
-rendering, or that the models are unloaded to free memory.
+The window always says what the engine is doing: downloading models (first start only, with the
+bytes done), loading models, writing lyrics, composing, rendering, or that the models are unloaded
+to free memory.
 
 ## Measured on a Mac mini M4 16 GB (macOS 26.4.1)
 
 | | Result |
 |---|---|
-| Engine start (DiT, LM 0.6B, text encoder) | 33-34 s |
+| App size | 1.2 GB |
+| First start: model download | 7.71 GB in 958 s on this line, every weight file's sha256 checked |
+| Engine start (DiT, LM 0.6B, text encoder) | 33 s (38 s the very first time, compiling bytecode) |
 | 30 s song | 21.8 s, peak 11.78 GB |
 | 240 s song | 130 s, peak 12.21 GB (13.40 GB with vocals) |
 | Engine at rest with models loaded | 8.9 GB |
 | After the idle stop | the engine process is gone within 1 s |
 | Next song after the idle stop | 33 s to load, 53-54 s to a 30 s song |
 | Audio vs upstream's fp32 path, same inputs | SNR 77.7 dB |
+| Audio from the app vs the development install, same seed | identical samples |
 
 Peaks are the `/usr/bin/time -l` peak memory footprint of the engine process. Song time grows
 linearly, about 0.5 s per second of music; memory barely grows with duration. Upstream with its
@@ -33,9 +37,13 @@ defaults does not fit in 16 GB on this machine (MPS out of memory).
 
 ## How a song is made
 
-The app runs `python -m acestep_mlx.engine_service` with upstream's venv. The engine loads the
-models once and serves one request per line on stdin; stdout carries protocol events only
-(`ready`, `phase`, `done`, `error`). DiT, VAE, text encoder, condition encoder, audio tokenizer
+The app runs `python -m acestep_mlx.engine_service` with the Python in
+`ACE-Step.app/Contents/Resources/runtime`. On the first start the engine downloads the weights it
+needs from Hugging Face at pinned revisions, checks the sha256 of every weight file and marks
+them done, so later starts need no network (`engine/acestep_mlx/models.py`); upstream's own
+download, which would also fetch the 1.7B LM, is never used. The engine then loads the models
+once and serves one request per line on stdin; stdout carries protocol events only (`download`,
+`ready`, `phase`, `done`, `error`). DiT, VAE, text encoder, condition encoder, audio tokenizer
 and detokenizer run on MLX with the stored bf16 weights and fp32 compute; torch is left as
 upstream's orchestration code. The 5 Hz LM runs on upstream's MLX backend.
 
@@ -81,38 +89,49 @@ The laptop preset has not been measured on a laptop; its 30 s cap is a precautio
 - Without a BPM in the prompt the 0.6B LM can pick odd tempos (40-50 BPM for an Italian folk
   ballad in 3 of 6 runs), and it does not always follow the voice asked for.
 - A song with vocals peaks about 1.2 GB higher than an instrumental one; not attributed yet.
+- A failed download (no network, full disk) leaves the window on the error; reopen the app to
+  try again. Files already complete are kept by huggingface_hub; resuming was not measured.
+- huggingface_hub writes its download log to `~/.cache/huggingface/xet/logs`, outside the app's
+  folders.
 
-## Run it
+## Build it
 
-Requirements: Apple Silicon, macOS 14 or later, about 9 GB of disk (7.2 GB of checkpoints,
-1.3 GB of venv), Xcode or the Command Line Tools, and [uv](https://github.com/astral-sh/uv).
+Requirements: Apple Silicon, macOS 14 or later, Xcode or the Command Line Tools,
+[uv](https://github.com/astral-sh/uv), and about 10 GB of disk (the app 1.2 GB, the weights
+7.7 GB, bytecode 0.1 GB; the runtime cached under `app/build/` shares its files with the app).
 
 ```sh
-git clone https://github.com/ace-step/ACE-Step-1.5 ~/acestep-f0/ACE-Step-1.5
-git -C ~/acestep-f0/ACE-Step-1.5 checkout ca1e85f
+git clone https://github.com/ace-step/ACE-Step-1.5 ~/acestep-f0/ACE-Step-1.5   # read at ca1e85f
 git clone https://github.com/fabriziosalmi/acestep-mlx ~/acestep-mlx
-~/acestep-mlx/bench/f0/setup.sh        # uv sync, then the turbo DiT, VAE, text encoder and LM 0.6B
 cd ~/acestep-mlx/app
-./scripts/bundle.sh                    # builds build/ACE-Step.app, signed ad hoc
-open build/ACE-Step.app
+./scripts/bundle.sh          # builds build/ACE-Step.app with the engine inside, signed ad hoc
+open build/ACE-Step.app      # the first start downloads the weights
 ```
 
-`ACESTEP_PYTHON`, `ACESTEP_ENGINE` and `ACESTEP_PROJECT` override the default paths. The engine
-log is `~/Library/Logs/ACE-Step/engine.log`.
+`bundle.sh` takes upstream's package and `uv.lock` from commit ca1e85f of that clone (`UPSTREAM`
+points at another one) and installs the locked dependencies with hashes required. The build has
+been run on the Mac mini only, not on a clean Mac. The engine log is
+`~/Library/Logs/ACE-Step/engine.log`.
 
-Checks:
+## Development install and checks
+
+The engine tests and `swift run` use a development install: upstream's venv and checkpoints in
+`~/acestep-f0/ACE-Step-1.5` (`bench/f0/setup.sh` makes them) and this repo in `~/acestep-mlx`.
+`ACESTEP_RUNTIME` points the app's code at an app's runtime instead; `ACESTEP_PYTHON`,
+`ACESTEP_ENGINE` and `ACESTEP_PROJECT` override single paths.
 
 ```sh
 cd ~/acestep-mlx/engine && ~/acestep-f0/ACE-Step-1.5/.venv/bin/python -m unittest discover -s tests
 cd ~/acestep-mlx/app && swift test             # needs Xcode (Swift Testing)
 cd ~/acestep-mlx/app && swift run AceStepE2E   # one real song through the app's model
+ACESTEP_RUNTIME=$PWD/build/ACE-Step.app/Contents/Resources/runtime swift run AceStepE2E  # the app's engine
 ```
 
 ## Layout
 
 - `engine/acestep_mlx/`: the lean engine (a subclass of upstream's handler), the MLX modules, the
-  recipe and the JSON-lines service; tests in `engine/tests/`.
+  recipe, the model download and the JSON-lines service; tests in `engine/tests/`.
 - `app/`: SwiftPM package. `AceStepKit` (engine process, state, history), `AceStep` (the
-  window), `AceStepE2E` (end-to-end check), `scripts/bundle.sh`.
+  window), `AceStepE2E` (end-to-end check), `scripts/bundle.sh` (the app with its engine).
 - `bench/`: one folder per measured step, each with its prediction written before the run and
   the result after it; raw logs, listening-test keys and votes in `bench/results/`.

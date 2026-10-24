@@ -64,7 +64,7 @@ class ServeTests(unittest.TestCase):
     def test_ready_then_phases_then_done(self):
         """Phases are emitted once each, in order, never going back."""
         events, _ = run([gen("r1", "  folk ballad  ")])
-        self.assertEqual(events[0], {"event": "ready", "protocol": 1, "load_s": 1.5})
+        self.assertEqual(events[0], {"event": "ready", "protocol": 2, "load_s": 1.5})
         self.assertEqual([e["phase"] for e in events if e["event"] == "phase"],
                          ["lyrics", "composing", "rendering"])
         self.assertEqual(events[-1]["event"], "done")
