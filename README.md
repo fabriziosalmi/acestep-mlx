@@ -202,6 +202,12 @@ ACESTEP_RUNTIME="$PWD/build/ACE-Step MLX.app/Contents/Resources/runtime" swift r
 - `bench/`: one folder per measured step, each with its prediction written before the run and
   the result after it; raw logs, listening-test keys and votes in `bench/results/`.
 
+## Contributing and security
+
+Pull requests are welcome; [CONTRIBUTING.md](./CONTRIBUTING.md) explains the checks, the
+measurement rule and the commit style. Report vulnerabilities privately, as described in
+[SECURITY.md](./SECURITY.md).
+
 ## License
 
 MIT (`LICENSE`). The app bundles upstream's `acestep` package with its own MIT license
