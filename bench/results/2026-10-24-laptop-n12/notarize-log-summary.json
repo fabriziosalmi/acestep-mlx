@@ -1,0 +1,9 @@
+{
+ "jobId": "8fc5916b-3fff-47e4-b8f4-263841efea32",
+ "status": "Accepted",
+ "statusSummary": "Ready for distribution",
+ "statusCode": 0,
+ "issues": null,
+ "archiveFilename": "notarize-upload.zip",
+ "uploadDate": "2026-10-24T19:20:24.093Z"
+}
