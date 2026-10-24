@@ -1,0 +1,28 @@
+N11 PREDICTION, written 2026-10-24 BEFORE anything is measured or removed. Pruning the app's runtime: the engine is
+driven through every path it has (load; songs as wav and mp3, with and without vocals, own lyrics, literal, 60 s,
+another like this; the Hugging Face path with one small LFS file), sys.modules is recorded, and a distribution is
+removed only if none of its modules was imported and no imported distribution declares it as a requirement.
+Mac mini M4 16 GB, v0.3.0 runtime (1.2 GB, 125 distributions plus pip).
+
+P1 Size: the app shrinks by 200-450 MB (candidates by size: llvmlite 113 MB, pandas 40 MB, grpc 37 MB, modelscope
+   27 MB, matplotlib 25 MB, gradio 51 MB, tensorboard 10 MB and smaller ones; torch, mlx, scipy, transformers and
+   diffusers stay).
+P2 Count: 30-60 distributions removed.
+P3 Same audio: same_seed.py through the pruned runtime gives the same samples md5 as through the unpruned one.
+P4 Every path of the exercise still works through the pruned runtime; AceStepE2E passes.
+P5 Load time within 2 s of before (33-35 s).
+
+N11 RESULT, 2026-10-24 (bench/n11/exercise.py; reports in bench/results/2026-10-24-mini1-n11/). Before pruning, every
+path worked: Hugging Face listing, download and sha256 check of one LFS file (silence_latent.pt, 3.8 MB); load
+33.8 s; wav instrumental, mp3 with vocals, own lyrics, literal 60 s, another like the first. 58 distributions
+imported, 16 more required by them, 51 neither (scripts/prune.txt).
+P1 OK: the app went from 1311 MB to 955 MB, 356 MB less (llvmlite 117, gradio 48, pandas 40, grpcio 38, modelscope 23,
+   torchcodec 14, numba 12, tensorboard 9, pywavelets 8, pip 6 and 41 smaller ones).
+P2 OK: 51 removed, 74 left.
+P3 OK: same_seed.py gives samples md5 d35ba10c... before and after, the same as N8.
+P4 OK: the exercise through the pruned runtime runs every path, imports the same 58 distributions and finds nothing
+   left to remove; AceStepE2E through it passes (ready 33 s, song 20 s).
+P5 OK: load 33.8 s before and after.
+Outlier, not reproduced: in the exercise after pruning the 60 s song took 153.9 s (34.0 s before), with 0.9 GB of swap
+in use. Rerun alone in a new process on the pruned runtime: 32.2 s and 32.7 s, peak footprint 11.79 GB. The outlier
+is not attributed; it does not follow from the pruning (same modules imported, same audio).

@@ -11,7 +11,7 @@ struct AceStepApp: App {
     private static let config = EngineConfig.resolve()
 
     var body: some Scene {
-        Window("ACE-Step", id: "main") {
+        Window("ACE-Step MLX", id: "main") {
             ContentView(model: model, player: player, attention: attention)
                 .onAppear {
                     delegate.model = model

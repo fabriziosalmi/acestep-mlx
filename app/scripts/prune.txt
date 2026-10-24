@@ -1,0 +1,55 @@
+# Distributions bundle.sh removes from the app's runtime after installing upstream's lock.
+# None of their modules is imported on any engine path and no imported distribution requires
+# them (bench/n11/exercise.py, measured on the Mac mini, 2026-10-24). Regenerate with that
+# script when upstream's lock changes.
+absl-py
+aiofiles
+aiohappyeyeballs
+aiohttp
+aiosignal
+annotated-doc
+annotated-types
+click
+diskcache
+fastapi
+ffmpy
+frozenlist
+gradio
+gradio-client
+groovy
+grpcio
+httptools
+llvmlite
+markdown
+modelscope
+multidict
+numba
+pandas
+pip
+propcache
+pydantic
+pydantic-core
+pydub
+python-dotenv
+python-multipart
+pytorch-wavelets
+pytz
+pywavelets
+safehttpx
+semantic-version
+shellingham
+starlette
+tensorboard
+tensorboard-data-server
+tomlkit
+torchcodec
+typer
+typer-slim
+typing-inspection
+tzdata
+uvicorn
+uvloop
+watchfiles
+websockets
+werkzeug
+yarl

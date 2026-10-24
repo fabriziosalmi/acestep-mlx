@@ -1,10 +1,10 @@
-# acestep-mlx
+# ACE-Step MLX
 
-Working name. A native macOS app that turns a sentence into a song, built on
+A native macOS app that turns a sentence into a song, built on
 [ACE-Step 1.5](https://github.com/ace-step/ACE-Step-1.5), with MLX used wherever possible and
-no options in the window.
+no options in the window. An independent project, not affiliated with the ACE-Step authors.
 
-Version 0.3.0: a research prototype for Apple Silicon Macs with 16 GB of memory. The app carries
+Version 0.4.0: a research prototype for Apple Silicon Macs with 16 GB of memory. The app carries
 its engine (Python, upstream's code and its locked dependencies); on the first start it downloads
 the model weights, 7.7 GB, and keeps them in `~/Library/Application Support/ACE-Step`.
 
@@ -27,7 +27,7 @@ that the disk has room; after a failure, Try again starts it over. The app's tex
 
 | | Result |
 |---|---|
-| App size | 1.2 GB |
+| App size | 0.95 GB |
 | First start: model download | 7.71 GB in 958 s on this line, every weight file's sha256 checked |
 | Engine start (DiT, LM 0.6B, text encoder) | 33 s (38 s the very first time, compiling bytecode) |
 | 30 s song | 21.8 s, peak 11.78 GB |
@@ -45,7 +45,7 @@ defaults does not fit in 16 GB on this machine (MPS out of memory).
 ## How a song is made
 
 The app runs `python -m acestep_mlx.engine_service` with the Python in
-`ACE-Step.app/Contents/Resources/runtime`. On the first start the engine downloads the weights it
+`ACE-Step MLX.app/Contents/Resources/runtime`. On the first start the engine downloads the weights it
 needs from Hugging Face at pinned revisions, checks the sha256 of every weight file and marks
 them done, so later starts need no network (`engine/acestep_mlx/models.py`); upstream's own
 download, which would also fetch the 1.7B LM, is never used. The engine then loads the models
@@ -108,15 +108,15 @@ The laptop preset has not been measured on a laptop; its 30 s cap is a precautio
 ## Build it
 
 Requirements: Apple Silicon, macOS 14 or later, Xcode or the Command Line Tools,
-[uv](https://github.com/astral-sh/uv), and about 10 GB of disk (the app 1.2 GB, the weights
+[uv](https://github.com/astral-sh/uv), and about 10 GB of disk (the app 0.95 GB, the weights
 7.7 GB, bytecode 0.1 GB; the runtime cached under `app/build/` shares its files with the app).
 
 ```sh
 git clone https://github.com/ace-step/ACE-Step-1.5 ~/acestep-f0/ACE-Step-1.5   # read at ca1e85f
 git clone https://github.com/fabriziosalmi/acestep-mlx ~/acestep-mlx
 cd ~/acestep-mlx/app
-./scripts/bundle.sh          # builds build/ACE-Step.app with the engine inside, signed ad hoc
-open build/ACE-Step.app      # the first start downloads the weights
+./scripts/bundle.sh            # builds "build/ACE-Step MLX.app" with the engine inside, signed ad hoc
+open "build/ACE-Step MLX.app"  # the first start downloads the weights
 ```
 
 `bundle.sh` takes upstream's package and `uv.lock` from commit ca1e85f of that clone (`UPSTREAM`
@@ -135,7 +135,7 @@ The engine tests and `swift run` use a development install: upstream's venv and 
 cd ~/acestep-mlx/engine && ~/acestep-f0/ACE-Step-1.5/.venv/bin/python -m unittest discover -s tests
 cd ~/acestep-mlx/app && swift test             # needs Xcode (Swift Testing)
 cd ~/acestep-mlx/app && swift run AceStepE2E   # one real song through the app's model
-ACESTEP_RUNTIME=$PWD/build/ACE-Step.app/Contents/Resources/runtime swift run AceStepE2E  # the app's engine
+ACESTEP_RUNTIME="$PWD/build/ACE-Step MLX.app/Contents/Resources/runtime" swift run AceStepE2E  # the app's engine
 ```
 
 ## Layout
@@ -146,3 +146,9 @@ ACESTEP_RUNTIME=$PWD/build/ACE-Step.app/Contents/Resources/runtime swift run Ace
   window), `AceStepE2E` (end-to-end check), `scripts/bundle.sh` (the app with its engine).
 - `bench/`: one folder per measured step, each with its prediction written before the run and
   the result after it; raw logs, listening-test keys and votes in `bench/results/`.
+
+## License
+
+MIT (`LICENSE`). The app bundles upstream's `acestep` package with its own MIT license
+(`Contents/Resources/runtime/upstream/LICENSE`) and the third-party packages of upstream's lock,
+each under its own license; the model weights are downloaded from Hugging Face under theirs.
