@@ -4,7 +4,7 @@ Working name. A native macOS app that turns a sentence into a song, built on
 [ACE-Step 1.5](https://github.com/ace-step/ACE-Step-1.5), with MLX used wherever possible and
 no options in the window.
 
-Version 0.2.0: a research prototype for Apple Silicon Macs with 16 GB of memory. The app carries
+Version 0.3.0: a research prototype for Apple Silicon Macs with 16 GB of memory. The app carries
 its engine (Python, upstream's code and its locked dependencies); on the first start it downloads
 the model weights, 7.7 GB, and keeps them in `~/Library/Application Support/ACE-Step`.
 
