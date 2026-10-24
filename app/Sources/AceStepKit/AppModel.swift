@@ -25,6 +25,11 @@ public final class AppModel {
     /// The last failed request's message; cleared by the next request.
     public private(set) var lastError: String?
     public var prompt = ""
+    /// The user's own lyrics; blank means the LM writes them.
+    public var lyrics = ""
+    /// The engine's process has ended on its own (not for idleness); observed, so the window
+    /// shows "Try again" as soon as the exit arrives.
+    public private(set) var engineExited = false
 
     @ObservationIgnored private let transport: EngineTransport?
     @ObservationIgnored private let now: () -> Date
@@ -70,6 +75,12 @@ public final class AppModel {
         state == .ready || state == .asleep
     }
 
+    /// The engine failed and its process is gone, so it can be launched again.
+    public var canRetry: Bool {
+        if case .failed = state { return engineExited }
+        return false
+    }
+
     public var canMake: Bool {
         canRequest && !prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
@@ -77,6 +88,7 @@ public final class AppModel {
     /// Launches the engine and follows its output until it exits.
     public func start() {
         guard let transport, listener == nil else { return }
+        engineExited = false
         do {
             let stream = try transport.start()
             listener = Task { [weak self] in
@@ -89,10 +101,25 @@ public final class AppModel {
         }
     }
 
+    /// Launches the engine again after a failure (a download cut short, a crash).
+    public func retry() {
+        guard canRetry else { return }
+        lastError = nil
+        state = .starting(since: now())
+        start()
+    }
+
+    /// Takes a song out of the history; the caller moves its folder to the Trash.
+    public func remove(_ song: Song) {
+        songs.removeAll { $0.id == song.id }
+    }
+
     /// Asks the engine for a song from the current prompt.
     public func make() {
         guard canMake else { return }
-        request(GenerateRequest(id: makeID(), prompt: prompt.trimmingCharacters(in: .whitespacesAndNewlines)))
+        let own = lyrics.trimmingCharacters(in: .whitespacesAndNewlines)
+        request(GenerateRequest(id: makeID(), prompt: prompt.trimmingCharacters(in: .whitespacesAndNewlines),
+                                options: GenerateOptions(lyrics: own.isEmpty ? nil : own)))
     }
 
     /// Asks for another version of `song`: same text and metadata, new seed.
@@ -159,6 +186,9 @@ public final class AppModel {
             }
             currentRequest = nil
             pending = nil
+            engineExited = true
+            // An engine that failed to start says why before it exits; keep that message.
+            if case .failed = state { return }
             state = .failed("The engine stopped (\(reason)).")
         case let .event(.download(done, total, complete)):
             guard isStarting else { return }

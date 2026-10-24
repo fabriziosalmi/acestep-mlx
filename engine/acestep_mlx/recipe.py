@@ -10,10 +10,10 @@ so every rule is unit-tested.
 
 import os
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Any, Dict, Optional
 
-from acestep_mlx.prompt_rules import explicit_bpm, explicit_key, wants_vocals
+from acestep_mlx.prompt_rules import explicit_bpm, explicit_key, wants_vocals, lyrics_language
 
 DURATION_MIN = 10.0  # upstream acestep/constants.py
 
@@ -38,6 +38,8 @@ PRESETS = {
 # Upstream always writes this; MP3 is made from it by audio_export.
 UPSTREAM_FORMAT = "wav32"
 FORMATS = ("wav", "mp3")
+# Longer than any song the presets allow; it bounds what the LM is given.
+LYRICS_MAX = 4000
 _SONG_NAME = re.compile(r"^\d{8}-\d{6}-[0-9a-z-]{1,8}$")
 
 
@@ -50,6 +52,7 @@ class Options:
     duration: Optional[float] = None  # None: the preset's default
     format: str = "wav"
     like: Optional[str] = None  # folder name of a song to make another version of
+    lyrics: Optional[str] = None  # the user's own lyrics, sung as written
 
 
 @dataclass(frozen=True)
@@ -63,6 +66,8 @@ class Plan:
     duration: float
     format: str  # "wav" (raw float) or "mp3" (normalized, see audio_export)
     like: Optional[str] = None
+    lyrics: Optional[str] = None  # the user's, when given; else the LM writes them
+    language: Optional[str] = None  # of the user's lyrics, when the rule names it; else the LM's
     sources: Dict[str, str] = field(default_factory=dict)
 
 
@@ -71,7 +76,9 @@ def parse_options(raw: Optional[Dict[str, Any]], preset: Preset) -> Options:
 
     Raises:
         ValueError: For unknown keys, wrong types, a duration outside
-            ``[DURATION_MIN, preset.max_duration]``, an unknown format or a bad song name.
+            ``[DURATION_MIN, preset.max_duration]``, an unknown format, a bad song name, or
+            lyrics that are blank, longer than ``LYRICS_MAX``, or given with ``vocals: false``
+            or ``like``.
     """
     if raw is None:
         raw = {}
@@ -95,22 +102,44 @@ def parse_options(raw: Optional[Dict[str, Any]], preset: Preset) -> Options:
         raise ValueError(f"format must be one of {sorted(FORMATS)}")
     if opts.like is not None and not (isinstance(opts.like, str) and _SONG_NAME.match(opts.like)):
         raise ValueError("like must be the folder name of a song")
+    if opts.lyrics is not None:
+        if not isinstance(opts.lyrics, str) or not opts.lyrics.strip():
+            raise ValueError("lyrics must be non-empty text")
+        if len(opts.lyrics) > LYRICS_MAX:
+            raise ValueError(f"lyrics must be at most {LYRICS_MAX} characters")
+        if opts.vocals is False:
+            raise ValueError("lyrics cannot be sung with vocals: false")
+        if opts.like is not None:
+            raise ValueError("like reuses that song's lyrics; give one or the other")
+        opts = replace(opts, lyrics=opts.lyrics.strip())
     return opts
 
 
 def plan_request(prompt: str, opts: Options, preset: Preset) -> Plan:
     """Apply the default rules to a prompt and its options."""
     bpm, keyscale = explicit_bpm(prompt), explicit_key(prompt)
-    vocals = wants_vocals(prompt) if opts.vocals is None else opts.vocals
+    if opts.lyrics is not None:
+        vocals, vocals_from = True, "lyrics"
+    elif opts.vocals is not None:
+        vocals, vocals_from = opts.vocals, "option"
+    else:
+        vocals, vocals_from = wants_vocals(prompt), "prompt"
+    sources = {
+        "vocals": vocals_from,
+        "bpm": "prompt" if bpm is not None else "lm",
+        "keyscale": "prompt" if keyscale is not None else "lm",
+    }
+    language = lyrics_language(opts.lyrics) if opts.lyrics is not None else None
+    if opts.lyrics is not None:
+        sources["lyrics"] = "user"
+        sources["language"] = "lyrics" if language else "lm"
+    # With own lyrics the prompt is the caption as written: the LM's caption of them lost the
+    # genre asked for ("dark techno" became "pop-punk", bench/n9).
+    literal = opts.literal or opts.lyrics is not None
     return Plan(
-        literal=opts.literal, instrumental=not vocals, bpm=bpm, keyscale=keyscale,
+        literal=literal, instrumental=not vocals, bpm=bpm, keyscale=keyscale,
         duration=float(opts.duration if opts.duration is not None else preset.default_duration),
-        format=opts.format, like=opts.like,
-        sources={
-            "vocals": "prompt" if opts.vocals is None else "option",
-            "bpm": "prompt" if bpm is not None else "lm",
-            "keyscale": "prompt" if keyscale is not None else "lm",
-        },
+        format=opts.format, like=opts.like, lyrics=opts.lyrics, language=language, sources=sources,
     )
 
 

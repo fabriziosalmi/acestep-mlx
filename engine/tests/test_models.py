@@ -57,10 +57,20 @@ class EnsureTests(unittest.TestCase):
         """Remove the folder."""
         shutil.rmtree(self.root)
 
-    def ensure(self, repo, sources=(SOURCE,)):
-        """Run ensure against ``repo``, recording the reports."""
+    def ensure(self, repo, sources=(SOURCE,), free=10**12):
+        """Run ensure against ``repo`` with ``free`` bytes on the disk, recording the reports."""
         return models.ensure(self.root, sources, lambda *r: self.reports.append(r),
-                             list_files=repo.list_files, download=repo.download, interval=0.01)
+                             list_files=repo.list_files, download=repo.download, interval=0.01,
+                             disk_free=lambda path: free)
+
+    def test_too_little_disk_fails_before_downloading(self):
+        """Missing bytes plus the spare must fit; otherwise nothing is fetched."""
+        repo = FakeRepo()
+        need = len(WEIGHTS) + len(CONFIG) + models.SPARE_BYTES
+        with self.assertRaisesRegex(ModelError, "GB free"):
+            self.ensure(repo, free=need - 1)
+        self.assertEqual(repo.fetched, [])
+        self.assertEqual(self.ensure(repo, free=need), ["dit"])
 
     def test_downloads_checks_and_marks_then_skips(self):
         """First call fetches and ends with a complete report; second fetches nothing."""

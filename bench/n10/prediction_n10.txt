@@ -1,0 +1,26 @@
+N10 PREDICTION, written 2026-10-24 BEFORE the rule is written or measured. Own lyrics get their language from a fixed
+rule instead of the LM (N9: the LM named it right in 2 of 4 songs). The rule counts function words of Italian,
+English, Spanish, French, German and Portuguese in the lyrics, section tags ignored; it names the language with the
+most hits only if it has at least 3 and at least twice the runner-up, else it returns nothing and the LM's value
+stays. Only for own lyrics; lyrics the LM writes keep the LM's language.
+
+P1 Unit corpus written for the test (two 4-line verses per language, six languages, plus the two N9 lyrics): every
+   one gets its language.
+P2 Short or mixed texts ("la la la", one line half Italian half English, a list of names) get no language from the
+   rule, so the LM's value stays.
+P3 On the Mac mini, the N9 Italian and English lyrics come out "it" and "en" in song.json, with sources.language
+   "lyrics", 3 runs each with new seeds: 6 of 6.
+P4 Time per song unchanged within 2 s of N9 (20-22 s).
+Listening (Fab): the English lyrics song with "en" against N9's song 4 ("unknown"): is the English clearer?
+
+N10 RESULT, 2026-10-24 (engine/tests/test_lyrics_language.py; bench/n9/run_n9.py n10 through the app's runtime;
+song.json facts in bench/results/2026-10-24-mini1-n10/songs.jsonl).
+P1 OK: all 12 verses and both N9 lyrics get their language; leaders score 8-18 hits, runners-up 0-1.
+P2 OK: "la la la", "oh oh oh yeah", a list of names, one word of English among Italian, an empty text, and one Italian
+   line with one English line (4 hits against 5) get no language. Break-tests: without the twice-the-runner-up margin
+   the mixed text is named; without stripping section tags, English words inside a tag count.
+P3 OK: 6 of 6, "it" for the Italian lyrics and "en" for the English, sources.language "lyrics", lyrics exact.
+P4 OK: 18.6-21.4 s per song (N9: 20-22 s).
+Seen, not predicted: without a BPM in the prompt the Italian ballad got 200, 70 and 37 BPM, the 0.6B LM's known
+tempo habit (README, known limits).
+Listening (Fab) pending: ~/Desktop/ACE-Step-N9/5-en-own-lyrics-language-en.wav against 4-en-own-lyrics-prompt-as-caption.wav.

@@ -90,6 +90,16 @@ class OptionsTests(unittest.TestCase):
             with self.assertRaises(ValueError, msg=raw):
                 parse_options(raw, MINI)
 
+    def test_lyrics_are_trimmed_and_checked(self):
+        """Own lyrics: stripped; blank, too long, with vocals off or with like refused."""
+        self.assertEqual(parse_options({"lyrics": "  [Verse]\nCiao  \n"}, MINI).lyrics, "[Verse]\nCiao")
+        for raw in ({"lyrics": " \n "}, {"lyrics": 3}, {"lyrics": "x" * 4001},
+                    {"lyrics": "la", "vocals": False},
+                    {"lyrics": "la", "like": "20261023-194021-11111111"}):
+            with self.assertRaises(ValueError, msg=raw):
+                parse_options(raw, MINI)
+        self.assertEqual(len(parse_options({"lyrics": "x" * 4000}, MINI).lyrics), 4000)
+
     def test_duration_cap_follows_the_preset(self):
         """60 s is allowed on mini and refused on laptop."""
         self.assertEqual(parse_options({"duration": 60}, MINI).duration, 60)
@@ -115,6 +125,22 @@ class PlanTests(unittest.TestCase):
         self.assertEqual((plan.instrumental, plan.bpm, plan.keyscale), (True, 140, "A minor"))
         self.assertEqual((plan.duration, plan.format), (60.0, "mp3"))
         self.assertEqual(plan.sources["vocals"], "option")
+
+
+    def test_own_lyrics_mean_vocals_whatever_the_prompt_says(self):
+        """Lyrics win over a prompt that names no voice; the plan carries them."""
+        plan = plan_request("dark techno, 140 bpm", Options(lyrics="[Verse]\nNotte"), MINI)
+        self.assertFalse(plan.instrumental)
+        self.assertEqual(plan.lyrics, "[Verse]\nNotte")
+        self.assertEqual(plan.sources["vocals"], "lyrics")
+        self.assertEqual(plan.sources["lyrics"], "user")
+        self.assertTrue(plan.literal)
+        self.assertIsNone(plan.language)
+        self.assertEqual(plan.sources["language"], "lm")
+        sung = plan_request("folk", Options(lyrics="Cammino da solo per la città\nnon so dove andare ma non mi fermo più"), MINI)
+        self.assertEqual((sung.language, sung.sources["language"]), ("it", "lyrics"))
+        self.assertFalse(plan_request("dark techno", Options(), MINI).literal)
+        self.assertIsNone(plan_request("dark techno", Options(), MINI).lyrics)
 
 
 class SongFolderTests(unittest.TestCase):

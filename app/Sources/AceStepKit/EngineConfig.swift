@@ -9,7 +9,7 @@ import Foundation
 /// first start. Without a runtime (`swift run`), the engine runs from the development
 /// install: the upstream venv's Python, this repo's `engine/`, and the upstream checkout with
 /// its `checkpoints/`. `ACESTEP_RUNTIME` points at a runtime folder (an app's, for checks);
-/// `ACESTEP_PYTHON`, `ACESTEP_ENGINE` and `ACESTEP_PROJECT` override single paths.
+/// `ACESTEP_PYTHON`, `ACESTEP_ENGINE`, `ACESTEP_PROJECT` and `ACESTEP_SONGS` override single paths.
 public struct EngineConfig: Sendable, Equatable {
     public var python: URL
     public var engineDir: URL
@@ -70,7 +70,7 @@ public struct EngineConfig: Sendable, Equatable {
         let runtime = environment["ACESTEP_RUNTIME"].map { URL(fileURLWithPath: $0) } ?? found
         let idle = environment["ACESTEP_IDLE_SECONDS"].flatMap(Double.init).flatMap { $0 > 0 ? $0 : nil }
         let preset = environment["ACESTEP_PRESET"] ?? (hasBattery ? "laptop" : "mini")
-        let songs = home.appendingPathComponent("Music/ACE-Step")
+        let songs = path("ACESTEP_SONGS", home.appendingPathComponent("Music/ACE-Step"))
         let log = home.appendingPathComponent("Library/Logs/ACE-Step/engine.log")
         if let runtime {
             return EngineConfig(

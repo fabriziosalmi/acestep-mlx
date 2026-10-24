@@ -56,6 +56,8 @@ func temporaryDirectory() throws -> URL {
                                      hasBattery: true).preset == "mini")
         #expect(plain.python.path == "/Users/someone/acestep-f0/ACE-Step-1.5/.venv/bin/python")
         #expect(plain.songsDir.path == "/Users/someone/Music/ACE-Step")
+        #expect(EngineConfig.resolve(environment: ["ACESTEP_SONGS": "/tmp/s"], home: home, hasBattery: false,
+                                     runtime: nil).songsDir.path == "/tmp/s")
         let custom = EngineConfig.resolve(environment: ["ACESTEP_PROJECT": "/opt/ace"], home: home,
                                           hasBattery: false, runtime: nil)
         #expect(custom.project.path == "/opt/ace")

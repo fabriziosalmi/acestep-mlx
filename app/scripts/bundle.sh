@@ -45,6 +45,8 @@ APP=build/ACE-Step.app
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources/runtime/engine"
 cp "$(swift build -c release --show-bin-path)/AceStep" "$APP/Contents/MacOS/AceStep"
+# Drawn by scripts/make_icon.swift.
+cp Resources/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
 # APFS clones: instant, and no extra space until a file changes.
 cp -cR "$RUNTIME/python" "$RUNTIME/upstream" "$APP/Contents/Resources/runtime/"
 rsync -a --exclude __pycache__ ../engine/acestep_mlx "$APP/Contents/Resources/runtime/engine/"
@@ -54,12 +56,15 @@ cat > "$APP/Contents/Info.plist" <<PLIST
 <plist version="1.0">
 <dict>
   <key>CFBundleName</key><string>ACE-Step</string>
+  <key>CFBundleDevelopmentRegion</key><string>en</string>
+  <key>CFBundleLocalizations</key><array><string>en</string></array>
   <key>CFBundleDisplayName</key><string>ACE-Step</string>
   <key>CFBundleIdentifier</key><string>com.fabriziosalmi.acestep</string>
   <key>CFBundleExecutable</key><string>AceStep</string>
+  <key>CFBundleIconFile</key><string>AppIcon</string>
   <key>CFBundlePackageType</key><string>APPL</string>
-  <key>CFBundleShortVersionString</key><string>0.2.0</string>
-  <key>CFBundleVersion</key><string>2</string>
+  <key>CFBundleShortVersionString</key><string>0.3.0</string>
+  <key>CFBundleVersion</key><string>3</string>
   <key>LSMinimumSystemVersion</key><string>14.0</string>
   <key>NSHighResolutionCapable</key><true/>
 </dict>

@@ -30,6 +30,14 @@ final class Player: NSObject, AVAudioPlayerDelegate {
         }
     }
 
+    /// Seconds into the playing song; read on every tick of the row's timeline.
+    var currentTime: Double { audio?.currentTime ?? 0 }
+    var duration: Double { audio?.duration ?? 0 }
+
+    func seek(to seconds: Double) {
+        audio?.currentTime = min(max(seconds, 0), duration)
+    }
+
     func stop() {
         audio?.stop()
         audio = nil
