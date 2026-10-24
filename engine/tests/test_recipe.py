@@ -135,6 +135,10 @@ class PlanTests(unittest.TestCase):
         self.assertEqual(plan.sources["vocals"], "lyrics")
         self.assertEqual(plan.sources["lyrics"], "user")
         self.assertTrue(plan.literal)
+        self.assertIsNone(plan.language)
+        self.assertEqual(plan.sources["language"], "lm")
+        sung = plan_request("folk", Options(lyrics="Cammino da solo per la città\nnon so dove andare ma non mi fermo più"), MINI)
+        self.assertEqual((sung.language, sung.sources["language"]), ("it", "lyrics"))
         self.assertFalse(plan_request("dark techno", Options(), MINI).literal)
         self.assertIsNone(plan_request("dark techno", Options(), MINI).lyrics)
 

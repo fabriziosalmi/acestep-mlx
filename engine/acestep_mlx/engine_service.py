@@ -69,7 +69,7 @@ class LeanEngine:
 
         report_phase("lyrics")
         if plan.lyrics is not None:
-            forced = {"bpm": plan.bpm, "keyscale": plan.keyscale}
+            forced = {"bpm": plan.bpm, "keyscale": plan.keyscale, "language": plan.language}
             sample = format_sample(self.llm, prompt, plan.lyrics,
                                    user_metadata={k: v for k, v in forced.items() if v} or None)
             if not sample.success:
@@ -80,7 +80,8 @@ class LeanEngine:
                 "instrumental": False,
                 "bpm": plan.bpm or sample.bpm,
                 "keyscale": plan.keyscale or sample.keyscale,
-                "language": sample.language,
+                # The LM named the lyrics' language right in 2 of 4 songs (bench/n9).
+                "language": plan.language or sample.language,
                 "duration": plan.duration,
             }
         sample = create_sample(self.llm, prompt, instrumental=plan.instrumental)

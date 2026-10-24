@@ -62,3 +62,39 @@ def explicit_key(prompt: str) -> Optional[str]:
     for m in _KEY_IT.finditer(prompt):
         keys.add(_key(_SOLFEGE[m.group(1).lower()], m.group(2), m.group(3).lower() == "minore"))
     return keys.pop() if len(keys) == 1 else None
+
+
+# Function words per language, chosen to tell the six apart: words two of them share
+# ("la", "de", "que", "con", "in", "es"...) are left out.
+_FUNCTION_WORDS = {
+    "it": "di che non per una sono ti ci nel nella della del alla sul sulla come più io noi voi questo "
+          "questa anche ancora mio mia tuo tua gli è sei siamo dove perché cosa niente ogni finché",
+    "en": "the and is are i you we it of to on my your not don with for this that all can will be just "
+          "when what they our us at from never like",
+    "es": "el los las y por es está pero como más yo nosotros muy al su sus esta este nada todo aquí",
+    "pt": "os não um uma eu você meu minha mas muito na é isso esse essa tudo aqui",
+    "fr": "les des et est une je nous vous pas ne qui dans pour avec sur mon mes toujours quand mais "
+          "ce cette tout ici",
+    "de": "der die das und ist ich du nicht ein eine mit auf für wir ihr sie zu den dem mein dein immer "
+          "wenn aber noch auch uns",
+}
+_FUNCTION_SETS = {lang: frozenset(words.split()) for lang, words in _FUNCTION_WORDS.items()}
+_SECTION_TAG = re.compile(r"\[[^\]]*\]")
+_WORD = re.compile(r"[a-zà-öø-ÿ]+")
+LANGUAGE_MIN_HITS = 3
+
+
+def lyrics_language(lyrics: str) -> Optional[str]:
+    """The language of the lyrics, by their function words, if one clearly leads.
+
+    A language is named only with at least ``LANGUAGE_MIN_HITS`` hits and at least twice the
+    runner-up's; otherwise None, and the caller keeps the LM's guess.
+    """
+    words = _WORD.findall(_SECTION_TAG.sub(" ", lyrics.lower()))
+    hits = sorted(((sum(w in vocab for w in words), lang) for lang, vocab in _FUNCTION_SETS.items()),
+                  reverse=True)
+    (best, lang), (second, _other) = hits[0], hits[1]
+    if best >= LANGUAGE_MIN_HITS and best >= 2 * second:
+        return lang
+    return None
+

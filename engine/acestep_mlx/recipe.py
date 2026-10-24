@@ -13,7 +13,7 @@ import re
 from dataclasses import dataclass, field, replace
 from typing import Any, Dict, Optional
 
-from acestep_mlx.prompt_rules import explicit_bpm, explicit_key, wants_vocals
+from acestep_mlx.prompt_rules import explicit_bpm, explicit_key, wants_vocals, lyrics_language
 
 DURATION_MIN = 10.0  # upstream acestep/constants.py
 
@@ -67,6 +67,7 @@ class Plan:
     format: str  # "wav" (raw float) or "mp3" (normalized, see audio_export)
     like: Optional[str] = None
     lyrics: Optional[str] = None  # the user's, when given; else the LM writes them
+    language: Optional[str] = None  # of the user's lyrics, when the rule names it; else the LM's
     sources: Dict[str, str] = field(default_factory=dict)
 
 
@@ -128,15 +129,17 @@ def plan_request(prompt: str, opts: Options, preset: Preset) -> Plan:
         "bpm": "prompt" if bpm is not None else "lm",
         "keyscale": "prompt" if keyscale is not None else "lm",
     }
+    language = lyrics_language(opts.lyrics) if opts.lyrics is not None else None
     if opts.lyrics is not None:
         sources["lyrics"] = "user"
+        sources["language"] = "lyrics" if language else "lm"
     # With own lyrics the prompt is the caption as written: the LM's caption of them lost the
     # genre asked for ("dark techno" became "pop-punk", bench/n9).
     literal = opts.literal or opts.lyrics is not None
     return Plan(
         literal=literal, instrumental=not vocals, bpm=bpm, keyscale=keyscale,
         duration=float(opts.duration if opts.duration is not None else preset.default_duration),
-        format=opts.format, like=opts.like, lyrics=opts.lyrics, sources=sources,
+        format=opts.format, like=opts.like, lyrics=opts.lyrics, language=language, sources=sources,
     )
 
 
