@@ -49,3 +49,13 @@ T3 OK: render 11.6-11.9 s for both shifts.
 T4 OK, stronger than predicted: free BPM differs from the prompt in 3/3 (128 -> 100, 124 -> 50, 180 -> 100).
 Side note: the 0.6B LM gave the Italian folk ballad 40 or 50 BPM in 3 of 6 runs.
 Within each pair both clips are at the same RMS (largest mismatch below 0.05 dB), 16-bit PCM.
+
+N5 LISTENING RESULT, 2026-10-24 (votes in bench/results/2026-10-23-mini1-n5/votes.txt, key next to it).
+K1 shift 3.0: 1 win, 3 equal, 0 for 1.0. L1 MISS. Not 3/4: the default stays 1.0.
+K2 LM 1.7B: 0 wins, 3 equal, 1 for 0.6B. L2 OK. The default stays 0.6B (1.7B costs +2.2 GB and 2-3x the LM time).
+K3 literal: 3 wins (folk, house, tekno), 1 for rewrite (rock). L3 OK. 3/4 is below the rule: the default stays rewrite.
+   The only broken flag in K3 is on a rewrite clip (tekno).
+K4 forced: 3/3, no broken flag on a forced clip. L4 OK. Forcing stays the default and is now backed by a vote.
+N1 equal: OK. N2 got a preference (run a): one-pair preferences are at seed-noise level.
+Freetekno: 5 of 8 tekno clips flagged broken (both sides of the K1 and K2 tekno pairs, the K3 rewrite one); the
+forced K4 tekno clip and the K3 literal one were not. Declared limit: freetekno at 180 BPM breaks often.

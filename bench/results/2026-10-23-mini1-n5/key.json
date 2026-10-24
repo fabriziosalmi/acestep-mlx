@@ -1,0 +1,345 @@
+{
+ "shuffle_seed": 20261023,
+ "pairs": {
+  "01": {
+   "pair": "K4-tekno",
+   "prompt": "freetekno, 180 bpm, acid 303 line, distorted kick",
+   "A": {
+    "clip": "K4-tekno-forced",
+    "side": "forced",
+    "gain_db": -1.11,
+    "md5": "533c64b8918afc6b295b728514dada11",
+    "bpm": 180,
+    "keyscale": "F# minor"
+   },
+   "B": {
+    "clip": "K4-tekno-free",
+    "side": "free",
+    "gain_db": -0.09,
+    "md5": "ec9bad4bd94263801dd278517dc8d84b",
+    "bpm": 100,
+    "keyscale": "C major"
+   }
+  },
+  "02": {
+   "pair": "K3-folk",
+   "prompt": "ballata folk italiana, chitarra acustica, voce femminile",
+   "A": {
+    "clip": "K3-folk-literal",
+    "side": "literal",
+    "gain_db": -0.09,
+    "md5": "8c3394faa035bca0758839d649ab923c",
+    "bpm": 50,
+    "keyscale": "C minor"
+   },
+   "B": {
+    "clip": "K3-folk-rewrite",
+    "side": "rewrite",
+    "gain_db": -1.01,
+    "md5": "1d43c0f821b9319a0843bdaeb43e7fd0",
+    "bpm": 40,
+    "keyscale": "A minor"
+   }
+  },
+  "03": {
+   "pair": "K2-rock",
+   "prompt": "energetic pop rock song with male vocals, 128 bpm, D major",
+   "A": {
+    "clip": "K2-rock-17",
+    "side": "LM 1.7B",
+    "gain_db": -0.73,
+    "md5": "c9f33b54290402860d6ea90677ef3fd3",
+    "bpm": 128,
+    "keyscale": "D major"
+   },
+   "B": {
+    "clip": "K2-rock-06",
+    "side": "LM 0.6B",
+    "gain_db": -0.09,
+    "md5": "b062f262bf055710abbea4baf3ebce29",
+    "bpm": 128,
+    "keyscale": "D major"
+   }
+  },
+  "04": {
+   "pair": "K2-folk",
+   "prompt": "ballata folk italiana, chitarra acustica, voce femminile",
+   "A": {
+    "clip": "K2-folk-17",
+    "side": "LM 1.7B",
+    "gain_db": -0.09,
+    "md5": "3be1aeb64cfe26a739118ecd973e0776",
+    "bpm": 103,
+    "keyscale": "B minor"
+   },
+   "B": {
+    "clip": "K2-folk-06",
+    "side": "LM 0.6B",
+    "gain_db": -1.07,
+    "md5": "52e1a866a7240057fce344297b64f1e7",
+    "bpm": 100,
+    "keyscale": "A major"
+   }
+  },
+  "05": {
+   "pair": "K1-house",
+   "prompt": "minimal house, 124 bpm, deep rolling groove",
+   "A": {
+    "clip": "K1-house-s1",
+    "side": "shift 1.0",
+    "gain_db": -0.09,
+    "md5": "52d1dcf192a126fc22e1f4cda17d9a0c",
+    "bpm": 124,
+    "keyscale": "A minor"
+   },
+   "B": {
+    "clip": "K1-house-s3",
+    "side": "shift 3.0",
+    "gain_db": -0.61,
+    "md5": "1ecfc89dd313802556e41dbde4052d89",
+    "bpm": 124,
+    "keyscale": "A minor"
+   }
+  },
+  "06": {
+   "pair": "K2-house",
+   "prompt": "minimal house, 124 bpm, deep rolling groove",
+   "A": {
+    "clip": "K2-house-06",
+    "side": "LM 0.6B",
+    "gain_db": -3.28,
+    "md5": "bc040fbba28da0c8c99bbceee5dde9d7",
+    "bpm": 124,
+    "keyscale": "A minor"
+   },
+   "B": {
+    "clip": "K2-house-17",
+    "side": "LM 1.7B",
+    "gain_db": -0.09,
+    "md5": "7f002f84ac11220581d741c5f4047bfd",
+    "bpm": 124,
+    "keyscale": "G major"
+   }
+  },
+  "07": {
+   "pair": "K2-tekno",
+   "prompt": "freetekno, 180 bpm, acid 303 line, distorted kick",
+   "A": {
+    "clip": "K2-tekno-06",
+    "side": "LM 0.6B",
+    "gain_db": -2.06,
+    "md5": "a92d3b0d2cfbb95417acd88ff6a5c7a5",
+    "bpm": 180,
+    "keyscale": "G major"
+   },
+   "B": {
+    "clip": "K2-tekno-17",
+    "side": "LM 1.7B",
+    "gain_db": -0.09,
+    "md5": "213acad0a00b45a4ae88292fbe31706c",
+    "bpm": 180,
+    "keyscale": "E♭ major"
+   }
+  },
+  "08": {
+   "pair": "K1-folk",
+   "prompt": "ballata folk italiana, chitarra acustica, voce femminile",
+   "A": {
+    "clip": "K1-folk-s3",
+    "side": "shift 3.0",
+    "gain_db": -0.52,
+    "md5": "93a3038945feee341dadc2fa449b1a43",
+    "bpm": 100,
+    "keyscale": "A major"
+   },
+   "B": {
+    "clip": "K1-folk-s1",
+    "side": "shift 1.0",
+    "gain_db": -0.09,
+    "md5": "fa696490d2c9726009b122d2a52a4a7d",
+    "bpm": 100,
+    "keyscale": "A major"
+   }
+  },
+  "09": {
+   "pair": "K3-tekno",
+   "prompt": "freetekno, 180 bpm, acid 303 line, distorted kick",
+   "A": {
+    "clip": "K3-tekno-literal",
+    "side": "literal",
+    "gain_db": -0.09,
+    "md5": "bec64672a2586d716167ab7793dc2b3a",
+    "bpm": 180,
+    "keyscale": "C major"
+   },
+   "B": {
+    "clip": "K3-tekno-rewrite",
+    "side": "rewrite",
+    "gain_db": -1.45,
+    "md5": "0d01250a75ba4a152171b24044630a6c",
+    "bpm": 180,
+    "keyscale": "D minor"
+   }
+  },
+  "10": {
+   "pair": "K1-tekno",
+   "prompt": "freetekno, 180 bpm, acid 303 line, distorted kick",
+   "A": {
+    "clip": "K1-tekno-s1",
+    "side": "shift 1.0",
+    "gain_db": -0.11,
+    "md5": "ffb1e8f9296d205c9f241db45925d46e",
+    "bpm": 180,
+    "keyscale": "E minor"
+   },
+   "B": {
+    "clip": "K1-tekno-s3",
+    "side": "shift 3.0",
+    "gain_db": -0.09,
+    "md5": "100e726babcdeb0ca10cbc91fffeabbe",
+    "bpm": 180,
+    "keyscale": "E minor"
+   }
+  },
+  "11": {
+   "pair": "K4-house",
+   "prompt": "minimal house, 124 bpm, deep rolling groove",
+   "A": {
+    "clip": "K4-house-forced",
+    "side": "forced",
+    "gain_db": -0.09,
+    "md5": "86dd0db9349ee877c5a8c948185bdd3b",
+    "bpm": 124,
+    "keyscale": "F# major"
+   },
+   "B": {
+    "clip": "K4-house-free",
+    "side": "free",
+    "gain_db": -2.42,
+    "md5": "f1a7894f14a59afd32c71c34559b04f5",
+    "bpm": 50,
+    "keyscale": "E major"
+   }
+  },
+  "12": {
+   "pair": "K3-rock",
+   "prompt": "energetic pop rock song with male vocals, 128 bpm, D major",
+   "A": {
+    "clip": "K3-rock-literal",
+    "side": "literal",
+    "gain_db": -0.09,
+    "md5": "79a0b4f6f3179af691d05cd6cd751a95",
+    "bpm": 128,
+    "keyscale": "D major"
+   },
+   "B": {
+    "clip": "K3-rock-rewrite",
+    "side": "rewrite",
+    "gain_db": -1.84,
+    "md5": "a198f8fd4e56d6ec9093b77bb2e2122a",
+    "bpm": 128,
+    "keyscale": "D major"
+   }
+  },
+  "13": {
+   "pair": "N1-house",
+   "prompt": "minimal house, 124 bpm, deep rolling groove",
+   "A": {
+    "clip": "N1-house",
+    "side": "same file",
+    "gain_db": -0.09,
+    "md5": "ed9d8c36242942983bb2cdf60a07e32d",
+    "bpm": 124,
+    "keyscale": "E major"
+   },
+   "B": {
+    "clip": "N1-house",
+    "side": "same file",
+    "gain_db": -0.09,
+    "md5": "ed9d8c36242942983bb2cdf60a07e32d",
+    "bpm": 124,
+    "keyscale": "E major"
+   }
+  },
+  "14": {
+   "pair": "K1-rock",
+   "prompt": "energetic pop rock song with male vocals, 128 bpm, D major",
+   "A": {
+    "clip": "K1-rock-s3",
+    "side": "shift 3.0",
+    "gain_db": -0.09,
+    "md5": "c3fd632dacabd8b72b261bf294f5b0e7",
+    "bpm": 128,
+    "keyscale": "D major"
+   },
+   "B": {
+    "clip": "K1-rock-s1",
+    "side": "shift 1.0",
+    "gain_db": -0.19,
+    "md5": "074c050d8fec3adfeedf4249f33a2338",
+    "bpm": 128,
+    "keyscale": "D major"
+   }
+  },
+  "15": {
+   "pair": "K4-rock",
+   "prompt": "energetic pop rock song with male vocals, 128 bpm, D major",
+   "A": {
+    "clip": "K4-rock-forced",
+    "side": "forced",
+    "gain_db": -0.97,
+    "md5": "cab150b8dc14a7df7b408c29bc8f0d55",
+    "bpm": 128,
+    "keyscale": "D major"
+   },
+   "B": {
+    "clip": "K4-rock-free",
+    "side": "free",
+    "gain_db": -0.09,
+    "md5": "778cd4fedb7825bef02802e31dcb207f",
+    "bpm": 100,
+    "keyscale": "D major"
+   }
+  },
+  "16": {
+   "pair": "N2-rock",
+   "prompt": "energetic pop rock song with male vocals, 128 bpm, D major",
+   "A": {
+    "clip": "N2-rock-b",
+    "side": "run b",
+    "gain_db": -0.09,
+    "md5": "b9411837cead184563ba3e5b61aaf542",
+    "bpm": 128,
+    "keyscale": "D major"
+   },
+   "B": {
+    "clip": "N2-rock-a",
+    "side": "run a",
+    "gain_db": -0.73,
+    "md5": "77b058ba1f4be1849aa183056a42bce7",
+    "bpm": 128,
+    "keyscale": "D major"
+   }
+  },
+  "17": {
+   "pair": "K3-house",
+   "prompt": "minimal house, 124 bpm, deep rolling groove",
+   "A": {
+    "clip": "K3-house-literal",
+    "side": "literal",
+    "gain_db": -0.68,
+    "md5": "6b4a78fff2e5bee2b812332126e61cd2",
+    "bpm": 124,
+    "keyscale": "A♭ major"
+   },
+   "B": {
+    "clip": "K3-house-rewrite",
+    "side": "rewrite",
+    "gain_db": -0.09,
+    "md5": "6c697f2a68bcf870ecefcc0a479682a7",
+    "bpm": 124,
+    "keyscale": "C major"
+   }
+  }
+ }
+}
