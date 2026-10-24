@@ -7,6 +7,9 @@ public enum EngineState: Equatable, Sendable {
     case notInstalled([String])
     case starting(since: Date)
     case ready
+    /// The engine was stopped after an idle period to give its memory back; the next
+    /// request starts it again.
+    case asleep
     case working(Phase, since: Date)
     case failed(String)
 }
@@ -26,26 +29,47 @@ public final class AppModel {
     @ObservationIgnored private let makeID: () -> String
     @ObservationIgnored private var currentRequest: String?
     @ObservationIgnored private var listener: Task<Void, Never>?
+    @ObservationIgnored private let idleSeconds: Double?
+    @ObservationIgnored private let sleeper: @Sendable (Double) async -> Void
+    /// Internal so tests can await the timer they released.
+    @ObservationIgnored var idleTimer: Task<Void, Never>?
+    /// Bumped by every armed timer; a timer only acts if no newer one was armed after it.
+    @ObservationIgnored private(set) var activity = 0
+    /// The engine was told to stop for idleness and its exit has not arrived yet.
+    @ObservationIgnored private var stopping = false
+    /// A request waiting for the engine to be ready again.
+    @ObservationIgnored private var pending: GenerateRequest?
 
     /// - Parameters:
     ///   - transport: The engine, or nil when `missing` lists what is not installed.
     ///   - songs: Songs already on disk, newest first.
+    ///   - idleSeconds: Stop the engine after this long ready with nothing to do; nil never stops it.
+    ///   - sleeper: Waits that many seconds; tests replace it.
     public init(
         transport: EngineTransport?,
         missing: [String] = [],
         songs: [Song] = [],
+        idleSeconds: Double? = nil,
         now: @escaping () -> Date = Date.init,
-        makeID: @escaping () -> String = { UUID().uuidString.lowercased() }
+        makeID: @escaping () -> String = { UUID().uuidString.lowercased() },
+        sleeper: @escaping @Sendable (Double) async -> Void = { try? await Task.sleep(for: .seconds($0)) }
     ) {
         self.transport = transport
         self.songs = songs
+        self.idleSeconds = idleSeconds
         self.now = now
         self.makeID = makeID
+        self.sleeper = sleeper
         state = transport == nil ? .notInstalled(missing) : .starting(since: now())
     }
 
+    /// Ready for a request, possibly after starting the engine again.
+    public var canRequest: Bool {
+        state == .ready || state == .asleep
+    }
+
     public var canMake: Bool {
-        state == .ready && !prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        canRequest && !prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     /// Launches the engine and follows its output until it exits.
@@ -66,13 +90,22 @@ public final class AppModel {
     /// Asks the engine for a song from the current prompt.
     public func make() {
         guard canMake else { return }
-        send(GenerateRequest(id: makeID(), prompt: prompt.trimmingCharacters(in: .whitespacesAndNewlines)))
+        request(GenerateRequest(id: makeID(), prompt: prompt.trimmingCharacters(in: .whitespacesAndNewlines)))
     }
 
     /// Asks for another version of `song`: same text and metadata, new seed.
     public func makeAnother(like song: Song) {
-        guard state == .ready, let name = song.name else { return }
-        send(GenerateRequest(id: makeID(), prompt: song.prompt, options: GenerateOptions(like: name)))
+        guard canRequest, let name = song.name else { return }
+        request(GenerateRequest(id: makeID(), prompt: song.prompt, options: GenerateOptions(like: name)))
+    }
+
+    private func request(_ request: GenerateRequest) {
+        guard state == .asleep else { return send(request) }
+        pending = request
+        lastError = nil
+        state = .starting(since: now())
+        // While the old process is still exiting, the exit starts the new one.
+        if !stopping { start() }
     }
 
     private func send(_ request: GenerateRequest) {
@@ -89,6 +122,26 @@ public final class AppModel {
     }
 
     public func stop() {
+        idleTimer?.cancel()
+        transport?.stop()
+    }
+
+    private func armIdleTimer() {
+        guard let idleSeconds else { return }
+        activity += 1
+        let mark = activity
+        idleTimer?.cancel()
+        idleTimer = Task { [weak self, sleeper] in
+            await sleeper(idleSeconds)
+            self?.idleElapsed(mark)
+        }
+    }
+
+    /// Internal so tests can fire a stale timer on purpose.
+    func idleElapsed(_ mark: Int) {
+        guard mark == activity, state == .ready, currentRequest == nil else { return }
+        stopping = true
+        state = .asleep
         transport?.stop()
     }
 
@@ -96,10 +149,24 @@ public final class AppModel {
     func handle(_ output: EngineOutput) {
         switch output {
         case .exited(let reason):
+            listener = nil
+            if stopping {
+                stopping = false
+                if pending != nil { start() }
+                return
+            }
             currentRequest = nil
+            pending = nil
             state = .failed("The engine stopped (\(reason)).")
         case .event(.ready):
-            if case .starting = state { state = .ready }
+            guard case .starting = state else { return }
+            state = .ready
+            if let request = pending {
+                pending = nil
+                send(request)
+            } else {
+                armIdleTimer()
+            }
         case let .event(.phase(id, phase)):
             if id == currentRequest, case let .working(_, since) = state {
                 state = .working(phase, since: since)
@@ -121,5 +188,6 @@ public final class AppModel {
     private func finishRequest() {
         currentRequest = nil
         state = .ready
+        armIdleTimer()
     }
 }

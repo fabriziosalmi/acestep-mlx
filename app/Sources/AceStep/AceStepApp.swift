@@ -26,7 +26,8 @@ struct AceStepApp: App {
         return AppModel(
             transport: missing.isEmpty ? EngineProcess(config: config) : nil,
             missing: missing,
-            songs: SongStore.load(from: config.songsDir)
+            songs: SongStore.load(from: config.songsDir),
+            idleSeconds: config.idleSeconds
         )
     }
 }

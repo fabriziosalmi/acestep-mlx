@@ -3,13 +3,16 @@ import Testing
 
 @testable import AceStepKit
 
-/// Records sent lines; can be told to fail sends.
+/// Records sent lines, starts and stops; can be told to fail sends. Every start after the
+/// first hands out a new stream, like a new engine process.
 final class FakeTransport: EngineTransport, @unchecked Sendable {
     private let lock = NSLock()
     private var _sent: [Data] = []
+    private(set) var starts = 0
+    private(set) var stops = 0
     var failSends = false
-    let stream: AsyncStream<EngineOutput>
-    let continuation: AsyncStream<EngineOutput>.Continuation
+    private(set) var stream: AsyncStream<EngineOutput>
+    private(set) var continuation: AsyncStream<EngineOutput>.Continuation
 
     init() {
         (stream, continuation) = AsyncStream.makeStream(of: EngineOutput.self)
@@ -34,7 +37,11 @@ final class FakeTransport: EngineTransport, @unchecked Sendable {
         }
     }
 
-    func start() throws -> AsyncStream<EngineOutput> { stream }
+    func start() throws -> AsyncStream<EngineOutput> {
+        if starts > 0 { (stream, continuation) = AsyncStream.makeStream(of: EngineOutput.self) }
+        starts += 1
+        return stream
+    }
 
     func send(_ line: Data) throws {
         if failSends { throw CocoaError(.fileWriteUnknown) }
@@ -43,7 +50,39 @@ final class FakeTransport: EngineTransport, @unchecked Sendable {
         lock.unlock()
     }
 
-    func stop() { continuation.finish() }
+    /// Counts only: tests deliver the exit themselves.
+    func stop() { stops += 1 }
+}
+
+/// Idle timers that wait until the test opens the gate; once open, every timer fires at once.
+final class IdleGate: @unchecked Sendable {
+    private let lock = NSLock()
+    private var opened = false
+    private var waiting: [CheckedContinuation<Void, Never>] = []
+
+    var sleeper: @Sendable (Double) async -> Void {
+        { [self] _ in
+            await withCheckedContinuation { c in
+                let now = lock.withLock { () -> Bool in
+                    if !opened { waiting.append(c) }
+                    return opened
+                }
+                if now { c.resume() }
+            }
+        }
+    }
+
+    /// Releases every timer, then waits until the model's current timer has run.
+    @MainActor
+    func open(_ model: AppModel) async {
+        let released = lock.withLock { () -> [CheckedContinuation<Void, Never>] in
+            opened = true
+            defer { waiting = [] }
+            return waiting
+        }
+        released.forEach { $0.resume() }
+        await model.idleTimer?.value
+    }
 }
 
 let t0 = Date(timeIntervalSince1970: 1_000)
@@ -55,6 +94,16 @@ func song(_ prompt: String) -> Song {
 @MainActor
 func readyModel(_ transport: FakeTransport) -> AppModel {
     let model = AppModel(transport: transport, now: { t0 }, makeID: { "req-1" })
+    model.handle(.event(.ready(loadSeconds: 30)))
+    return model
+}
+
+@MainActor
+func sleepyModel(_ transport: FakeTransport, _ gate: IdleGate) -> AppModel {
+    var ids = 0
+    let model = AppModel(transport: transport, idleSeconds: 60, now: { t0 },
+                         makeID: { ids += 1; return "req-\(ids)" }, sleeper: gate.sleeper)
+    model.start()
     model.handle(.event(.ready(loadSeconds: 30)))
     return model
 }
@@ -163,5 +212,88 @@ func readyModel(_ transport: FakeTransport) -> AppModel {
             try? await Task.sleep(for: .milliseconds(10))
         }
         #expect(model.state == .failed("The engine stopped (exit 0)."))
+    }
+
+    @Test func idleEngineIsStoppedAndItsExitIsNotAFailure() async {
+        let transport = FakeTransport()
+        let gate = IdleGate()
+        let model = sleepyModel(transport, gate)
+        await gate.open(model)
+        #expect(transport.stops == 1)
+        #expect(model.state == .asleep)
+        model.handle(.exited("exit 15"))
+        #expect(model.state == .asleep)
+        model.prompt = "b"
+        #expect(model.canMake)
+    }
+
+    @Test func aRequestKeepsTheEngineAwake() async {
+        let transport = FakeTransport()
+        let gate = IdleGate()
+        let model = sleepyModel(transport, gate)
+        model.prompt = "a"
+        model.make()
+        await gate.open(model)
+        #expect(transport.stops == 0)
+        #expect(model.state == .working(.lyrics, since: t0))
+        model.handle(.event(.done(id: "req-1", song: song("a"))))
+        await gate.open(model)
+        #expect(transport.stops == 1)
+        #expect(model.state == .asleep)
+    }
+
+    @Test func aRequestWakesTheEngineAndIsSentWhenReady() async {
+        let transport = FakeTransport()
+        let gate = IdleGate()
+        let model = sleepyModel(transport, gate)
+        await gate.open(model)
+        model.handle(.exited("exit 15"))
+        model.prompt = "b"
+        model.make()
+        #expect(transport.starts == 2)
+        #expect(model.state == .starting(since: t0))
+        #expect(transport.sent.isEmpty)
+        model.handle(.event(.ready(loadSeconds: 30)))
+        #expect(transport.sent == [["id": "req-1", "cmd": "generate", "prompt": "b"]])
+        #expect(model.state == .working(.lyrics, since: t0))
+    }
+
+    @Test func aRequestWhileStoppingWaitsForTheExit() async {
+        let transport = FakeTransport()
+        let gate = IdleGate()
+        let model = sleepyModel(transport, gate)
+        await gate.open(model)
+        model.prompt = "b"
+        model.make()
+        #expect(transport.starts == 1)
+        #expect(model.state == .starting(since: t0))
+        model.handle(.exited("exit 15"))
+        #expect(transport.starts == 2)
+        model.handle(.event(.ready(loadSeconds: 30)))
+        #expect(transport.sent == [["id": "req-1", "cmd": "generate", "prompt": "b"]])
+    }
+
+    @Test func withoutIdlePeriodTheEngineStaysUp() async {
+        let transport = FakeTransport()
+        let gate = IdleGate()
+        let model = AppModel(transport: transport, now: { t0 }, sleeper: gate.sleeper)
+        model.handle(.event(.ready(loadSeconds: 30)))
+        await gate.open(model)
+        #expect(transport.stops == 0)
+        #expect(model.state == .ready)
+    }
+
+    @Test func aTimerFromBeforeARequestDoesNotStopTheEngineAfterIt() {
+        let transport = FakeTransport()
+        let model = sleepyModel(transport, IdleGate())
+        let before = model.activity
+        model.prompt = "a"
+        model.make()
+        model.handle(.event(.done(id: "req-1", song: song("a"))))
+        model.idleElapsed(before)
+        #expect(transport.stops == 0)
+        #expect(model.state == .ready)
+        model.idleElapsed(model.activity)
+        #expect(transport.stops == 1)
     }
 }

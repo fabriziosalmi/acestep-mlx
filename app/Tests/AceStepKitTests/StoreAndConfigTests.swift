@@ -44,6 +44,14 @@ func temporaryDirectory() throws -> URL {
         let plain = EngineConfig.resolve(environment: [:], home: home, hasBattery: false)
         #expect(plain.preset == "mini")
         #expect(EngineConfig.resolve(environment: [:], home: home, hasBattery: true).preset == "laptop")
+        #expect(plain.idleSeconds == 1200)
+        #expect(EngineConfig.resolve(environment: [:], home: home, hasBattery: true).idleSeconds == 120)
+        #expect(EngineConfig.resolve(environment: ["ACESTEP_IDLE_SECONDS": "20"], home: home,
+                                     hasBattery: true).idleSeconds == 20)
+        for bad in ["0", "-5", "soon"] {
+            #expect(EngineConfig.resolve(environment: ["ACESTEP_IDLE_SECONDS": bad], home: home,
+                                         hasBattery: false).idleSeconds == 1200)
+        }
         #expect(EngineConfig.resolve(environment: ["ACESTEP_PRESET": "mini"], home: home,
                                      hasBattery: true).preset == "mini")
         #expect(plain.python.path == "/Users/someone/acestep-f0/ACE-Step-1.5/.venv/bin/python")

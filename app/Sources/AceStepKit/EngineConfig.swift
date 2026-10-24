@@ -14,10 +14,18 @@ public struct EngineConfig: Sendable, Equatable {
     public var logFile: URL
     /// Engine preset: "mini" or "laptop" (engine/acestep_mlx/recipe.py).
     public var preset: String
+    /// Seconds ready with nothing to do before the engine is stopped to free its memory
+    /// (about 9 GB with the LM loaded); the next song then waits about 30 s for the load.
+    public var idleSeconds: Double
+
+    /// Idle periods per preset: the laptop gives memory back soon, the mini keeps the
+    /// models warm through a working session.
+    public static let idleSecondsByPreset: [String: Double] = ["laptop": 120, "mini": 1200]
 
     public init(python: URL, engineDir: URL, project: URL, songsDir: URL, logFile: URL,
-                preset: String = "mini") {
+                preset: String = "mini", idleSeconds: Double? = nil) {
         self.preset = preset
+        self.idleSeconds = idleSeconds ?? Self.idleSecondsByPreset[preset] ?? 1200
         self.python = python
         self.engineDir = engineDir
         self.project = project
@@ -26,7 +34,8 @@ public struct EngineConfig: Sendable, Equatable {
     }
 
     /// Defaults under `home`, overridden by the environment. The preset is "laptop" on a
-    /// machine with an internal battery and "mini" otherwise, unless ACESTEP_PRESET is set.
+    /// machine with an internal battery and "mini" otherwise, unless ACESTEP_PRESET is set;
+    /// ACESTEP_IDLE_SECONDS overrides the preset's idle period.
     public static func resolve(
         environment: [String: String] = ProcessInfo.processInfo.environment,
         home: URL = FileManager.default.homeDirectoryForCurrentUser,
@@ -36,13 +45,15 @@ public struct EngineConfig: Sendable, Equatable {
             URL(fileURLWithPath: environment[key] ?? home.appendingPathComponent(fallback).path)
         }
         let project = path("ACESTEP_PROJECT", "acestep-f0/ACE-Step-1.5")
+        let idle = environment["ACESTEP_IDLE_SECONDS"].flatMap(Double.init).flatMap { $0 > 0 ? $0 : nil }
         return EngineConfig(
             python: path("ACESTEP_PYTHON", "acestep-f0/ACE-Step-1.5/.venv/bin/python"),
             engineDir: path("ACESTEP_ENGINE", "acestep-mlx/engine"),
             project: project,
             songsDir: home.appendingPathComponent("Music/ACE-Step"),
             logFile: home.appendingPathComponent("Library/Logs/ACE-Step/engine.log"),
-            preset: environment["ACESTEP_PRESET"] ?? (hasBattery ? "laptop" : "mini")
+            preset: environment["ACESTEP_PRESET"] ?? (hasBattery ? "laptop" : "mini"),
+            idleSeconds: idle
         )
     }
 

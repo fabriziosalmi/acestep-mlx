@@ -59,7 +59,7 @@ struct ContentView: View {
         } else {
             List(model.songs) { song in
                 SongRow(song: song, playing: player.playingID == song.id,
-                        canMakeAnother: model.state == .ready,
+                        canMakeAnother: model.canRequest,
                         toggle: { player.toggle(song) },
                         makeAnother: { model.makeAnother(like: song) })
             }
@@ -84,6 +84,10 @@ struct StatusLine: View {
             busy("Loading models", since: since)
         case .working(let phase, let since):
             busy(Self.label(phase), since: since)
+        case .asleep:
+            Text("Ready, models unloaded to free memory")
+                .foregroundStyle(.secondary)
+                .help("The next song loads them again first, about 30 seconds.")
         case .ready:
             if let lastError {
                 Label(lastError, systemImage: "exclamationmark.circle")
