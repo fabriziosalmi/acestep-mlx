@@ -59,10 +59,30 @@ class LeanEngine:
             raise RuntimeError(f"LM init failed: {str(status)[-300:]}")
 
     def _text_from_lm(self, prompt: str, plan: Plan, report_phase) -> dict:
-        """Caption, lyrics and metadata from ``create_sample``, with the plan's overrides."""
-        from acestep.inference import create_sample
+        """Caption, lyrics and metadata from the LM, with the plan's overrides.
+
+        With the user's own lyrics the LM only describes them (``format_sample``: caption,
+        BPM, key, language) and the lyrics are sung exactly as written; otherwise it writes
+        them too (``create_sample``).
+        """
+        from acestep.inference import create_sample, format_sample
 
         report_phase("lyrics")
+        if plan.lyrics is not None:
+            forced = {"bpm": plan.bpm, "keyscale": plan.keyscale}
+            sample = format_sample(self.llm, prompt, plan.lyrics,
+                                   user_metadata={k: v for k, v in forced.items() if v} or None)
+            if not sample.success:
+                raise RuntimeError(f"metadata for the lyrics failed: {sample.error}")
+            return {
+                "caption": prompt if plan.literal else sample.caption,
+                "lyrics": plan.lyrics,
+                "instrumental": False,
+                "bpm": plan.bpm or sample.bpm,
+                "keyscale": plan.keyscale or sample.keyscale,
+                "language": sample.language,
+                "duration": plan.duration,
+            }
         sample = create_sample(self.llm, prompt, instrumental=plan.instrumental)
         if not sample.success:
             raise RuntimeError(f"lyrics and metadata failed: {sample.error}")
