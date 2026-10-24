@@ -19,17 +19,59 @@ public protocol EngineTransport: Sendable {
 /// The Python engine as a child process speaking the JSON-lines protocol.
 ///
 /// Stdout carries protocol lines only. Stderr (logs, tracebacks) goes to the log file,
-/// and its last lines explain an unexpected exit.
+/// and its last lines explain an unexpected exit. Each `start` launches a new process,
+/// so the engine can be stopped to free its memory and started again.
 public final class EngineProcess: EngineTransport, @unchecked Sendable {
     private let config: EngineConfig
-    private let process = Process()
-    private let stdin = Pipe()
-    private let stdout = Pipe()
-    private let stderr = Pipe()
     private let lock = NSLock()
-    private var splitter = LineSplitter()
-    private var stderrTail: [String] = []
+    private var run: Run?
     private static let tailLines = 12
+    private static let logLimit = 20_000_000
+
+    /// One launched process with its pipes and output state.
+    private final class Run: @unchecked Sendable {
+        let process = Process()
+        let stdin = Pipe()
+        let stdout = Pipe()
+        let stderr = Pipe()
+        private let lock = NSLock()
+        private var splitter = LineSplitter()
+        private var stderrTail: [String] = []
+        private var sawEOF = false
+        private var status: Int32?
+        private var finished = false
+
+        /// Records stdout EOF or the exit status; true exactly once, when both are in.
+        func complete(eof: Bool = false, status: Int32? = nil) -> Int32? {
+            lock.lock()
+            defer { lock.unlock() }
+            if eof { sawEOF = true }
+            if let status { self.status = status }
+            guard sawEOF, let done = self.status, !finished else { return nil }
+            finished = true
+            return done
+        }
+
+        func lines(from chunk: Data) -> [Data] {
+            lock.lock()
+            defer { lock.unlock() }
+            return splitter.feed(chunk)
+        }
+
+        func remember(stderr chunk: Data) {
+            let text = String(decoding: chunk, as: UTF8.self)
+            lock.lock()
+            defer { lock.unlock() }
+            stderrTail.append(contentsOf: text.split(separator: "\n").map(String.init))
+            stderrTail = Array(stderrTail.suffix(EngineProcess.tailLines))
+        }
+
+        func tail() -> String {
+            lock.lock()
+            defer { lock.unlock() }
+            return stderrTail.suffix(3).joined(separator: " | ")
+        }
+    }
 
     public init(config: EngineConfig) {
         self.config = config
@@ -39,18 +81,30 @@ public final class EngineProcess: EngineTransport, @unchecked Sendable {
         let (stream, continuation) = AsyncStream.makeStream(of: EngineOutput.self)
         let log = try openLog()
         try FileManager.default.createDirectory(at: config.songsDir, withIntermediateDirectories: true)
+        let run = Run()
+        let process = run.process
         process.executableURL = config.python
         process.arguments = config.arguments
         process.environment = config.environment(base: ProcessInfo.processInfo.environment)
         process.currentDirectoryURL = config.project
-        process.standardInput = stdin
-        process.standardOutput = stdout
-        process.standardError = stderr
+        process.standardInput = run.stdin
+        process.standardOutput = run.stdout
+        process.standardError = run.stderr
 
-        stdout.fileHandleForReading.readabilityHandler = { [weak self] handle in
-            guard let self else { return }
+        // The exit is reported after stdout EOF (every protocol line delivered) and the
+        // termination, whichever comes last; nothing blocks waiting for the other.
+        let finish: @Sendable (Int32) -> Void = { status in
+            try? log.close()
+            let tail = run.tail()
+            continuation.yield(.exited("exit \(status)\(tail.isEmpty ? "" : ": \(tail)")"))
+            continuation.finish()
+        }
+        process.terminationHandler = { process in
+            if let status = run.complete(status: process.terminationStatus) { finish(status) }
+        }
+        run.stdout.fileHandleForReading.readabilityHandler = { handle in
             let chunk = handle.availableData
-            for line in self.lines(from: chunk) {
+            for line in run.lines(from: chunk) {
                 do {
                     continuation.yield(.event(try EngineEvent.decode(line)))
                 } catch {
@@ -59,60 +113,56 @@ public final class EngineProcess: EngineTransport, @unchecked Sendable {
                 }
             }
             if chunk.isEmpty {
-                // EOF: every protocol line has been delivered, so the exit comes last.
                 handle.readabilityHandler = nil
-                self.process.waitUntilExit()
-                self.stderr.fileHandleForReading.readabilityHandler = nil
-                let tail = self.tail()
-                let status = self.process.terminationStatus
-                continuation.yield(.exited("exit \(status)\(tail.isEmpty ? "" : ": \(tail)")"))
-                continuation.finish()
+                if let status = run.complete(eof: true) { finish(status) }
             }
         }
-        stderr.fileHandleForReading.readabilityHandler = { [weak self] handle in
+        run.stderr.fileHandleForReading.readabilityHandler = { handle in
             let data = handle.availableData
+            guard !data.isEmpty else {
+                // EOF; without this the handler keeps firing on an empty pipe.
+                handle.readabilityHandler = nil
+                return
+            }
             try? log.write(contentsOf: data)
-            self?.remember(stderr: data)
+            run.remember(stderr: data)
         }
         try process.run()
+        lock.lock()
+        self.run = run
+        lock.unlock()
         return stream
     }
 
     public func send(_ line: Data) throws {
-        try stdin.fileHandleForWriting.write(contentsOf: line)
+        guard let run = current() else { throw CocoaError(.fileWriteNoPermission) }
+        try run.stdin.fileHandleForWriting.write(contentsOf: line)
     }
 
     public func stop() {
-        if process.isRunning {
+        if let process = current()?.process, process.isRunning {
             process.terminate()
         }
     }
 
+    private func current() -> Run? {
+        lock.lock()
+        defer { lock.unlock() }
+        return run
+    }
+
+    /// The engine log, appended to by every launch; started over once it passes `logLimit`.
     private func openLog() throws -> FileHandle {
         let fm = FileManager.default
         try fm.createDirectory(at: config.logFile.deletingLastPathComponent(),
                                withIntermediateDirectories: true)
-        fm.createFile(atPath: config.logFile.path, contents: nil)
-        return try FileHandle(forWritingTo: config.logFile)
-    }
-
-    private func lines(from chunk: Data) -> [Data] {
-        lock.lock()
-        defer { lock.unlock() }
-        return splitter.feed(chunk)
-    }
-
-    private func remember(stderr chunk: Data) {
-        let text = String(decoding: chunk, as: UTF8.self)
-        lock.lock()
-        defer { lock.unlock() }
-        stderrTail.append(contentsOf: text.split(separator: "\n").map(String.init))
-        stderrTail = Array(stderrTail.suffix(Self.tailLines))
-    }
-
-    private func tail() -> String {
-        lock.lock()
-        defer { lock.unlock() }
-        return stderrTail.suffix(3).joined(separator: " | ")
+        let size = (try? fm.attributesOfItem(atPath: config.logFile.path)[.size] as? Int) ?? nil
+        if size == nil || size! > Self.logLimit {
+            fm.createFile(atPath: config.logFile.path, contents: nil)
+        }
+        let log = try FileHandle(forWritingTo: config.logFile)
+        try log.seekToEnd()
+        try log.write(contentsOf: Data("=== engine start \(Date())\n".utf8))
+        return log
     }
 }
