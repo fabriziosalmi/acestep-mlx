@@ -1,0 +1,13 @@
+N11 PREDICTION, written 2026-10-24 BEFORE anything is measured or removed. Pruning the app's runtime: the engine is
+driven through every path it has (load; songs as wav and mp3, with and without vocals, own lyrics, literal, 60 s,
+another like this; the Hugging Face path with one small LFS file), sys.modules is recorded, and a distribution is
+removed only if none of its modules was imported and no imported distribution declares it as a requirement.
+Mac mini M4 16 GB, v0.3.0 runtime (1.2 GB, 125 distributions plus pip).
+
+P1 Size: the app shrinks by 200-450 MB (candidates by size: llvmlite 113 MB, pandas 40 MB, grpc 37 MB, modelscope
+   27 MB, matplotlib 25 MB, gradio 51 MB, tensorboard 10 MB and smaller ones; torch, mlx, scipy, transformers and
+   diffusers stay).
+P2 Count: 30-60 distributions removed.
+P3 Same audio: same_seed.py through the pruned runtime gives the same samples md5 as through the unpruned one.
+P4 Every path of the exercise still works through the pruned runtime; AceStepE2E passes.
+P5 Load time within 2 s of before (33-35 s).

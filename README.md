@@ -27,7 +27,7 @@ that the disk has room; after a failure, Try again starts it over. The app's tex
 
 | | Result |
 |---|---|
-| App size | 1.2 GB |
+| App size | 0.95 GB |
 | First start: model download | 7.71 GB in 958 s on this line, every weight file's sha256 checked |
 | Engine start (DiT, LM 0.6B, text encoder) | 33 s (38 s the very first time, compiling bytecode) |
 | 30 s song | 21.8 s, peak 11.78 GB |
@@ -108,7 +108,7 @@ The laptop preset has not been measured on a laptop; its 30 s cap is a precautio
 ## Build it
 
 Requirements: Apple Silicon, macOS 14 or later, Xcode or the Command Line Tools,
-[uv](https://github.com/astral-sh/uv), and about 10 GB of disk (the app 1.2 GB, the weights
+[uv](https://github.com/astral-sh/uv), and about 10 GB of disk (the app 0.95 GB, the weights
 7.7 GB, bytecode 0.1 GB; the runtime cached under `app/build/` shares its files with the app).
 
 ```sh
