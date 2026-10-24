@@ -10,8 +10,9 @@ the model weights, 7.7 GB, and keeps them in `~/Library/Application Support/ACE-
 
 ## What it does
 
-Type a description (or click one of the examples), press Make song (Cmd-Return), and the song
-appears at the top of the history. There it plays (Space plays the selected song, a slider shows
+Type a description (or click one of the examples), optionally open "Add your own lyrics" to
+write the words to be sung, press Make song (Cmd-Return), and the song appears at the top of the
+history. There it plays (Space plays the selected song, a slider shows
 and moves the position), drags out as a file to Finder or a DAW, shows in Finder, shares, has its
 lyrics copied, is made again in another version, or moves to the Trash. A song finished while the
 app is in the background badges the Dock icon and sends a notification. File > Show Songs Folder
@@ -71,7 +72,10 @@ win clearly; the forced BPM won 3 of 3.
 Request options, not shown in the window: `literal` (the prompt goes to the DiT as written),
 `vocals` (true or false, instead of the word list), `duration` (10 s up to the preset's maximum),
 `format` (`wav`: 32-bit float, raw; `mp3`: 320 kbps, peak at -1 dBFS, encoded by libsndfile),
-and `like` (a song folder: same text and metadata, new seed; the window's "Another like this").
+`like` (a song folder: same text and metadata, new seed; the window's "Another like this"), and
+`lyrics` (the window's own lyrics: sung as written, always with a voice; the LM describes them
+with upstream's `format_sample` instead of writing them, and names their language right only
+about half the time, `bench/n9`).
 
 Each song is a folder `~/Music/ACE-Step/YYYYmmdd-HHMMSS-<id>/` with the audio and `song.json`
 (prompt, caption, lyrics, metadata, seed, models, render time).
