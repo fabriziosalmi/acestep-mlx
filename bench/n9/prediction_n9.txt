@@ -1,0 +1,27 @@
+N9 PREDICTION, written 2026-10-24 BEFORE the change is measured. Own lyrics: the request option "lyrics" carries the
+user's text; the engine asks the LM (upstream format_sample) for caption, BPM, key and language from the prompt and
+those lyrics, then renders with the lyrics exactly as written. Mac mini M4 16 GB, the app's runtime, mini preset,
+30 s songs (the default; lyrics never change the duration).
+
+P1 A request with an Italian prompt and 8 lines of Italian lyrics makes a song; song.json has those lyrics byte for
+   byte, instrumental false, sources.lyrics "user", and language "it".
+P2 The same with English lyrics on a prompt that names no voice ("dark techno, 140 bpm"): a song with vocals
+   (instrumental false), bpm 140 kept from the prompt.
+P3 Time from request to song: within 3 s of a song without own lyrics (N8: 20-21 s), since format_sample replaces
+   create_sample rather than adding a call.
+P4 Requests the recipe refuses (blank lyrics, lyrics with vocals false) come back as an error event and the engine
+   keeps serving.
+Listening (Fab): the voice sings the given words, at least recognisably in the first lines; 30 s holds only the start
+of a long text.
+
+N9 RESULT, 2026-10-24 (bench/n9/run_n9.py through the app's runtime; song.json facts in
+bench/results/2026-10-24-mini1-n9/songs.jsonl). Engine ready in 34 s.
+P1 HALF: the song was made, song.json has the lyrics byte for byte, instrumental false, sources.lyrics "user"; but the
+   LM gave language "ca", not "it" (BPM 40 for the ballad, the known odd-tempo habit of the 0.6B LM).
+P2 OK as specified: vocals, bpm 140 kept from the prompt, language "en". Not predicted and worse: the LM's caption
+   turned "dark techno" into "an energetic pop-punk anthem", so the genre asked for is lost.
+P3 OK: 22.0 s and 21.7 s with own lyrics against 25.6 s for the same prompt without.
+P4 OK: blank lyrics and lyrics with vocals false come back as errors; the engine kept serving.
+Second round, same lyrics with the prompt as the caption (literal): captions are the prompts; language "it" for the
+Italian lyrics and "unknown" for the English ones. Over the four lyric songs the LM named the language right twice.
+Listening (Fab) pending: the five songs are numbered 0-4 in ~/Desktop/ACE-Step-N9 on the laptop.
