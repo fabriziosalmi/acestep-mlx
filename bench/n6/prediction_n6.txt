@@ -33,3 +33,10 @@ T1 OK: 17 clips, all 30.0 s, no failure, peak footprint 11.83 GB; the 5 BPM prom
 T2 OK: literal captions equal the prompt in 8/8; rewrite captions are 393-593 characters for 38-60 character prompts.
 Side note: with no BPM in the prompt the LM chose 50 (rewrite) and 120 (literal) for the dark ambient drone.
 The refactor of bench/n5/assemble.py for N6 rebuilds the N5 key and clips byte for byte.
+
+N6 LISTENING RESULT, 2026-10-24 (votes and key in bench/results/2026-10-24-mini1-n6/).
+Literal 5 (blues, reggae, pop, score, ambient), rewrite 3 (lofi, indus, dnb), no tie. One broken flag, on a rewrite
+clip (score). Null pair judged equal: L2 OK. L1 half: literal 5 as predicted, rewrite 3 (predicted at most 2).
+Decision by the rule: not met (needs literal >= 6 and rewrite <= 1). Rewrite stays the default; literal stays an
+option. Pooled with N5: literal 8 of 12 (8 or more by chance about 1 time in 5), broken flags 0 literal vs 2 rewrite.
+Post hoc and untested: rewrite won the three beat-driven electronic prompts; not a basis for a decision.
