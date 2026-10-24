@@ -167,6 +167,12 @@ removes the ones listed in `scripts/prune.txt`. The disk needed is the app 0.95 
 The build has been run on the Mac mini only, not on a clean Mac. The engine log is
 `~/Library/Logs/ACE-Step/engine.log`.
 
+`scripts/notarize.sh` signs the built app with a Developer ID (every Mach-O file inside, with the
+hardened runtime and a timestamp, no entitlements), notarizes it with `notarytool`, staples the
+ticket and zips it as `build/ACE-Step-MLX-<version>-mac.zip`; it runs where the certificate is
+(`SIGN_ID`, `NOTARY_PROFILE`). Checked in `bench/n12`: accepted by Apple and by Gatekeeper, and
+the signed app makes the same song, sample for sample.
+
 ### Development install and checks
 
 The engine tests and `swift run` use a development install: upstream's venv and checkpoints in

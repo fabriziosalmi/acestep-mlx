@@ -1,0 +1,36 @@
+N12 PREDICTION, written 2026-10-24 BEFORE anything is signed or submitted. Developer ID signing and notarization of
+"ACE-Step MLX.app" v0.4.0. The app is built on the Mac mini (bundle.sh, ad hoc), copied to the laptop, which holds the
+certificate (Developer ID Application, team 7FC7ZTYMYU) and the notarytool profile fab-notary. scripts/notarize.sh
+signs every Mach-O file inside out with the hardened runtime and a secure timestamp, then the app, submits a zip,
+staples the ticket and zips the stapled app for distribution. The signed app is then run for real on the Mac mini.
+
+P1 Binaries: 230-260 Mach-O files to sign (246 counted by executable bit or .so/.dylib name before signing); every one
+   ends with TeamIdentifier 7FC7ZTYMYU, the hardened runtime flag and a timestamp.
+P2 Entitlements: the Python executable needs none or one of com.apple.security.cs.allow-jit /
+   allow-unsigned-executable-memory; library validation passes because every library is signed by the same team.
+   Decided by running, not by guessing: first with none.
+P3 Notarization: status Accepted on the first or second submission; the log lists no issue. Upload plus review under
+   30 minutes.
+P4 Gatekeeper: after stapling, spctl accepts the app (source: Notarized Developer ID), also with a quarantine
+   attribute set as a browser would; stapler validate passes.
+P5 It still works: the signed app's runtime makes a song on the Mac mini through AceStepE2E (ready 31-38 s, song
+   18-24 s), and the same seeded song through it gives the samples md5 d35ba10c... of N8 and N11.
+P6 Size: the distribution zip is 350-500 MB.
+
+N12 RESULT, 2026-10-24 (app/scripts/notarize.sh on the laptop; Apple's log summary in
+bench/results/2026-10-24-laptop-n12/). App built on the Mac mini, copied with tar over ssh in 24 s.
+P1 MISS on the count, OK on the rest: 224 Mach-O files inside plus the app's executable, 225 (the 246 counted before
+   by executable bit or name included files that are not Mach-O). All 225 carry TeamIdentifier 7FC7ZTYMYU, the
+   hardened runtime flag and a secure timestamp.
+P2 OK: no entitlement is needed. The Python executable runs with the hardened runtime and library validation; every
+   library it loads is signed by the same team.
+P3 OK: Accepted on the first submission (256 MB upload), statusSummary "Ready for distribution", no issues.
+P4 OK: stapler validate passes; spctl accepts the app (source=Notarized Developer ID), also a copy unzipped from the
+   distribution zip with a quarantine attribute set as Safari would.
+P5 OK: on the Mac mini, from the notarized zip: same_seed.py through the signed runtime gives samples md5 d35ba10c...
+   (as N8 and N11); AceStepE2E through it passes (ready 33 s, song 19 s); the app opened normally starts its engine
+   and loads the models; codesign --verify --strict --deep still passes after the runs.
+P6 MISS (smaller): the distribution zip is 257 MB, not 350-500 MB.
+Found while running: the script stopped after Apple's "Accepted" because zsh reserves the name status; renamed
+verdict. The remaining steps (log, staple, validate, assess, zip) were run by hand with the script's own commands,
+so the script's tail after the fix runs for the first time on the next release.
