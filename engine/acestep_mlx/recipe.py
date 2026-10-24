@@ -28,7 +28,9 @@ class Preset:
     max_duration: float
 
 
-# max_duration values are provisional until the duration series (bench/n4) is measured.
+# mini: 240 s measured on the Mac mini (bench/n4: peak 12.21 GB, 130 s per song). laptop: not
+# measured on the laptop; N4 shows memory barely grows with duration, so its 30 s cap is a
+# precaution, and the laptop's real lever is the app's short idle stop (bench/n7).
 PRESETS = {
     "mini": Preset("mini", "acestep-5Hz-lm-0.6B", default_duration=30.0, max_duration=240.0),
     "laptop": Preset("laptop", "acestep-5Hz-lm-0.6B", default_duration=30.0, max_duration=30.0),
