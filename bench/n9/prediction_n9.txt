@@ -25,3 +25,6 @@ P4 OK: blank lyrics and lyrics with vocals false come back as errors; the engine
 Second round, same lyrics with the prompt as the caption (literal): captions are the prompts; language "it" for the
 Italian lyrics and "unknown" for the English ones. Over the four lyric songs the LM named the language right twice.
 Listening (Fab) pending: the five songs are numbered 0-4 in ~/Desktop/ACE-Step-N9 on the laptop.
+Decision (Fab, after reading the results): with own lyrics the prompt is the caption as written (recipe.plan_request
+sets literal). Checked on the Mac mini with no literal option sent: caption "dark techno, 140 bpm", lyrics exact,
+bpm 140; the language came out "unknown" again, still an open problem.

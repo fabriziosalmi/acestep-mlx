@@ -1,6 +1,6 @@
 """N9: own lyrics through the app's engine, spoken to over the same JSON-lines protocol.
 
-Usage: <app runtime python> run_n9.py <runtime dir> <project dir> <out dir> [literal]
+Usage: <app runtime python> run_n9.py <runtime dir> <project dir> <out dir> [literal|check]
 Prints one "N9 ..." line per request and the song.json facts the prediction checks.
 """
 
@@ -43,11 +43,14 @@ LITERAL = [
     ("en-literal", REQUESTS[2][1], {"lyrics": LYRICS_EN, "literal": True}),
 ]
 
+# After the decision "own lyrics keep the prompt as the caption": no literal option sent.
+CHECK = [("en-default", REQUESTS[2][1], {"lyrics": LYRICS_EN})]
+
 
 def main() -> None:
     """Start the engine, send every request in order, report each outcome."""
     runtime, project, out = sys.argv[1:4]
-    requests = LITERAL if sys.argv[4:] == ["literal"] else REQUESTS
+    requests = {"literal": LITERAL, "check": CHECK}.get(sys.argv[4] if len(sys.argv) > 4 else "", REQUESTS)
     env = {**os.environ, "PYTHONPATH": f"{runtime}/engine:{runtime}/upstream", "PYTHONNOUSERSITE": "1",
            "PYTHONUNBUFFERED": "1", "PYTHONPYCACHEPREFIX": os.path.expanduser("~/Library/Caches/ACE-Step/pycache")}
     env.pop("PYTHONHOME", None)

@@ -73,9 +73,9 @@ Request options, not shown in the window: `literal` (the prompt goes to the DiT 
 `vocals` (true or false, instead of the word list), `duration` (10 s up to the preset's maximum),
 `format` (`wav`: 32-bit float, raw; `mp3`: 320 kbps, peak at -1 dBFS, encoded by libsndfile),
 `like` (a song folder: same text and metadata, new seed; the window's "Another like this"), and
-`lyrics` (the window's own lyrics: sung as written, always with a voice; the LM describes them
-with upstream's `format_sample` instead of writing them, and names their language right only
-about half the time, `bench/n9`).
+`lyrics` (the window's own lyrics: sung as written, always with a voice, and the prompt is the
+caption as written; the LM, through upstream's `format_sample`, only picks BPM, key and
+language, and named the language right in 2 of 4 songs, `bench/n9`).
 
 Each song is a folder `~/Music/ACE-Step/YYYYmmdd-HHMMSS-<id>/` with the audio and `song.json`
 (prompt, caption, lyrics, metadata, seed, models, render time).
