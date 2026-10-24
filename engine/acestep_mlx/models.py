@@ -11,11 +11,14 @@ import fnmatch
 import hashlib
 import json
 import os
+import shutil
 import threading
 from dataclasses import dataclass
 from typing import Callable, List, Optional, Sequence, Tuple
 
 MARKER_DIR = ".acestep-mlx"
+# Free space kept beyond the files themselves: bytecode, songs, the system's own needs.
+SPARE_BYTES = 1_000_000_000
 
 
 @dataclass(frozen=True)
@@ -145,9 +148,15 @@ def check(target: str, files: Sequence[RemoteFile]) -> None:
             raise ModelError(f"{f.path} does not match its sha256")
 
 
+def free_bytes(path: str) -> int:
+    """Free bytes on the disk that holds ``path``."""
+    return shutil.disk_usage(path).free
+
+
 def ensure(checkpoints: str, sources: Sequence[Source], report: Callable[[int, int, bool], None],
            list_files: Callable[[Source], List[RemoteFile]] = remote_files,
-           download: Callable[[Source, str], None] = fetch, interval: float = 1.0) -> List[str]:
+           download: Callable[[Source, str], None] = fetch, interval: float = 1.0,
+           disk_free: Callable[[str], int] = free_bytes) -> List[str]:
     """Download and check every source that has no marker; returns the names fetched.
 
     ``report(done, total, complete)`` receives the bytes present out of the bytes needed, at
@@ -155,7 +164,9 @@ def ensure(checkpoints: str, sources: Sequence[Source], report: Callable[[int, i
     False; then once with ``complete`` True after every source is checked and marked.
 
     Raises:
-        ModelError: If a source's files do not match after the download; no marker is written.
+        ModelError: If the disk lacks room for the missing bytes plus ``SPARE_BYTES`` (nothing
+            is downloaded), or a source's files do not match after the download (no marker
+            is written).
     """
     todo = [s for s in sources if not os.path.isfile(marker_path(checkpoints, s))]
     if not todo:
@@ -165,6 +176,12 @@ def ensure(checkpoints: str, sources: Sequence[Source], report: Callable[[int, i
 
     def present() -> int:
         return min(total, sum(bytes_present(t, files) for _s, t, files in plan))
+
+    os.makedirs(checkpoints, exist_ok=True)
+    needed, free = total - present() + SPARE_BYTES, disk_free(checkpoints)
+    if free < needed:
+        raise ModelError(f"the models need {needed / 1e9:.1f} GB free on this disk, "
+                         f"{free / 1e9:.1f} GB are available")
 
     stop = threading.Event()
 
