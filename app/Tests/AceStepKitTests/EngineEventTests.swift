@@ -31,6 +31,16 @@ let doneLine = """
         }
     }
 
+    @Test func readsTheEnginesCreationTime() {
+        let song = Song(prompt: "p", caption: "", lyrics: "", audio: "a.wav",
+                        created: "2026-10-23T17:40:21.149894+00:00")
+        #expect(song.createdDate == Date(timeIntervalSince1970: 1_792_777_221))
+        let bad = Song(prompt: "p", caption: "", lyrics: "", audio: "a.wav", created: "")
+        #expect(bad.createdDate == nil)
+        #expect(song.createdAgo(relativeTo: Date(timeIntervalSince1970: 1_792_777_221 + 180)) == "3 minutes ago")
+        #expect(bad.createdAgo() == nil)
+    }
+
     @Test func decodesARealDoneLine() throws {
         guard case let .done(id, song) = try EngineEvent.decode(Data(doneLine.utf8)) else {
             Issue.record("not a done event")

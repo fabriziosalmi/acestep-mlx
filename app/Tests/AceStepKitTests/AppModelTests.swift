@@ -87,6 +87,14 @@ final class IdleGate: @unchecked Sendable {
 
 let t0 = Date(timeIntervalSince1970: 1_000)
 
+/// A Bool that an observation callback can set from any thread.
+final class Flag: @unchecked Sendable {
+    private let lock = NSLock()
+    private var raised = false
+    func set() { lock.withLock { raised = true } }
+    var value: Bool { lock.withLock { raised } }
+}
+
 func song(_ prompt: String) -> Song {
     Song(prompt: prompt, caption: "", lyrics: "", audio: "a.flac", created: "2026-10-23", dir: "/s/\(prompt)")
 }
@@ -148,6 +156,50 @@ func sleepyModel(_ transport: FakeTransport, _ gate: IdleGate) -> AppModel {
         model.handle(.event(.download(done: 10, total: 100, complete: false)))
         model.handle(.event(.ready(loadSeconds: 30)))
         #expect(model.state == .ready)
+    }
+
+    @Test func aFailedStartCanBeRetriedOnceTheProcessIsGone() async {
+        let transport = FakeTransport()
+        var clock = t0
+        let model = AppModel(transport: transport, now: { clock })
+        model.start()
+        model.handle(.event(.error(id: nil, message: "models could not be downloaded: offline")))
+        #expect(!model.canRetry)
+        model.retry()
+        #expect(transport.starts == 1)
+        model.handle(.exited("exit 1: offline"))
+        #expect(model.state == .failed("models could not be downloaded: offline"))
+        #expect(model.canRetry)
+        clock = t0.addingTimeInterval(60)
+        model.retry()
+        #expect(transport.starts == 2)
+        #expect(model.state == .starting(since: t0.addingTimeInterval(60)))
+        #expect(!model.canRetry)
+    }
+
+    @Test func theWindowIsToldWhenRetryBecomesPossible() {
+        let model = AppModel(transport: FakeTransport(), now: { t0 })
+        model.start()
+        model.handle(.event(.error(id: nil, message: "offline")))
+        let changed = Flag()
+        withObservationTracking { _ = model.canRetry } onChange: { changed.set() }
+        model.handle(.exited("exit 1"))
+        #expect(changed.value)
+        #expect(model.canRetry)
+    }
+
+    @Test func retryDoesNothingUnlessFailed() {
+        let transport = FakeTransport()
+        let model = readyModel(transport)
+        model.retry()
+        #expect(model.state == .ready)
+        #expect(transport.starts == 0)
+    }
+
+    @Test func aRemovedSongLeavesTheHistory() {
+        let model = AppModel(transport: FakeTransport(), songs: [song("a"), song("b")])
+        model.remove(model.songs[0])
+        #expect(model.songs.map(\.prompt) == ["b"])
     }
 
     @Test func withoutEngineShowsWhatIsMissing() {

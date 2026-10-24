@@ -43,6 +43,23 @@ public struct Song: Codable, Sendable, Equatable, Identifiable {
     public var audioURL: URL? {
         dir.map { URL(fileURLWithPath: $0).appendingPathComponent(audio) }
     }
+
+    /// "3 minutes ago", "yesterday": always in English, like the rest of the app, whatever
+    /// the system's language.
+    public func createdAgo(relativeTo now: Date = Date()) -> String? {
+        guard let date = createdDate else { return nil }
+        let formatter = RelativeDateTimeFormatter()
+        formatter.locale = Locale(identifier: "en_US")
+        formatter.dateTimeStyle = .named
+        return formatter.localizedString(for: date, relativeTo: now)
+    }
+
+    /// `created` as a date. The engine writes microseconds ("…T17:40:21.149894+00:00"),
+    /// which ISO8601DateFormatter does not read, so the fraction is dropped first.
+    public var createdDate: Date? {
+        let plain = created.replacingOccurrences(of: #"\.\d+"#, with: "", options: .regularExpression)
+        return ISO8601DateFormatter().date(from: plain)
+    }
 }
 
 /// A message from the engine process (see engine/acestep_mlx/protocol.py).
