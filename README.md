@@ -14,7 +14,7 @@ Version 0.4.0, a research prototype.
 | Output | A 30 s song with or without vocals, as WAV, kept with its lyrics and seed | Longer songs from the window, stems, MIDI |
 | Controls | None besides your lyrics: voice, tempo and key come from the words of the description | Model choice, steps, guidance, LoRA |
 | Machine | Apple Silicon, 16 GB, macOS 14 or later (tested on 26.4); no network after a one-time 7.7 GB download | Intel Macs, Windows, Linux; 8 GB Macs (not tested) |
-| Status | Research prototype, measured on a Mac mini M4 16 GB | A signed, notarized download (planned); the laptop preset is not measured yet |
+| Status | Research prototype, measured on a Mac mini M4 16 GB; a download signed with a Developer ID and notarized by Apple | The laptop preset is not measured yet |
 
 ## How it works
 
@@ -42,8 +42,14 @@ idle for a while.
 
 ## Get it
 
-There is no downloadable build yet; build it from source (Apple Silicon, macOS 14 or later,
-Xcode or the Command Line Tools, [uv](https://github.com/astral-sh/uv), about 10 GB of disk):
+Download `ACE-Step-MLX-<version>-mac.zip` from the
+[latest release](https://github.com/fabriziosalmi/acestep-mlx/releases/latest), unzip it and move
+ACE-Step MLX to Applications. The app is signed with a Developer ID and notarized by Apple; the
+release notes give the zip's SHA-256. It needs Apple Silicon, 16 GB of memory, macOS 14 or later
+and about 10 GB of free disk; the first start downloads the models, 7.7 GB, once.
+
+Or build it from source (Xcode or the Command Line Tools and [uv](https://github.com/astral-sh/uv)
+as well):
 
 ```sh
 git clone https://github.com/ace-step/ACE-Step-1.5 ~/acestep-f0/ACE-Step-1.5
